@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRegexStore } from '@/stores/useRegexStore';
 import { useBuildStore } from '@/stores/useBuildStore';
-import { useRunHistoryStore } from '@/stores/useRunHistoryStore';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -16,17 +15,14 @@ import { db } from '@/db/database';
 export default function DashboardPage() {
   const { presets, loadPresets } = useRegexStore();
   const { builds, loadBuilds } = useBuildStore();
-  const { runs, loadRuns } = useRunHistoryStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadPresets();
     loadBuilds();
-    loadRuns();
-  }, [loadPresets, loadBuilds, loadRuns]);
+  }, [loadPresets, loadBuilds]);
 
   const recentBuilds = builds.slice(0, 3);
-  const recentRuns = runs.slice(0, 3);
   const lastPreset = presets.length > 0 ? presets[presets.length - 1] : null;
   const lastPresetRegex = lastPreset ? combineCategories(lastPreset.categories) : '';
 
@@ -105,9 +101,6 @@ export default function DashboardPage() {
           <Link href="/regex">
             <Button variant="secondary">New Regex Preset</Button>
           </Link>
-          <Link href="/history">
-            <Button variant="secondary">Log Run</Button>
-          </Link>
         </div>
       </section>
 
@@ -177,55 +170,6 @@ export default function DashboardPage() {
               {lastPresetRegex && <CopyButton text={lastPresetRegex} />}
             </div>
           </Card>
-        )}
-      </section>
-
-      {/* Recent Runs */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-poe-text">Recent Runs</h2>
-          <Link href="/history" className="text-sm text-poe-gold hover:underline">
-            View all
-          </Link>
-        </div>
-        {recentRuns.length === 0 ? (
-          <Card>
-            <p className="text-center text-sm text-poe-muted">
-              No runs recorded yet. Log your first speed run to start tracking progress.
-            </p>
-          </Card>
-        ) : (
-          <div className="space-y-2">
-            {recentRuns.map((run) => (
-              <Card key={run.id} className="flex items-center justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <h4 className="truncate text-sm font-semibold text-poe-text">
-                    {run.buildName || 'Untitled Run'}
-                  </h4>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs text-poe-muted">
-                      {new Date(run.date + 'T00:00:00').toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </p>
-                    {run.buildPlanId && (
-                      <Link
-                        href={`/builds/${run.buildPlanId}`}
-                        className="text-xs text-poe-gold hover:underline"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        View Build
-                      </Link>
-                    )}
-                  </div>
-                </div>
-                <span className="shrink-0 font-mono text-lg font-bold text-poe-gold">
-                  {run.totalTime || '--:--:--'}
-                </span>
-              </Card>
-            ))}
-          </div>
         )}
       </section>
 

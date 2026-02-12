@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Code, Swords, Clock } from 'lucide-react';
+import { Home, Code, Swords } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: Home },
-  { href: '/regex', label: 'Regex Builder', icon: Code },
   { href: '/builds', label: 'Builds', icon: Swords },
-  { href: '/history', label: 'Run History', icon: Clock },
+  { href: '/regex', label: 'Regex Builder', icon: Code },
 ] as const;
 
 export function Sidebar() {

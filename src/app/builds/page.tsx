@@ -11,8 +11,12 @@ export default function BuildsPage() {
   const { builds, isLoading, loadBuilds, createBuild, deleteBuild } = useBuildStore();
 
   useEffect(() => {
-    loadBuilds();
-  }, [loadBuilds]);
+    loadBuilds().then(() => {
+      if (useBuildStore.getState().builds.length === 0) {
+        createBuild().then((id) => router.replace(`/builds/${id}`));
+      }
+    });
+  }, [loadBuilds, createBuild, router]);
 
   const handleNewBuild = async () => {
     const id = await createBuild();
