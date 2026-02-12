@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PoE Speed Run Planner',
-  description: 'Plan your Path of Exile speed runs with gem setups, regex filters, and run tracking.',
+  title: 'PoE Router',
+  description: 'Plan your Path of Exile campaign with gem setups, regex filters, and build planning.',
 };
 
 export default function RootLayout({

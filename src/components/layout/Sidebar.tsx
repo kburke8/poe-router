@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Code, Swords } from 'lucide-react';
+import { Home, Code, Swords, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: Home },
   { href: '/builds', label: 'Builds', icon: Swords },
   { href: '/regex', label: 'Regex Builder', icon: Code },
+  { href: '/guide', label: 'Guide', icon: BookOpen },
 ] as const;
 
 export function Sidebar() {
@@ -17,7 +18,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col bg-poe-card border-r border-poe-border">
       <div className="flex h-14 items-center px-4 border-b border-poe-border">
-        <h1 className="text-lg font-bold text-poe-gold">PoE Planner</h1>
+        <h1 className="text-lg font-bold text-poe-gold">PoE Router</h1>
       </div>
       <nav className="flex-1 px-2 py-4 space-y-1">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {

@@ -84,9 +84,9 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">
       <div>
-        <h1 className="text-3xl font-bold text-poe-gold">PoE Speed Run Planner</h1>
+        <h1 className="text-3xl font-bold text-poe-gold">PoE Router</h1>
         <p className="mt-1 text-sm text-poe-muted">
-          Plan your builds, manage loot filters, and track your runs.
+          Plan your campaign route, manage loot filters, and organize your builds.
         </p>
       </div>
 
@@ -180,16 +180,16 @@ export default function DashboardPage() {
             <Button variant="secondary" onClick={handleExport}>
               Export All Data
             </Button>
-            <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
+            <label className="inline-flex items-center justify-center rounded-md border border-poe-border px-4 py-2 text-sm font-medium text-poe-text transition-colors hover:bg-poe-border/50 cursor-pointer">
               Import from JSON
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
+            </label>
           </div>
           <p className="mt-2 text-xs text-poe-muted">
             Export your builds, regex presets, and run history as JSON, or import a previously exported file.

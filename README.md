@@ -1,14 +1,25 @@
-# PoE Speed Run Planner
+# PoE Router
 
-A Path of Exile 1 speed run planning tool with regex pattern generation, build planning, and run history tracking. Runs entirely in the browser with no backend — all data is stored locally in IndexedDB.
+A Path of Exile 1 campaign planning tool with regex pattern generation, build planning, and a guided run view. Runs entirely in the browser with no backend — all data is stored locally in IndexedDB.
+
+**[poe-router.com](https://poe-router.com)**
 
 ## Features
 
+- **Build Planner** — Plan your leveling route act-by-act: gem setups, skill transitions, and vendor purchases.
+- **Run View** — Guided playthrough mode that walks you through each town stop with gem pickups, link groups, and vendor buys.
 - **Regex Builder** — Generate optimized stash-search regex patterns for gems, items, and exclusions. The abbreviation engine finds the shortest unique pattern that won't false-match against PoE's full item text search.
-- **Build Planner** — Plan your leveling route act-by-act: gem setups, gear goals, skill transitions, and vendor purchases.
-- **Run View** — Guided playthrough mode that walks you through each town stop with gem pickups and vendor buys.
-- **Run History** — Track your speed run times with act splits.
 - **Import/Export** — Share builds and presets as JSON.
+
+## Screenshots
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+![Build Editor](docs/screenshots/build-editor.png)
+
+![Run View](docs/screenshots/run-view.png)
+
+![Regex Builder](docs/screenshots/regex-builder.png)
 
 ## Getting Started
 

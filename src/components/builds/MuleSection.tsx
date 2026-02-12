@@ -41,6 +41,7 @@ export function MuleSection({
   onRemovePickup,
 }: MuleSectionProps) {
   const [questPickerOpen, setQuestPickerOpen] = useState(false);
+  const [vendorPickerOpen, setVendorPickerOpen] = useState(false);
 
   const beachGems = useMemo(
     () => (muleClassName ? getBeachGems(muleClassName) : null),
@@ -48,6 +49,7 @@ export function MuleSection({
   );
 
   const questPickups = mulePickups.filter((p) => p.source === 'quest_reward');
+  const vendorPickups = mulePickups.filter((p) => p.source === 'vendor');
 
   return (
     <div className="rounded-lg border border-poe-border bg-poe-card p-4 space-y-3">
@@ -114,6 +116,36 @@ export function MuleSection({
             </div>
           </div>
 
+          {/* Buy from Vendor */}
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <h5 className="text-xs font-medium text-poe-gold">Buy from Vendor</h5>
+              <Button variant="secondary" size="sm" onClick={() => setVendorPickerOpen(true)}>
+                + Buy Gem
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {vendorPickups.length === 0 && (
+                <span className="text-xs text-poe-muted">None</span>
+              )}
+              {vendorPickups.map((pickup) => (
+                <span key={pickup.id} className="inline-flex items-center gap-1">
+                  <Badge variant={GEM_COLOR_VARIANT[pickup.gemColor] ?? 'default'}>
+                    {pickup.gemName}
+                  </Badge>
+                  <button
+                    type="button"
+                    onClick={() => onRemovePickup(pickup.id)}
+                    className="text-poe-muted hover:text-poe-red text-xs leading-none"
+                    title="Remove"
+                  >
+                    x
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+
           <GemPickerDialog
             open={questPickerOpen}
             onOpenChange={setQuestPickerOpen}
@@ -127,6 +159,22 @@ export function MuleSection({
                 gemName: gem.name,
                 gemColor: gem.color as 'red' | 'green' | 'blue',
                 source: 'quest_reward',
+              });
+            }}
+          />
+
+          <GemPickerDialog
+            open={vendorPickerOpen}
+            onOpenChange={setVendorPickerOpen}
+            stopId="a1_after_hillock"
+            className={muleClassName}
+            mode="vendor"
+            onSelect={(gem) => {
+              onAddPickup({
+                id: crypto.randomUUID(),
+                gemName: gem.name,
+                gemColor: gem.color as 'red' | 'green' | 'blue',
+                source: 'vendor',
               });
             }}
           />

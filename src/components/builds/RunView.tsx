@@ -144,22 +144,6 @@ export function RunView({ build }: RunViewProps) {
         </div>
       )}
 
-      {/* Gear Goals */}
-      {build.gearGoals.length > 0 && detail <= 1 && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-          {build.gearGoals.map((goal) => (
-            <span key={goal.id} className="inline-flex items-center gap-1.5">
-              <span className={goal.acquired ? 'text-poe-green' : 'text-poe-muted'}>
-                {goal.acquired ? '[x]' : '[ ]'}
-              </span>
-              <span className={goal.acquired ? 'text-poe-text line-through opacity-60' : 'text-poe-text'}>
-                {goal.slot}: {goal.description}
-              </span>
-            </span>
-          ))}
-        </div>
-      )}
-
       {/* Mule */}
       {build.muleClassName && (build.mulePickups?.length ?? 0) > 0 && detail <= 1 && (
         <div className="text-sm">

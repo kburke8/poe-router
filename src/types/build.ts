@@ -47,7 +47,7 @@ export interface MulePickup {
   id: string;
   gemName: string;
   gemColor: 'red' | 'green' | 'blue';
-  source: 'beach' | 'quest_reward';
+  source: 'beach' | 'quest_reward' | 'vendor';
 }
 
 export interface BuildPlan {

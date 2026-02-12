@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useBuildStore } from '@/stores/useBuildStore';
 import { BuildHeader } from '@/components/builds/BuildHeader';
 import { StopSection } from '@/components/builds/StopSection';
-import { GearGoalsPanel } from '@/components/builds/GearGoalsPanel';
 import { MuleSection } from '@/components/builds/MuleSection';
 import { TOWN_STOPS, getStopsForAct, getActNumbers } from '@/data/town-stops';
 import { getBeachGems } from '@/data/classes';
@@ -32,10 +31,6 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
     updatePhase,
     removePhase,
     updateLinkGroupLabel,
-    addGearGoal,
-    updateGearGoal,
-    removeGearGoal,
-    toggleGearGoalAcquired,
     updateMuleClass,
     addMulePickup,
     removeMulePickup,
@@ -90,15 +85,6 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
           Run View &rarr;
         </Link>
       </div>
-
-      {/* Gear Goals (build-level) */}
-      <GearGoalsPanel
-        goals={build.gearGoals}
-        onAdd={(goal) => addGearGoal(buildId, goal)}
-        onUpdate={(goalId, updates) => updateGearGoal(buildId, goalId, updates)}
-        onRemove={(goalId) => removeGearGoal(buildId, goalId)}
-        onToggleAcquired={(goalId) => toggleGearGoalAcquired(buildId, goalId)}
-      />
 
       {/* Mule (optional) */}
       <MuleSection
