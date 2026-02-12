@@ -49,6 +49,7 @@ interface RegexState {
   clearCategory: (categoryId: RegexCategoryId) => Promise<void>;
   setCustomRegex: (regex: string) => Promise<void>;
   toggleCustomRegex: (enabled: boolean) => Promise<void>;
+  toggleStrictLinks: (enabled: boolean) => Promise<void>;
 }
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -72,7 +73,17 @@ function getCombinedRegex(state: { presets: RegexPreset[]; activePresetId: strin
   const preset = getActivePreset(state);
   if (!preset) return '';
   if (preset.useCustomRegex && preset.customRegex) return preset.customRegex;
-  return combineCategories(preset.categories);
+
+  // When strict links is on (default), exclude 2-link entries from the links category
+  const categories = preset.strictLinks !== false
+    ? preset.categories.map((cat) =>
+        cat.id === 'links'
+          ? { ...cat, entries: cat.entries.filter((e) => !e.linkSize || e.linkSize >= 3) }
+          : cat,
+      )
+    : preset.categories;
+
+  return combineCategories(categories);
 }
 
 export const useRegexStore = create<RegexState>()(
@@ -120,7 +131,7 @@ export const useRegexStore = create<RegexState>()(
         name,
         categories: DEFAULT_CATEGORIES.map((c) => ({
           ...c,
-          entries: [],
+          entries: c.entries.map((e) => ({ ...e })),
         })),
         createdAt: now,
         updatedAt: now,
@@ -288,6 +299,19 @@ export const useRegexStore = create<RegexState>()(
         );
         if (!preset) return;
         preset.useCustomRegex = enabled;
+        preset.updatedAt = new Date().toISOString();
+      });
+      const activeId = get().activePresetId;
+      debouncedSave(() => get().presets.find((p) => p.id === activeId));
+    },
+
+    async toggleStrictLinks(enabled: boolean) {
+      set((state) => {
+        const preset = state.presets.find(
+          (p) => p.id === state.activePresetId,
+        );
+        if (!preset) return;
+        preset.strictLinks = enabled;
         preset.updatedAt = new Date().toISOString();
       });
       const activeId = get().activePresetId;

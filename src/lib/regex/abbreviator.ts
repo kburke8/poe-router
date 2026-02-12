@@ -404,6 +404,20 @@ const POE_ITEM_TEXT_SAMPLES = [
   'of your maximum Life',
   'the right colour to gain',
   'remove from a socket',
+  // Weapon/armor item class texts with "Class:" prefix so `.` wildcards collide correctly
+  // (in-game these appear as "Item Class: Two Hand Axes" etc.)
+  'Class: One Hand Swords', 'Class: One Hand Axes', 'Class: One Hand Maces',
+  'Class: Two Hand Swords', 'Class: Two Hand Axes', 'Class: Two Hand Maces',
+  'Class: Thrusting One Hand Swords',
+  'Class: Claws', 'Class: Daggers', 'Class: Rune Daggers',
+  'Class: Bows', 'Class: Wands', 'Class: Sceptres', 'Class: Quivers',
+  'Class: Staves', 'Class: Warstaves',
+  'Class: Body Armours', 'Class: Helmets', 'Class: Gloves', 'Class: Boots', 'Class: Shields',
+  // Also the item description lines (slightly different wording)
+  'Two Handed Sword', 'Two Handed Axe', 'Two Handed Mace',
+  'One Hand Sword', 'One Hand Axe', 'One Hand Mace',
+  // Common gem description words that collide with "dom." gambas patterns
+  'randomised', 'randomized',
 ];
 
 /**

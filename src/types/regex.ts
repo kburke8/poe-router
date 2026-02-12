@@ -6,6 +6,7 @@ export interface RegexEntry {
   isExclusion: boolean;
   enabled: boolean;
   isCustom: boolean;
+  linkSize?: number;
 }
 
 export type RegexCategoryId = 'gems' | 'links' | 'stats' | 'items' | 'item_gambas' | 'dont_ever_show';
@@ -22,6 +23,7 @@ export interface RegexPreset {
   categories: RegexCategory[];
   customRegex?: string;
   useCustomRegex?: boolean;
+  strictLinks?: boolean;
   createdAt: string;
   updatedAt: string;
 }

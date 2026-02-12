@@ -81,7 +81,7 @@ This is the most critical and complex file. It generates the shortest unique reg
 
 **PoE search behavior**: Searches the ENTIRE item text (name, item class, rarity, mods, requirements, gem descriptions) not just item names. This means short patterns like `"and"` will match hundreds of items.
 
-**PoE regex features supported**: `.` (any single char), `.+` (one or more chars), `^` (line start anchor)
+**PoE regex features supported**: `.` (any single char), `.+` (one or more chars), `^` (line start anchor), `[abc]` (character class), `(a|b)` (alternation group)
 
 **Algorithm (5 phases)**:
 1. Plain substrings (min 4 chars, spaces become `.`)

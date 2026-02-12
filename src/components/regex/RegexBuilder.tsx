@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Plus, Copy as CopyIcon, Trash2, Pencil, Check, X } from 'lucide-react';
 import { useRegexStore } from '@/stores/useRegexStore';
-import { combineCategories } from '@/lib/regex/combiner';
+import { combineCategories, condenseGambasPatterns } from '@/lib/regex/combiner';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
@@ -30,6 +30,7 @@ export function RegexBuilder() {
     clearCategory,
     setCustomRegex,
     toggleCustomRegex,
+    toggleStrictLinks,
   } = useRegexStore();
 
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -49,7 +50,16 @@ export function RegexBuilder() {
   const combinedRegex = useMemo(() => {
     if (!activePreset) return '';
     if (activePreset.useCustomRegex && activePreset.customRegex) return activePreset.customRegex;
-    return combineCategories(activePreset.categories);
+
+    const categories = activePreset.strictLinks !== false
+      ? activePreset.categories.map((cat) =>
+          cat.id === 'links'
+            ? { ...cat, entries: cat.entries.filter((e) => !e.linkSize || e.linkSize >= 3) }
+            : cat,
+        )
+      : activePreset.categories;
+
+    return combineCategories(categories);
   }, [activePreset]);
 
   async function handleCreatePreset() {
@@ -209,6 +219,67 @@ export function RegexBuilder() {
               {categoryOrder.map((catId) => {
                 const category = getCategoryById(catId);
                 if (!category) return null;
+
+                // Links category: add strict toggle and filter 2L entries visually
+                if (catId === 'links') {
+                  const strict = activePreset.strictLinks !== false;
+                  const has2L = category.entries.some((e) => e.linkSize === 2);
+                  const visibleCategory = strict
+                    ? { ...category, entries: category.entries.filter((e) => !e.linkSize || e.linkSize >= 3) }
+                    : category;
+                  const hiddenCount = category.entries.length - visibleCategory.entries.length;
+
+                  const linkEval = visibleCategory.entries
+                    .filter((e) => e.enabled)
+                    .map((e) => e.pattern)
+                    .join('|');
+
+                  return (
+                    <div key={catId} className="space-y-1">
+                      <CategoryPanel
+                        category={visibleCategory}
+                        onAddEntry={(entry) => addEntry(catId, entry)}
+                        onUpdateEntry={(entryId, updates) => updateEntry(catId, entryId, updates)}
+                        onRemoveEntry={(entryId) => removeEntry(catId, entryId)}
+                        onToggleEntry={(entryId) => toggleEntry(catId, entryId)}
+                        onClearAll={() => clearCategory(catId)}
+                        evaluatedRegex={linkEval || undefined}
+                      />
+                      {has2L && (
+                        <div className="flex items-center gap-2 px-4 py-1.5">
+                          <label className="flex cursor-pointer items-center gap-1.5 text-xs text-poe-muted">
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={strict}
+                              onClick={() => toggleStrictLinks(!strict)}
+                              className={`relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors ${
+                                strict ? 'bg-poe-gold' : 'bg-poe-border'
+                              }`}
+                            >
+                              <span
+                                className={`inline-block h-2.5 w-2.5 rounded-full bg-white transition-transform ${
+                                  strict ? 'translate-x-[14px]' : 'translate-x-[3px]'
+                                }`}
+                              />
+                            </button>
+                            Strict (3L only)
+                          </label>
+                          {strict && hiddenCount > 0 && (
+                            <span className="text-[10px] text-poe-muted">
+                              {hiddenCount} 2-link {hiddenCount === 1 ? 'entry' : 'entries'} hidden
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                const catEval = catId === 'item_gambas'
+                  ? condenseGambasPatterns(category.entries.filter((e) => e.enabled)).join('|')
+                  : undefined;
+
                 return (
                   <CategoryPanel
                     key={catId}
@@ -218,6 +289,7 @@ export function RegexBuilder() {
                     onRemoveEntry={(entryId) => removeEntry(catId, entryId)}
                     onToggleEntry={(entryId) => toggleEntry(catId, entryId)}
                     onClearAll={() => clearCategory(catId)}
+                    evaluatedRegex={catEval || undefined}
                   />
                 );
               })}

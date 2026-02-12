@@ -21,6 +21,7 @@ interface CategoryPanelProps {
   onRemoveEntry: (entryId: string) => void;
   onToggleEntry: (entryId: string) => void;
   onClearAll: () => void;
+  evaluatedRegex?: string;
 }
 
 function collectAllNames(): string[] {
@@ -176,6 +177,7 @@ export function CategoryPanel({
   onRemoveEntry,
   onToggleEntry,
   onClearAll,
+  evaluatedRegex,
 }: CategoryPanelProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [itemPickerOpen, setItemPickerOpen] = useState(false);
@@ -261,6 +263,13 @@ export function CategoryPanel({
 
         {isGemCategory && (
           <InlineGemInput onSelect={handleGemSelect} allNames={allNames} />
+        )}
+
+        {evaluatedRegex && (
+          <div className="mt-2 rounded border border-poe-border/50 bg-poe-bg/50 px-3 py-1.5">
+            <span className="text-[10px] font-medium text-poe-muted">Evaluated: </span>
+            <code className="text-[11px] text-poe-gold/80 break-all">{evaluatedRegex}</code>
+          </div>
         )}
 
         <div className="mt-2 flex flex-wrap items-center gap-2">

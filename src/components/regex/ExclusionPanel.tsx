@@ -13,8 +13,17 @@ import type { Gem as GemType } from '@/types/gem';
 import gemsData from '@/data/gems.json';
 import itemsData from '@/data/items.json';
 
-// PoE item classes with their abbreviations for the lass:. pattern
-const ITEM_CLASSES = [
+// PoE item classes with their abbreviations for the lass:. pattern.
+// Classes whose name doesn't start with the abbreviation (e.g., "Life Flasks")
+// use `standalone` instead — a pattern appended outside the lass:.(…) group.
+interface ItemClassDef {
+  id: string;
+  label: string;
+  abbr?: string;
+  standalone?: string;
+}
+
+const ITEM_CLASSES: ItemClassDef[] = [
   { id: 'staves', label: 'Staves', abbr: 'st' },
   { id: 'two_hand', label: 'Two Hand', abbr: 'tw' },
   { id: 'warstaves', label: 'Warstaves', abbr: 'war' },
@@ -28,7 +37,7 @@ const ITEM_CLASSES = [
   { id: 'wands', label: 'Wands', abbr: 'wan' },
   { id: 'daggers', label: 'Daggers', abbr: 'da' },
   { id: 'quivers', label: 'Quivers', abbr: 'qu' },
-  { id: 'flasks', label: 'Flasks', abbr: 'fl' },
+  { id: 'flasks', label: 'Flasks', standalone: 'flask' },
   { id: 'jewels', label: 'Jewels', abbr: 'je' },
   { id: 'amulets', label: 'Amulets', abbr: 'am' },
   { id: 'rings', label: 'Rings', abbr: 'ri' },
@@ -186,21 +195,38 @@ export function ExclusionPanel({
   const classBlockEntry = category.entries.find((e) => e.sourceId === CLASS_BLOCK_SOURCE);
   const selectedClasses = useMemo(() => {
     if (!classBlockEntry) return new Set<string>();
-    // Parse "lass:.(st|tw|w|one)" pattern to extract abbreviations
-    const match = classBlockEntry.pattern.match(/lass:\.\(([^)]+)\)/);
-    if (!match) return new Set<string>();
-    const abbrs = match[1].split('|');
+    const pattern = classBlockEntry.pattern;
     const selected = new Set<string>();
-    for (const cls of ITEM_CLASSES) {
-      if (abbrs.includes(cls.abbr)) selected.add(cls.id);
+
+    // Parse lass:.(abbr|...) portion
+    const match = pattern.match(/lass:\.\(([^)]+)\)/);
+    if (match) {
+      const abbrs = match[1].split('|');
+      for (const cls of ITEM_CLASSES) {
+        if (cls.abbr && abbrs.includes(cls.abbr)) selected.add(cls.id);
+      }
     }
+
+    // Parse standalone patterns (appended after |)
+    for (const cls of ITEM_CLASSES) {
+      if (cls.standalone && pattern.includes(cls.standalone)) selected.add(cls.id);
+    }
+
     return selected;
   }, [classBlockEntry]);
 
   function buildClassPattern(classes: Set<string>): string {
-    const abbrs = ITEM_CLASSES.filter((c) => classes.has(c.id)).map((c) => c.abbr);
-    if (abbrs.length === 0) return '';
-    return `lass:.(${abbrs.join('|')})`;
+    const selected = ITEM_CLASSES.filter((c) => classes.has(c.id));
+    const abbrs = selected.filter((c) => c.abbr).map((c) => c.abbr);
+    const standalones = selected.filter((c) => c.standalone).map((c) => c.standalone);
+
+    const parts: string[] = [];
+    if (abbrs.length > 0) {
+      parts.push(`lass:.(${abbrs.join('|')})`);
+    }
+    parts.push(...(standalones as string[]));
+
+    return parts.join('|');
   }
 
   function handleClassToggle(classId: string) {
