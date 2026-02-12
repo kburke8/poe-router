@@ -73,7 +73,6 @@ export default function DashboardPage() {
       // Reload all stores
       loadPresets();
       loadBuilds();
-      loadRuns();
       alert('Import successful!');
     } catch (err) {
       alert('Import failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
