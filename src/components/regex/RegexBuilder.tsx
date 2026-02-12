@@ -6,6 +6,7 @@ import { useRegexStore } from '@/stores/useRegexStore';
 import { combineCategories } from '@/lib/regex/combiner';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
 import { CategoryPanel } from './CategoryPanel';
 import { ExclusionPanel } from './ExclusionPanel';
 import { RegexPreview } from './RegexPreview';
@@ -27,6 +28,8 @@ export function RegexBuilder() {
     removeEntry,
     toggleEntry,
     clearCategory,
+    setCustomRegex,
+    toggleCustomRegex,
   } = useRegexStore();
 
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -41,8 +44,11 @@ export function RegexBuilder() {
     [presets, activePresetId],
   );
 
+  const useCustom = !!activePreset?.useCustomRegex;
+
   const combinedRegex = useMemo(() => {
     if (!activePreset) return '';
+    if (activePreset.useCustomRegex && activePreset.customRegex) return activePreset.customRegex;
     return combineCategories(activePreset.categories);
   }, [activePreset]);
 
@@ -156,40 +162,83 @@ export function RegexBuilder() {
         )}
       </div>
 
-      {/* Category panels */}
+      {/* Custom regex toggle + Category panels */}
       {activePreset ? (
         <div className="flex-1 space-y-3">
-          {categoryOrder.map((catId) => {
-            const category = getCategoryById(catId);
-            if (!category) return null;
-            return (
-              <CategoryPanel
-                key={catId}
-                category={category}
-                onAddEntry={(entry) => addEntry(catId, entry)}
-                onUpdateEntry={(entryId, updates) => updateEntry(catId, entryId, updates)}
-                onRemoveEntry={(entryId) => removeEntry(catId, entryId)}
-                onToggleEntry={(entryId) => toggleEntry(catId, entryId)}
-                onClearAll={() => clearCategory(catId)}
-              />
-            );
-          })}
+          {/* Custom regex toggle */}
+          <div className="flex items-center gap-3 rounded-lg border border-poe-border bg-poe-card px-4 py-2.5">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-poe-text">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={useCustom}
+                onClick={() => toggleCustomRegex(!useCustom)}
+                className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                  useCustom ? 'bg-poe-gold' : 'bg-poe-border'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
+                    useCustom ? 'translate-x-[18px]' : 'translate-x-[3px]'
+                  }`}
+                />
+              </button>
+              Use Custom Regex
+            </label>
+            {useCustom && (
+              <span className="text-xs text-poe-muted">Category panels are bypassed</span>
+            )}
+          </div>
 
-          {/* Exclusion panel */}
-          {(() => {
-            const excCategory = getCategoryById('dont_ever_show');
-            if (!excCategory) return null;
-            return (
-              <ExclusionPanel
-                category={excCategory}
-                onAddEntry={(entry) => addEntry('dont_ever_show', entry)}
-                onUpdateEntry={(entryId, updates) => updateEntry('dont_ever_show', entryId, updates)}
-                onRemoveEntry={(entryId) => removeEntry('dont_ever_show', entryId)}
-                onToggleEntry={(entryId) => toggleEntry('dont_ever_show', entryId)}
-                onClearAll={() => clearCategory('dont_ever_show')}
+          {useCustom ? (
+            <div className="rounded-lg border border-poe-border bg-poe-card p-4 space-y-2">
+              <label className="text-xs font-medium text-poe-gold">Custom Regex</label>
+              <Textarea
+                value={activePreset.customRegex ?? ''}
+                onChange={(e) => setCustomRegex(e.target.value)}
+                placeholder="Enter raw regex string (e.g. !flask B-B-G|R-R-G-B)"
+                rows={3}
+                className="font-mono text-xs"
               />
-            );
-          })()}
+              <p className="text-[10px] text-poe-muted">
+                This string is used as-is in the output, bypassing all category-based generation.
+              </p>
+            </div>
+          ) : (
+            <>
+              {categoryOrder.map((catId) => {
+                const category = getCategoryById(catId);
+                if (!category) return null;
+                return (
+                  <CategoryPanel
+                    key={catId}
+                    category={category}
+                    onAddEntry={(entry) => addEntry(catId, entry)}
+                    onUpdateEntry={(entryId, updates) => updateEntry(catId, entryId, updates)}
+                    onRemoveEntry={(entryId) => removeEntry(catId, entryId)}
+                    onToggleEntry={(entryId) => toggleEntry(catId, entryId)}
+                    onClearAll={() => clearCategory(catId)}
+                  />
+                );
+              })}
+
+              {/* Exclusion panel */}
+              {(() => {
+                const excCategory = getCategoryById('dont_ever_show');
+                if (!excCategory) return null;
+                return (
+                  <ExclusionPanel
+                    category={excCategory}
+                    onAddEntry={(entry) => addEntry('dont_ever_show', entry)}
+                    onUpdateEntry={(entryId, updates) => updateEntry('dont_ever_show', entryId, updates)}
+                    onRemoveEntry={(entryId) => removeEntry('dont_ever_show', entryId)}
+                    onToggleEntry={(entryId) => toggleEntry('dont_ever_show', entryId)}
+                    onClearAll={() => clearCategory('dont_ever_show')}
+                  />
+                );
+              })()}
+            </>
+          )}
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">

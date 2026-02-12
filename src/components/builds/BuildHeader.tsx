@@ -8,15 +8,8 @@ import { Badge } from '@/components/ui/Badge';
 import { POE_CLASSES, getAscendancies } from '@/data/classes';
 import { useRegexStore } from '@/stores/useRegexStore';
 import { useBuildStore } from '@/stores/useBuildStore';
-import { computeAbbreviations } from '@/lib/regex/abbreviator';
-import gemsData from '@/data/gems.json';
+import { generateBuildRegex, hasBuildRegexContent } from '@/lib/regex/generate-from-build';
 import type { BuildPlan } from '@/types/build';
-import type { Gem } from '@/types/gem';
-
-const allGemNames = [
-  ...(gemsData.skills as Gem[]),
-  ...(gemsData.supports as Gem[]),
-].map((g) => g.name);
 
 interface BuildHeaderProps {
   build: BuildPlan;
@@ -49,42 +42,15 @@ export function BuildHeader({ build, onUpdate }: BuildHeaderProps) {
     }
   };
 
-  const handleGenerateVendorRegex = async () => {
-    // Collect unique vendor gem names from all stops
-    const vendorGemNames = [
-      ...new Set(
-        build.stops
-          .flatMap((s) => s.gemPickups)
-          .filter((p) => p.source === 'vendor')
-          .map((p) => p.gemName)
-      ),
-    ];
-    if (vendorGemNames.length === 0) return;
+  const handleGenerateRegex = async () => {
+    if (!hasBuildRegexContent(build)) return;
 
-    // Compute abbreviated regex patterns
-    const abbreviations = computeAbbreviations(vendorGemNames, allGemNames);
-
-    // Create new preset or reuse linked one
-    let presetId = build.regexPresetId;
-    if (presetId && presets.find((p) => p.id === presetId)) {
-      // Clear existing gems category and repopulate
-      setActivePreset(presetId);
-      await clearCategory('gems');
-    } else {
-      presetId = await createPreset(`${build.name} - Vendor Gems`);
-    }
-
-    // Add entries for each vendor gem
-    setActivePreset(presetId);
-    for (const [gemName, pattern] of abbreviations) {
-      await addEntry('gems', {
-        pattern,
-        sourceName: gemName,
-        isExclusion: false,
-        enabled: true,
-        isCustom: false,
-      });
-    }
+    const presetId = await generateBuildRegex(build, presets, {
+      createPreset,
+      setActivePreset,
+      clearCategory,
+      addEntry,
+    });
 
     onUpdate({ regexPresetId: presetId });
   };
@@ -152,10 +118,10 @@ export function BuildHeader({ build, onUpdate }: BuildHeaderProps) {
           <Button
             variant="secondary"
             size="sm"
-            onClick={handleGenerateVendorRegex}
-            disabled={build.stops.flatMap((s) => s.gemPickups).filter((p) => p.source === 'vendor').length === 0}
+            onClick={handleGenerateRegex}
+            disabled={!hasBuildRegexContent(build)}
           >
-            Generate Vendor Regex
+            Generate Regex
           </Button>
           {linkedPreset && (
             <Link

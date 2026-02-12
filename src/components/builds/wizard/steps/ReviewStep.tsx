@@ -6,16 +6,9 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { SocketColorIndicator } from '@/components/ui/SocketColorIndicator';
 import { useRegexStore } from '@/stores/useRegexStore';
-import { computeAbbreviations } from '@/lib/regex/abbreviator';
+import { generateBuildRegex, hasBuildRegexContent } from '@/lib/regex/generate-from-build';
 import { getStopById, getActNumbers, getStopsForAct } from '@/data/town-stops';
-import gemsData from '@/data/gems.json';
-import type { Gem } from '@/types/gem';
 import type { BuildPlan } from '@/types/build';
-
-const allGemNames = [
-  ...(gemsData.skills as Gem[]),
-  ...(gemsData.supports as Gem[]),
-].map((g) => g.name);
 
 interface ReviewStepProps {
   build: BuildPlan;
@@ -35,37 +28,15 @@ export function ReviewStep({ build, buildId, onUpdate, onSwitchToAdvanced }: Rev
     ? presets.find((p) => p.id === build.regexPresetId)
     : null;
 
-  const handleGenerateVendorRegex = async () => {
-    const vendorGemNames = [
-      ...new Set(
-        build.stops
-          .flatMap((s) => s.gemPickups)
-          .filter((p) => p.source === 'vendor')
-          .map((p) => p.gemName)
-      ),
-    ];
-    if (vendorGemNames.length === 0) return;
+  const handleGenerateRegex = async () => {
+    if (!hasBuildRegexContent(build)) return;
 
-    const abbreviations = computeAbbreviations(vendorGemNames, allGemNames);
-
-    let presetId = build.regexPresetId;
-    if (presetId && presets.find((p) => p.id === presetId)) {
-      setActivePreset(presetId);
-      await clearCategory('gems');
-    } else {
-      presetId = await createPreset(`${build.name} - Vendor Gems`);
-    }
-
-    setActivePreset(presetId);
-    for (const [gemName, pattern] of abbreviations) {
-      await addEntry('gems', {
-        pattern,
-        sourceName: gemName,
-        isExclusion: false,
-        enabled: true,
-        isCustom: false,
-      });
-    }
+    const presetId = await generateBuildRegex(build, presets, {
+      createPreset,
+      setActivePreset,
+      clearCategory,
+      addEntry,
+    });
 
     onUpdate({ regexPresetId: presetId });
   };
@@ -81,9 +52,6 @@ export function ReviewStep({ build, buildId, onUpdate, onSwitchToAdvanced }: Rev
   }).filter((a) => a.count > 0);
 
   const totalGems = build.stops.reduce((sum, s) => sum + s.gemPickups.length, 0);
-  const vendorGemCount = build.stops
-    .flatMap((s) => s.gemPickups)
-    .filter((p) => p.source === 'vendor').length;
 
   return (
     <div className="space-y-6">
@@ -113,10 +81,10 @@ export function ReviewStep({ build, buildId, onUpdate, onSwitchToAdvanced }: Rev
           <Button
             variant="secondary"
             size="sm"
-            onClick={handleGenerateVendorRegex}
-            disabled={vendorGemCount === 0}
+            onClick={handleGenerateRegex}
+            disabled={!hasBuildRegexContent(build)}
           >
-            Generate Vendor Regex
+            Generate Regex
           </Button>
           {linkedPreset && (
             <Link
@@ -127,8 +95,8 @@ export function ReviewStep({ build, buildId, onUpdate, onSwitchToAdvanced }: Rev
             </Link>
           )}
         </div>
-        {vendorGemCount === 0 && (
-          <p className="text-xs text-poe-muted">No vendor gems configured. Add vendor buys in the Gems step to enable regex generation.</p>
+        {!hasBuildRegexContent(build) && (
+          <p className="text-xs text-poe-muted">No vendor gems or link groups configured. Add vendor buys or link groups to enable regex generation.</p>
         )}
       </div>
 

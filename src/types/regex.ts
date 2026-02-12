@@ -20,6 +20,8 @@ export interface RegexPreset {
   id: string;
   name: string;
   categories: RegexCategory[];
+  customRegex?: string;
+  useCustomRegex?: boolean;
   createdAt: string;
   updatedAt: string;
 }

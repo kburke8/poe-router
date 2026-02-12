@@ -47,6 +47,8 @@ interface RegexState {
     entryId: string,
   ) => Promise<void>;
   clearCategory: (categoryId: RegexCategoryId) => Promise<void>;
+  setCustomRegex: (regex: string) => Promise<void>;
+  toggleCustomRegex: (enabled: boolean) => Promise<void>;
 }
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -69,6 +71,7 @@ function getActivePreset(state: { presets: RegexPreset[]; activePresetId: string
 function getCombinedRegex(state: { presets: RegexPreset[]; activePresetId: string | null }): string {
   const preset = getActivePreset(state);
   if (!preset) return '';
+  if (preset.useCustomRegex && preset.customRegex) return preset.customRegex;
   return combineCategories(preset.categories);
 }
 
@@ -259,6 +262,32 @@ export const useRegexStore = create<RegexState>()(
         const category = preset.categories.find((c) => c.id === categoryId);
         if (!category) return;
         category.entries = [];
+        preset.updatedAt = new Date().toISOString();
+      });
+      const activeId = get().activePresetId;
+      debouncedSave(() => get().presets.find((p) => p.id === activeId));
+    },
+
+    async setCustomRegex(regex: string) {
+      set((state) => {
+        const preset = state.presets.find(
+          (p) => p.id === state.activePresetId,
+        );
+        if (!preset) return;
+        preset.customRegex = regex;
+        preset.updatedAt = new Date().toISOString();
+      });
+      const activeId = get().activePresetId;
+      debouncedSave(() => get().presets.find((p) => p.id === activeId));
+    },
+
+    async toggleCustomRegex(enabled: boolean) {
+      set((state) => {
+        const preset = state.presets.find(
+          (p) => p.id === state.activePresetId,
+        );
+        if (!preset) return;
+        preset.useCustomRegex = enabled;
         preset.updatedAt = new Date().toISOString();
       });
       const activeId = get().activePresetId;
