@@ -18,6 +18,9 @@ export interface StopPlan {
   enabled: boolean;
   gemPickups: GemPickup[];
   notes: string;
+  isCustom?: boolean;
+  customLabel?: string;
+  afterStopId?: string;
 }
 
 export interface GearGoal {

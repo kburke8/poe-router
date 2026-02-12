@@ -5,6 +5,9 @@ export interface TownStop {
   questsCompleted: string[];
   defaultEnabled: boolean;
   sortOrder: number;
+  /** Quests that are only completed if this stop is enabled (optional side-quests).
+   *  When this stop is disabled, these quests are removed from all stops' effective quest lists. */
+  exclusiveQuests?: string[];
 }
 
 export interface GemQuest {
@@ -140,6 +143,7 @@ export const TOWN_STOPS: TownStop[] = [
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate'],
     defaultEnabled: true,
     sortOrder: 12,
+    exclusiveQuests: ['a_fixture_of_fate'],
   },
   {
     id: 'a3_after_gravicius',
@@ -148,6 +152,7 @@ export const TOWN_STOPS: TownStop[] = [
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand'],
     defaultEnabled: true,
     sortOrder: 13,
+    exclusiveQuests: ['sever_the_right_hand'],
   },
 
   // Act 4

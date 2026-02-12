@@ -19,6 +19,7 @@ interface GemPickerDialogProps {
   className: string;
   mode: 'quest_reward' | 'vendor';
   rewardSetId?: string;
+  disabledStopIds?: Set<string>;
   onSelect: (gem: Gem, source: 'quest_reward' | 'vendor') => void;
 }
 
@@ -39,7 +40,7 @@ function getAllGems(): Gem[] {
   return gems;
 }
 
-export function GemPickerDialog({ open, onOpenChange, stopId, className, mode, rewardSetId, onSelect }: GemPickerDialogProps) {
+export function GemPickerDialog({ open, onOpenChange, stopId, className, mode, rewardSetId, disabledStopIds, onSelect }: GemPickerDialogProps) {
   const [query, setQuery] = useState('');
   const [showAll, setShowAll] = useState(false);
 
@@ -47,11 +48,10 @@ export function GemPickerDialog({ open, onOpenChange, stopId, className, mode, r
 
   const availableGems = useMemo(() => {
     if (mode === 'quest_reward') {
-      const all = getQuestRewardsAtStop(stopId, className, rewardSetId);
-      return all;
+      return getQuestRewardsAtStop(stopId, className, rewardSetId, disabledStopIds);
     }
-    return getVendorGemsAtStop(stopId, className);
-  }, [stopId, className, mode, rewardSetId]);
+    return getVendorGemsAtStop(stopId, className, disabledStopIds);
+  }, [stopId, className, mode, rewardSetId, disabledStopIds]);
 
   const availableMap = useMemo(() => {
     const map = new Map<string, AvailableGem>();

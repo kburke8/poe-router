@@ -5622,6 +5622,20 @@
       ]
     },
     {
+      "id": "prismatic_burst_support",
+      "name": "Prismatic Burst Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "elemental",
+        "prismatic",
+        "spell",
+        "attack"
+      ]
+    },
+    {
       "id": "pulverise_support",
       "name": "Pulverise Support",
       "color": "red",

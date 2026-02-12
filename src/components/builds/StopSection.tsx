@@ -12,6 +12,7 @@ import type { StopPlan, GemPickup, LinkGroupPhase } from '@/types/build';
 import type { ResolvedLinkGroup } from '@/lib/link-group-resolver';
 import { getPreviousPhase } from '@/lib/link-group-resolver';
 import { TOWN_STOPS, type TownStop } from '@/data/town-stops';
+import { getExcludedQuests } from '@/lib/gem-availability';
 
 interface StopSectionProps {
   stopPlan: StopPlan;
@@ -20,6 +21,9 @@ interface StopSectionProps {
   className: string;
   stopGemNames: string[];
   resolvedLinkGroups: ResolvedLinkGroup[];
+  disabledStopIds?: Set<string>;
+  isCustomStop?: boolean;
+  showQuestRewards?: boolean;
   onToggleEnabled: () => void;
   onAddGemPickup: (pickup: GemPickup) => void;
   onRemoveGemPickup: (pickupId: string) => void;
@@ -30,6 +34,8 @@ interface StopSectionProps {
   onRemovePhase: (lgId: string, phaseId: string) => void;
   onUpdateLinkGroupLabel: (lgId: string, label: string) => void;
   onUpdateNotes: (notes: string) => void;
+  onDeleteCustomStop?: () => void;
+  onUpdateCustomLabel?: (label: string) => void;
 }
 
 export function StopSection({
@@ -38,6 +44,9 @@ export function StopSection({
   className,
   stopGemNames,
   resolvedLinkGroups,
+  disabledStopIds,
+  isCustomStop,
+  showQuestRewards,
   onToggleEnabled,
   onAddGemPickup,
   onRemoveGemPickup,
@@ -48,13 +57,37 @@ export function StopSection({
   onRemovePhase,
   onUpdateLinkGroupLabel,
   onUpdateNotes,
+  onDeleteCustomStop,
+  onUpdateCustomLabel,
 }: StopSectionProps) {
   const [open, setOpen] = useState(false);
 
+  const excludedQuests = useMemo(() => {
+    if (!disabledStopIds || disabledStopIds.size === 0) return new Set<string>();
+    return getExcludedQuests(disabledStopIds);
+  }, [disabledStopIds]);
+
   const previousQuestsCompleted = useMemo(() => {
+    if (isCustomStop) return [];
     const idx = TOWN_STOPS.findIndex((s) => s.id === townStop.id);
-    return idx > 0 ? TOWN_STOPS[idx - 1].questsCompleted : [];
-  }, [townStop.id]);
+    if (idx <= 0) return [];
+    if (disabledStopIds && disabledStopIds.size > 0) {
+      for (let i = idx - 1; i >= 0; i--) {
+        if (!disabledStopIds.has(TOWN_STOPS[i].id)) {
+          return TOWN_STOPS[i].questsCompleted.filter((q) => !excludedQuests.has(q));
+        }
+      }
+      return [];
+    }
+    return TOWN_STOPS[idx - 1].questsCompleted;
+  }, [townStop.id, disabledStopIds, isCustomStop, excludedQuests]);
+
+  // Effective quests at this stop (filtered by exclusions from disabled optional stops)
+  const effectiveQuestsCompleted = useMemo(() => {
+    if (isCustomStop) return [];
+    if (excludedQuests.size === 0) return townStop.questsCompleted;
+    return townStop.questsCompleted.filter((q) => !excludedQuests.has(q));
+  }, [townStop.questsCompleted, excludedQuests, isCustomStop]);
 
   const pickupCount = stopPlan.gemPickups.length;
   const linkCount = resolvedLinkGroups.length;
@@ -68,16 +101,24 @@ export function StopSection({
   }
   const summary = summaryParts.length > 0 ? summaryParts.join(', ') : '';
 
+  // For custom stops, use the anchor town stop's stopId for link group actions
+  const effectiveStopId = stopPlan.stopId;
+
   return (
     <div>
       <StopHeader
         townStop={townStop}
         previousQuestsCompleted={previousQuestsCompleted}
+        effectiveQuestsCompleted={effectiveQuestsCompleted}
         enabled={stopPlan.enabled}
         isOpen={open}
         onToggleOpen={() => setOpen(!open)}
         onToggleEnabled={onToggleEnabled}
         summary={summary}
+        isCustomStop={isCustomStop}
+        customLabel={stopPlan.customLabel}
+        onUpdateCustomLabel={onUpdateCustomLabel}
+        onDeleteCustomStop={onDeleteCustomStop}
       />
 
       <Collapsible.Root open={open && stopPlan.enabled} onOpenChange={setOpen}>
@@ -87,8 +128,11 @@ export function StopSection({
             <h4 className="text-sm font-medium text-poe-text mb-2">Gems</h4>
             <GemPickupList
               pickups={stopPlan.gemPickups}
-              stopId={stopPlan.stopId}
+              stopId={isCustomStop ? (stopPlan.afterStopId ?? townStop.id) : stopPlan.stopId}
               className={className}
+              disabledStopIds={disabledStopIds}
+              isCustomStop={isCustomStop}
+              showQuestRewards={isCustomStop ? showQuestRewards : true}
               onAdd={onAddGemPickup}
               onRemove={onRemoveGemPickup}
             />
@@ -124,13 +168,13 @@ export function StopSection({
                       key={`inherited-${resolved.buildLinkGroup.id}`}
                       buildLinkGroup={resolved.buildLinkGroup}
                       activePhase={resolved.activePhase}
-                      onAddTransition={() => onAddPhase(resolved.buildLinkGroup.id, townStop.id)}
-                      onRetire={() => onRetireLinkGroup(resolved.buildLinkGroup.id, townStop.id)}
+                      onAddTransition={() => onAddPhase(resolved.buildLinkGroup.id, effectiveStopId)}
+                      onRetire={() => onRetireLinkGroup(resolved.buildLinkGroup.id, effectiveStopId)}
                     />
                   );
                 }
               })}
-              <Button variant="secondary" size="sm" onClick={() => onAddLinkGroup(townStop.id)}>
+              <Button variant="secondary" size="sm" onClick={() => onAddLinkGroup(effectiveStopId)}>
                 + Add Link Group
               </Button>
             </div>

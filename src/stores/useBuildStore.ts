@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { db } from '@/db/database';
-import type { BuildPlan, GemPickup, GearGoal, LinkGroupPhase, GemSlot, MulePickup } from '@/types/build';
+import type { BuildPlan, StopPlan, GemPickup, GearGoal, LinkGroupPhase, GemSlot, MulePickup } from '@/types/build';
 import { createEmptyBuild, createEmptyStopPlan, createEmptyBuildLinkGroup, createEmptyPhase } from '@/types/build';
 import { TOWN_STOPS } from '@/data/town-stops';
 import { resolvePhaseAtStop } from '@/lib/link-group-resolver';
@@ -50,6 +50,11 @@ interface BuildState {
   updateGearGoal: (buildId: string, goalId: string, updates: Partial<GearGoal>) => Promise<void>;
   removeGearGoal: (buildId: string, goalId: string) => Promise<void>;
   toggleGearGoalAcquired: (buildId: string, goalId: string) => Promise<void>;
+
+  // Custom stop mutations
+  addCustomStop: (buildId: string, afterStopId: string) => Promise<void>;
+  removeCustomStop: (buildId: string, stopId: string) => Promise<void>;
+  updateCustomStopLabel: (buildId: string, stopId: string, label: string) => Promise<void>;
 
   // Mule mutations
   updateMuleClass: (buildId: string, muleClassName: string) => Promise<void>;
@@ -394,6 +399,60 @@ export const useBuildStore = create<BuildState>()(
         if (!goal) return;
         goal.acquired = !goal.acquired;
         build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    // === Custom stop mutations ===
+
+    async addCustomStop(buildId, afterStopId) {
+      set((state) => {
+        const build = state.builds.find((b) => b.id === buildId);
+        if (!build) return;
+        const newStop: StopPlan = {
+          stopId: crypto.randomUUID(),
+          enabled: true,
+          gemPickups: [],
+          notes: '',
+          isCustom: true,
+          customLabel: 'Custom Stop',
+          afterStopId,
+        };
+        // Insert after the specified stop
+        const idx = build.stops.findIndex((s) => s.stopId === afterStopId);
+        if (idx >= 0) {
+          // Insert after the last consecutive custom stop that also follows this afterStopId
+          let insertIdx = idx + 1;
+          while (insertIdx < build.stops.length && build.stops[insertIdx].isCustom && build.stops[insertIdx].afterStopId === afterStopId) {
+            insertIdx++;
+          }
+          build.stops.splice(insertIdx, 0, newStop);
+        } else {
+          build.stops.push(newStop);
+        }
+        build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    async removeCustomStop(buildId, stopId) {
+      set((state) => {
+        const build = state.builds.find((b) => b.id === buildId);
+        if (!build) return;
+        const stop = build.stops.find((s) => s.stopId === stopId);
+        if (!stop?.isCustom) return;
+        build.stops = build.stops.filter((s) => s.stopId !== stopId);
+        build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    async updateCustomStopLabel(buildId, stopId, label) {
+      set((state) => {
+        const result = findBuildAndStop(state.builds, buildId, stopId);
+        if (!result || !result.stop.isCustom) return;
+        result.stop.customLabel = label;
+        result.build.updatedAt = new Date().toISOString();
       });
       debouncedSave(() => get().builds.find((b) => b.id === buildId));
     },

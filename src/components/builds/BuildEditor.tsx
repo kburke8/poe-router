@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useBuildStore } from '@/stores/useBuildStore';
 import { BuildHeader } from '@/components/builds/BuildHeader';
 import { StopSection } from '@/components/builds/StopSection';
 import { MuleSection } from '@/components/builds/MuleSection';
-import { TOWN_STOPS, getStopsForAct, getActNumbers } from '@/data/town-stops';
+import { Button } from '@/components/ui/Button';
+import { getStopsForAct, getActNumbers } from '@/data/town-stops';
 import { getBeachGems } from '@/data/classes';
 import { resolveLinkGroupsAtStop } from '@/lib/link-group-resolver';
 
@@ -34,6 +35,9 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
     updateMuleClass,
     addMulePickup,
     removeMulePickup,
+    addCustomStop,
+    removeCustomStop,
+    updateCustomStopLabel,
   } = useBuildStore();
 
   const build = builds.find((b) => b.id === buildId);
@@ -50,6 +54,33 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
       initializeStops(buildId);
     }
   }, [build, buildId, initializeStops]);
+
+  const disabledStopIds = useMemo(
+    () => build ? new Set(build.stops.filter((s) => !s.enabled).map((s) => s.stopId)) : new Set<string>(),
+    [build],
+  );
+
+  // Disabled town stops that have an enabled custom stop "covering" them —
+  // the custom stop absorbs the cascade so the next town stop doesn't duplicate it.
+  const coveredStopIds = useMemo(() => {
+    if (!build) return new Set<string>();
+    const covered = new Set<string>();
+    for (const stopId of disabledStopIds) {
+      const hasEnabledCustom = build.stops.some(
+        (s) => s.isCustom && s.enabled && s.afterStopId === stopId,
+      );
+      if (hasEnabledCustom) covered.add(stopId);
+    }
+    return covered;
+  }, [build, disabledStopIds]);
+
+  // For town stops: remove covered stops so cascade doesn't double-fire
+  const townStopDisabledIds = useMemo(() => {
+    if (coveredStopIds.size === 0) return disabledStopIds;
+    const result = new Set(disabledStopIds);
+    for (const id of coveredStopIds) result.delete(id);
+    return result;
+  }, [disabledStopIds, coveredStopIds]);
 
   if (isLoading) {
     return (
@@ -134,26 +165,84 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
                         : []),
                     ]),
                   ];
+
+                  // Find custom stops anchored after this town stop
+                  const customStopsAfter = build.stops.filter(
+                    (s) => s.isCustom && s.afterStopId === townStop.id,
+                  );
+
                   return (
-                    <StopSection
-                      key={townStop.id}
-                      stopPlan={stopPlan!}
-                      townStop={townStop}
-                      buildId={buildId}
-                      className={build.className}
-                      stopGemNames={stopGemNames}
-                      resolvedLinkGroups={resolved}
-                      onToggleEnabled={() => toggleStopEnabled(buildId, townStop.id)}
-                      onAddGemPickup={(pickup) => addGemPickup(buildId, townStop.id, pickup)}
-                      onRemoveGemPickup={(pickupId) => removeGemPickup(buildId, townStop.id, pickupId)}
-                      onAddLinkGroup={(fromStopId) => addLinkGroup(buildId, fromStopId)}
-                      onAddPhase={(lgId, fromStopId) => addPhase(buildId, lgId, fromStopId)}
-                      onRetireLinkGroup={(lgId, fromStopId) => retireLinkGroup(buildId, lgId, fromStopId)}
-                      onUpdatePhase={(lgId, phaseId, updates) => updatePhase(buildId, lgId, phaseId, updates)}
-                      onRemovePhase={(lgId, phaseId) => removePhase(buildId, lgId, phaseId)}
-                      onUpdateLinkGroupLabel={(lgId, label) => updateLinkGroupLabel(buildId, lgId, label)}
-                      onUpdateNotes={(notes) => updateStopNotes(buildId, townStop.id, notes)}
-                    />
+                    <div key={townStop.id} className="space-y-1">
+                      <StopSection
+                        stopPlan={stopPlan!}
+                        townStop={townStop}
+                        buildId={buildId}
+                        className={build.className}
+                        stopGemNames={stopGemNames}
+                        resolvedLinkGroups={resolved}
+                        disabledStopIds={townStopDisabledIds}
+                        onToggleEnabled={() => toggleStopEnabled(buildId, townStop.id)}
+                        onAddGemPickup={(pickup) => addGemPickup(buildId, townStop.id, pickup)}
+                        onRemoveGemPickup={(pickupId) => removeGemPickup(buildId, townStop.id, pickupId)}
+                        onAddLinkGroup={(fromStopId) => addLinkGroup(buildId, fromStopId)}
+                        onAddPhase={(lgId, fromStopId) => addPhase(buildId, lgId, fromStopId)}
+                        onRetireLinkGroup={(lgId, fromStopId) => retireLinkGroup(buildId, lgId, fromStopId)}
+                        onUpdatePhase={(lgId, phaseId, updates) => updatePhase(buildId, lgId, phaseId, updates)}
+                        onRemovePhase={(lgId, phaseId) => removePhase(buildId, lgId, phaseId)}
+                        onUpdateLinkGroupLabel={(lgId, label) => updateLinkGroupLabel(buildId, lgId, label)}
+                        onUpdateNotes={(notes) => updateStopNotes(buildId, townStop.id, notes)}
+                      />
+                      {/* Custom stops anchored after this town stop */}
+                      {(() => {
+                        // First enabled custom stop after a disabled anchor gets quest rewards
+                        const anchorDisabled = disabledStopIds.has(townStop.id);
+                        const firstQuestRewardId = anchorDisabled
+                          ? customStopsAfter.find((s) => s.enabled)?.stopId
+                          : undefined;
+
+                        return customStopsAfter.map((cs) => {
+                        const csResolved = resolveLinkGroupsAtStop(build.linkGroups, cs.stopId);
+                        const csGemNames = [...new Set(cs.gemPickups.map((p) => p.gemName))];
+                        return (
+                          <StopSection
+                            key={cs.stopId}
+                            stopPlan={cs}
+                            townStop={townStop}
+                            buildId={buildId}
+                            className={build.className}
+                            stopGemNames={csGemNames}
+                            resolvedLinkGroups={csResolved}
+                            disabledStopIds={disabledStopIds}
+                            isCustomStop
+                            showQuestRewards={cs.stopId === firstQuestRewardId}
+                            onToggleEnabled={() => toggleStopEnabled(buildId, cs.stopId)}
+                            onAddGemPickup={(pickup) => addGemPickup(buildId, cs.stopId, pickup)}
+                            onRemoveGemPickup={(pickupId) => removeGemPickup(buildId, cs.stopId, pickupId)}
+                            onAddLinkGroup={(fromStopId) => addLinkGroup(buildId, fromStopId)}
+                            onAddPhase={(lgId, fromStopId) => addPhase(buildId, lgId, fromStopId)}
+                            onRetireLinkGroup={(lgId, fromStopId) => retireLinkGroup(buildId, lgId, fromStopId)}
+                            onUpdatePhase={(lgId, phaseId, updates) => updatePhase(buildId, lgId, phaseId, updates)}
+                            onRemovePhase={(lgId, phaseId) => removePhase(buildId, lgId, phaseId)}
+                            onUpdateLinkGroupLabel={(lgId, label) => updateLinkGroupLabel(buildId, lgId, label)}
+                            onUpdateNotes={(notes) => updateStopNotes(buildId, cs.stopId, notes)}
+                            onDeleteCustomStop={() => removeCustomStop(buildId, cs.stopId)}
+                            onUpdateCustomLabel={(label) => updateCustomStopLabel(buildId, cs.stopId, label)}
+                          />
+                        );
+                      });
+                      })()}
+                      {/* Add custom stop button */}
+                      <div className="ml-6 pl-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-[11px] text-poe-muted/50 hover:text-poe-muted py-0.5 px-2"
+                          onClick={() => addCustomStop(buildId, townStop.id)}
+                        >
+                          + Custom Stop
+                        </Button>
+                      </div>
+                    </div>
                   );
                 })}
               </div>

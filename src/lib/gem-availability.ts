@@ -34,22 +34,61 @@ function findGemByName(name: string): Gem | undefined {
 }
 
 /**
- * Get the set of quest IDs completed at a given stop.
+ * Collect all exclusive quests from disabled stops.
+ * These quests should be treated as "not completed" across all stops.
  */
-function getQuestsAtStop(stopId: string): Set<string> {
+export function getExcludedQuests(disabledStopIds: Set<string>): Set<string> {
+  const excluded = new Set<string>();
+  for (const stop of TOWN_STOPS) {
+    if (disabledStopIds.has(stop.id) && stop.exclusiveQuests) {
+      for (const q of stop.exclusiveQuests) excluded.add(q);
+    }
+  }
+  return excluded;
+}
+
+/**
+ * Remove excluded quests from a quest set.
+ */
+function subtractExcluded(quests: Set<string>, excluded: Set<string>): Set<string> {
+  if (excluded.size === 0) return quests;
+  const result = new Set(quests);
+  for (const q of excluded) result.delete(q);
+  return result;
+}
+
+/**
+ * Get the set of quest IDs completed at a given stop.
+ * When disabledStopIds is provided, exclusive quests from disabled stops are removed.
+ */
+function getQuestsAtStop(stopId: string, disabledStopIds?: Set<string>): Set<string> {
   const stop = getStopById(stopId);
   if (!stop) return new Set();
-  return new Set(stop.questsCompleted);
+  const quests = new Set(stop.questsCompleted);
+  if (disabledStopIds && disabledStopIds.size > 0) {
+    return subtractExcluded(quests, getExcludedQuests(disabledStopIds));
+  }
+  return quests;
 }
 
 /**
  * Get the previous stop's quest set (for determining "new at this stop").
  */
-function getPreviousStopQuests(stopId: string): Set<string> {
-  const stop = getStopById(stopId);
-  if (!stop) return new Set();
+function getPreviousStopQuests(stopId: string, disabledStopIds?: Set<string>): Set<string> {
   const idx = TOWN_STOPS.findIndex((s) => s.id === stopId);
   if (idx <= 0) return new Set();
+
+  if (disabledStopIds && disabledStopIds.size > 0) {
+    const excluded = getExcludedQuests(disabledStopIds);
+    // Walk backward skipping disabled stops
+    for (let i = idx - 1; i >= 0; i--) {
+      if (!disabledStopIds.has(TOWN_STOPS[i].id)) {
+        return subtractExcluded(new Set(TOWN_STOPS[i].questsCompleted), excluded);
+      }
+    }
+    return new Set();
+  }
+
   const prevStop = TOWN_STOPS[idx - 1];
   return new Set(prevStop.questsCompleted);
 }
@@ -184,10 +223,10 @@ export function getNewQuestIdsAtStop(stopId: string): string[] {
   return result;
 }
 
-export function getRewardPickersAtStop(stopId: string, className: string): RewardPickerInfo[] {
+export function getRewardPickersAtStop(stopId: string, className: string, disabledStopIds?: Set<string>): RewardPickerInfo[] {
   if (!className) return [];
-  const questsAtStop = getQuestsAtStop(stopId);
-  const previousQuests = getPreviousStopQuests(stopId);
+  const questsAtStop = getQuestsAtStop(stopId, disabledStopIds);
+  const previousQuests = getPreviousStopQuests(stopId, disabledStopIds);
   const cls = className as ClassName;
   const result: RewardPickerInfo[] = [];
 
@@ -212,11 +251,11 @@ export function getRewardPickersAtStop(stopId: string, className: string): Rewar
  * Get quest reward gems available at THIS stop only (not cumulative).
  * These are gems the player can choose from as quest rewards from quests completed at this stop.
  */
-export function getQuestRewardsAtStop(stopId: string, className: string, filterRewardSetId?: string): AvailableGem[] {
+export function getQuestRewardsAtStop(stopId: string, className: string, filterRewardSetId?: string, disabledStopIds?: Set<string>): AvailableGem[] {
   if (!className) return [];
 
-  const questsAtStop = getQuestsAtStop(stopId);
-  const previousQuests = getPreviousStopQuests(stopId);
+  const questsAtStop = getQuestsAtStop(stopId, disabledStopIds);
+  const previousQuests = getPreviousStopQuests(stopId, disabledStopIds);
   const cls = className as ClassName;
   const result: AvailableGem[] = [];
 
@@ -252,11 +291,11 @@ export function getQuestRewardsAtStop(stopId: string, className: string, filterR
 /**
  * Get all gems this class can BUY from vendors at this stop (cumulative).
  */
-export function getVendorGemsAtStop(stopId: string, className: string): AvailableGem[] {
+export function getVendorGemsAtStop(stopId: string, className: string, disabledStopIds?: Set<string>): AvailableGem[] {
   if (!className) return [];
 
-  const questsAtStop = getQuestsAtStop(stopId);
-  const previousQuests = getPreviousStopQuests(stopId);
+  const questsAtStop = getQuestsAtStop(stopId, disabledStopIds);
+  const previousQuests = getPreviousStopQuests(stopId, disabledStopIds);
   const result: AvailableGem[] = [];
 
   const cls = className as ClassName;

@@ -26,6 +26,9 @@ interface GemPickupListProps {
   pickups: GemPickup[];
   stopId: string;
   className: string;
+  disabledStopIds?: Set<string>;
+  isCustomStop?: boolean;
+  showQuestRewards?: boolean;
   onAdd: (pickup: GemPickup) => void;
   onRemove: (pickupId: string) => void;
 }
@@ -36,11 +39,11 @@ const GEM_COLOR_VARIANT: Record<string, 'red' | 'green' | 'blue'> = {
   blue: 'blue',
 };
 
-export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: GemPickupListProps) {
+export function GemPickupList({ pickups, stopId, className, disabledStopIds, isCustomStop, showQuestRewards = true, onAdd, onRemove }: GemPickupListProps) {
   const [openRewardSetId, setOpenRewardSetId] = useState<string | null>(null);
   const [vendorPickerOpen, setVendorPickerOpen] = useState(false);
 
-  const rewardPickers = useMemo(() => getRewardPickersAtStop(stopId, className), [stopId, className]);
+  const rewardPickers = useMemo(() => getRewardPickersAtStop(stopId, className, disabledStopIds), [stopId, className, disabledStopIds]);
 
   const vendorPickups = pickups.filter((p) => p.source === 'vendor');
 
@@ -75,7 +78,7 @@ export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: G
     };
   }
 
-  const beachGems = stopId === FIRST_STOP_ID ? getBeachGems(className) : null;
+  const beachGems = !isCustomStop && stopId === FIRST_STOP_ID ? getBeachGems(className) : null;
 
   return (
     <div className="space-y-3">
@@ -95,7 +98,7 @@ export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: G
       )}
 
       {/* Quest Rewards - one section per reward set */}
-      {rewardPickers.length > 0 ? (
+      {showQuestRewards && (rewardPickers.length > 0 ? (
         rewardPickers.map((picker) => {
           const pickerPickups = pickups.filter((p) => p.source === 'quest_reward' && p.rewardSetId === picker.rewardSetId);
           return (
@@ -119,7 +122,7 @@ export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: G
         <div>
           <h5 className="text-xs font-medium text-poe-muted mb-1.5">No quest rewards</h5>
         </div>
-      )}
+      ))}
 
       {/* Vendor Buys */}
       <div>
@@ -138,7 +141,7 @@ export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: G
       </div>
 
       {/* Per-reward-set picker dialogs */}
-      {rewardPickers.map((picker) => (
+      {showQuestRewards && rewardPickers.map((picker) => (
         <GemPickerDialog
           key={picker.rewardSetId}
           open={openRewardSetId === picker.rewardSetId}
@@ -147,6 +150,7 @@ export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: G
           className={className}
           mode="quest_reward"
           rewardSetId={picker.rewardSetId}
+          disabledStopIds={disabledStopIds}
           onSelect={(gem, source) => handleAdd(source, picker.rewardSetId)(gem)}
         />
       ))}
@@ -156,6 +160,7 @@ export function GemPickupList({ pickups, stopId, className, onAdd, onRemove }: G
         stopId={stopId}
         className={className}
         mode="vendor"
+        disabledStopIds={disabledStopIds}
         onSelect={(gem, source) => handleAdd(source)(gem)}
       />
     </div>

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { SocketColorIndicator } from '@/components/ui/SocketColorIndicator';
 import { getStopById, getStopsForAct, getActNumbers, getQuestById } from '@/data/town-stops';
-import { getRewardPickersAtStop } from '@/lib/gem-availability';
+import { getRewardPickersAtStop, getExcludedQuests } from '@/lib/gem-availability';
 import { getBeachGems } from '@/data/classes';
 import { resolveLinkGroupsAtStop, getPreviousPhase } from '@/lib/link-group-resolver';
 import { summarizeVendorCosts } from '@/lib/gem-costs';
@@ -77,6 +77,29 @@ export function RunView({ build }: RunViewProps) {
   });
 
   const enabledStopIds = new Set(enabledStops.map((s) => s.stopId));
+  const disabledStopIds = useMemo(
+    () => new Set(build.stops.filter((s) => !s.enabled).map((s) => s.stopId)),
+    [build.stops],
+  );
+
+  // Disabled town stops covered by an enabled custom stop (absorbs cascade)
+  const coveredStopIds = useMemo(() => {
+    const covered = new Set<string>();
+    for (const stopId of disabledStopIds) {
+      const hasEnabledCustom = build.stops.some(
+        (s) => s.isCustom && s.enabled && s.afterStopId === stopId,
+      );
+      if (hasEnabledCustom) covered.add(stopId);
+    }
+    return covered;
+  }, [build.stops, disabledStopIds]);
+
+  const townStopDisabledIds = useMemo(() => {
+    if (coveredStopIds.size === 0) return disabledStopIds;
+    const result = new Set(disabledStopIds);
+    for (const id of coveredStopIds) result.delete(id);
+    return result;
+  }, [disabledStopIds, coveredStopIds]);
 
   return (
     <div className="space-y-4">
@@ -194,6 +217,23 @@ export function RunView({ build }: RunViewProps) {
                 stopPlan: enabledStops.find((s) => s.stopId === ts.id)!,
               }));
 
+            // Build interleaved list: town stops + custom stops after their anchors
+            const interleavedStops: { stopPlan: StopPlan; label: string; isCustom: boolean; showQuestRewards: boolean; effectiveDisabledIds: Set<string> }[] = [];
+            for (const { townStop, stopPlan } of actStopPlans) {
+              interleavedStops.push({ stopPlan, label: townStop.label, isCustom: false, showQuestRewards: true, effectiveDisabledIds: townStopDisabledIds });
+              // Find custom stops anchored after this town stop
+              const customAfter = enabledStops.filter(
+                (s) => s.isCustom && s.afterStopId === townStop.id,
+              );
+              const anchorDisabled = disabledStopIds.has(townStop.id);
+              let questRewardsClaimed = false;
+              for (const cs of customAfter) {
+                const showRewards = anchorDisabled && !questRewardsClaimed;
+                if (showRewards) questRewardsClaimed = true;
+                interleavedStops.push({ stopPlan: cs, label: cs.customLabel || 'Custom Stop', isCustom: true, showQuestRewards: showRewards, effectiveDisabledIds: disabledStopIds });
+              }
+            }
+
             const endOfActLinks = endOfActLinksMap.get(actNum) ?? [];
 
             // Check if end-of-act links changed from previous act
@@ -204,7 +244,7 @@ export function RunView({ build }: RunViewProps) {
             const endOfActChanged = prevActIdx < 0 || !areEndOfActLinksEqual(prevEndOfActLinks, endOfActLinks);
 
             // Skip act if nothing to show
-            const hasStopsToShow = showStops && actStopPlans.length > 0;
+            const hasStopsToShow = showStops && interleavedStops.length > 0;
             const hasEndOfAct = endOfActLinks.length > 0 && endOfActChanged;
             if (!hasStopsToShow && !hasEndOfAct) return null;
 
@@ -213,15 +253,18 @@ export function RunView({ build }: RunViewProps) {
                 <h2 className="text-xs font-bold text-poe-gold/70 uppercase tracking-widest mb-1.5 border-b border-poe-border/50 pb-1">
                   Act {actNum}
                 </h2>
-                {showStops && actStopPlans.length > 0 && (
+                {showStops && interleavedStops.length > 0 && (
                   <div className="divide-y divide-poe-border/20">
-                    {actStopPlans.map(({ townStop, stopPlan }) => (
+                    {interleavedStops.map(({ stopPlan, label, isCustom, showQuestRewards: showRewards, effectiveDisabledIds }) => (
                       <StopBlock
-                        key={townStop.id}
+                        key={stopPlan.stopId}
                         stopPlan={stopPlan}
-                        stopLabel={townStop.label}
+                        stopLabel={label}
                         className={build.className}
                         buildLinkGroups={build.linkGroups}
+                        disabledStopIds={effectiveDisabledIds}
+                        isCustomStop={isCustom}
+                        showQuestRewards={showRewards}
                         showGems={showGems}
                         showNotes={showNotes}
                         showLinks={showLinks}
@@ -294,6 +337,9 @@ function StopBlock({
   stopLabel,
   className,
   buildLinkGroups,
+  disabledStopIds,
+  isCustomStop,
+  showQuestRewards = true,
   showGems,
   showNotes,
   showLinks,
@@ -303,13 +349,17 @@ function StopBlock({
   stopLabel: string;
   className: string;
   buildLinkGroups: BuildLinkGroup[];
+  disabledStopIds?: Set<string>;
+  isCustomStop?: boolean;
+  showQuestRewards?: boolean;
   showGems: boolean;
   showNotes: boolean;
   showLinks: boolean;
   showInherited: boolean;
 }) {
   // Get reward set labels for this stop
-  const rewardPickers = getRewardPickersAtStop(stopPlan.stopId, className);
+  const effectiveStopId = isCustomStop ? (stopPlan.afterStopId ?? stopPlan.stopId) : stopPlan.stopId;
+  const rewardPickers = showQuestRewards ? getRewardPickersAtStop(effectiveStopId, className, disabledStopIds) : [];
   const rewardSetMap = new Map(rewardPickers.map((rp) => [rp.rewardSetId, rp.label]));
 
   // Group gem pickups
@@ -336,15 +386,32 @@ function StopBlock({
   const inheritedGroups = activeLinkGroups.filter((r) => !r.isPhaseStart);
   const hasLinkChanges = changedGroups.length > 0;
 
-  // New quest names at this stop
-  const stop = getStopById(stopPlan.stopId);
+  // Compute excluded quests from disabled optional stops
+  const excluded = disabledStopIds ? getExcludedQuests(disabledStopIds) : new Set<string>();
+
+  // New quest names at this stop (none for custom stops)
+  const stop = isCustomStop ? null : getStopById(stopPlan.stopId);
   const newQuestIds = stop ? (() => {
+    const effectiveQuests = excluded.size > 0
+      ? stop.questsCompleted.filter((q) => !excluded.has(q))
+      : stop.questsCompleted;
     const allStops = getStopsForAct(stop.actNumber);
     const idx = allStops.findIndex((s) => s.id === stop.id);
-    if (idx <= 0) return stop.questsCompleted;
-    const prevStop = allStops[idx - 1];
-    const prevQuests = new Set(prevStop?.questsCompleted ?? []);
-    return stop.questsCompleted.filter((q) => !prevQuests.has(q));
+    if (idx <= 0) return effectiveQuests;
+    // Walk backward to find previous enabled stop for comparison
+    let prevQuests: Set<string> = new Set();
+    if (disabledStopIds && disabledStopIds.size > 0) {
+      for (let i = idx - 1; i >= 0; i--) {
+        if (!disabledStopIds.has(allStops[i].id)) {
+          prevQuests = new Set(allStops[i].questsCompleted.filter((q) => !excluded.has(q)));
+          break;
+        }
+      }
+    } else {
+      const prevStop = allStops[idx - 1];
+      prevQuests = new Set(prevStop?.questsCompleted ?? []);
+    }
+    return effectiveQuests.filter((q) => !prevQuests.has(q));
   })() : [];
 
   const newQuestNames = newQuestIds
