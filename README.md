@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PoE Speed Run Planner
+
+A Path of Exile 1 speed run planning tool with regex pattern generation, build planning, and run history tracking. Runs entirely in the browser with no backend — all data is stored locally in IndexedDB.
+
+## Features
+
+- **Regex Builder** — Generate optimized stash-search regex patterns for gems, items, and exclusions. The abbreviation engine finds the shortest unique pattern that won't false-match against PoE's full item text search.
+- **Build Planner** — Plan your leveling route act-by-act: gem setups, gear goals, skill transitions, and vendor purchases.
+- **Run View** — Guided playthrough mode that walks you through each town stop with gem pickups and vendor buys.
+- **Run History** — Track your speed run times with act splits.
+- **Import/Export** — Share builds and presets as JSON.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+No environment variables or external services required.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Production build (generates standalone bundle) |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run standalone` | Run standalone Node.js server (after build) |
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/) + TypeScript 5 (strict)
+- [Tailwind CSS v4](https://tailwindcss.com/) — dark PoE-inspired theme
+- [Zustand 5](https://zustand.docs.pmnd.rs/) + [Immer](https://immerjs.github.io/immer/) — state management
+- [Dexie.js 4](https://dexie.org/) — IndexedDB persistence
+- [Fuse.js 7](https://www.fusejs.io/) — fuzzy search for gem/item pickers
+- [Radix UI](https://www.radix-ui.com/) — headless UI primitives
+- [Lucide React](https://lucide.dev/) — icons
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Standalone Deployment
 
-## Deploy on Vercel
+The app produces a self-contained Node.js server via `output: 'standalone'`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+cp -r .next/static .next/standalone/poe-router/.next/static
+cp -r public .next/standalone/poe-router/public
+node .next/standalone/poe-router/server.js
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [docs/RUNBOOK.md](docs/RUNBOOK.md) for full deployment details including Docker.
+
+## Contributing
+
+See [docs/CONTRIB.md](docs/CONTRIB.md) for development workflow, project structure, and conventions.
+
+## Support
+
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/kburke8)
+
+## License
+
+[MIT](LICENSE)

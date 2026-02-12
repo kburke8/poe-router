@@ -1,26 +1,23 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-poe-bg: #1a1a2e;
+  --color-poe-card: #16213e;
+  --color-poe-input: #1f2937;
+  --color-poe-text: #e2e8f0;
+  --color-poe-muted: #94a3b8;
+  --color-poe-gold: #c7a44a;
+  --color-poe-red: #c53030;
+  --color-poe-green: #2f855a;
+  --color-poe-blue: #3182ce;
+  --color-poe-border: #2d3748;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-poe-bg);
+  color: var(--color-poe-text);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

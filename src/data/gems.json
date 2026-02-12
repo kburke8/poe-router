@@ -1,0 +1,5992 @@
+{
+  "skills": [
+    {
+      "id": "absolution",
+      "name": "Absolution",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "minion",
+        "duration",
+        "area",
+        "physical",
+        "lightning"
+      ]
+    },
+    {
+      "id": "alchemist_s_mark",
+      "name": "Alchemist's Mark",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "curse",
+        "mark",
+        "area",
+        "duration",
+        "fire",
+        "chaos"
+      ]
+    },
+    {
+      "id": "ancestral_cry",
+      "name": "Ancestral Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "ancestral_protector",
+      "name": "Ancestral Protector",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "totem",
+        "melee",
+        "strike"
+      ]
+    },
+    {
+      "id": "ancestral_warchief",
+      "name": "Ancestral Warchief",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "totem",
+        "area",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "anger",
+      "name": "Anger",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "animate_guardian",
+      "name": "Animate Guardian",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "minion",
+        "physical"
+      ]
+    },
+    {
+      "id": "animate_weapon",
+      "name": "Animate Weapon",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "duration",
+        "minion",
+        "spell",
+        "physical"
+      ]
+    },
+    {
+      "id": "arc",
+      "name": "Arc",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "chaining",
+        "lightning"
+      ]
+    },
+    {
+      "id": "arcane_cloak",
+      "name": "Arcane Cloak",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "guard",
+        "lightning",
+        "arcane"
+      ]
+    },
+    {
+      "id": "arcanist_brand",
+      "name": "Arcanist Brand",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "brand"
+      ]
+    },
+    {
+      "id": "arctic_armour",
+      "name": "Arctic Armour",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "cold"
+      ]
+    },
+    {
+      "id": "armageddon_brand",
+      "name": "Armageddon Brand",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "duration",
+        "brand"
+      ]
+    },
+    {
+      "id": "artillery_ballista",
+      "name": "Artillery Ballista",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "totem",
+        "area",
+        "fire",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "assassin_s_mark",
+      "name": "Assassin's Mark",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "curse",
+        "mark"
+      ]
+    },
+    {
+      "id": "autoexertion",
+      "name": "Autoexertion",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "warcry",
+        "trigger",
+        "spell"
+      ]
+    },
+    {
+      "id": "ball_lightning",
+      "name": "Ball Lightning",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "bane",
+      "name": "Bane",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "chaos",
+        "trigger",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "hex"
+      ]
+    },
+    {
+      "id": "barrage",
+      "name": "Barrage",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "battlemage_s_cry",
+      "name": "Battlemage's Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "critical",
+        "strength",
+        "active_skill",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "bear_trap",
+      "name": "Bear Trap",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "berserk",
+      "name": "Berserk",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "blade_blast",
+      "name": "Blade Blast",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "blade_flurry",
+      "name": "Blade Flurry",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "channelling",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "blade_vortex",
+      "name": "Blade Vortex",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "bladefall",
+      "name": "Bladefall",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "physical",
+        "duration"
+      ]
+    },
+    {
+      "id": "bladestorm",
+      "name": "Bladestorm",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "duration",
+        "melee"
+      ]
+    },
+    {
+      "id": "blast_rain",
+      "name": "Blast Rain",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "fire",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "blazing_salvo",
+      "name": "Blazing Salvo",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "projectile"
+      ]
+    },
+    {
+      "id": "blight",
+      "name": "Blight",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "chaos",
+        "area",
+        "channelling",
+        "duration"
+      ]
+    },
+    {
+      "id": "blink_arrow",
+      "name": "Blink Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "minion",
+        "duration",
+        "movement",
+        "travel",
+        "bow"
+      ]
+    },
+    {
+      "id": "blood_and_sand",
+      "name": "Blood and Sand",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "low_max_level",
+        "strength",
+        "active_skill",
+        "spell",
+        "stance"
+      ]
+    },
+    {
+      "id": "blood_rage",
+      "name": "Blood Rage",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "bodyswap",
+      "name": "Bodyswap",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "movement",
+        "spell",
+        "area",
+        "fire",
+        "travel"
+      ]
+    },
+    {
+      "id": "bone_offering",
+      "name": "Bone Offering",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "minion",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "boneshatter",
+      "name": "Boneshatter",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "area",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "brand_recall",
+      "name": "Brand Recall",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "brand",
+        "intelligence",
+        "active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "burning_arrow",
+      "name": "Burning Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "fire",
+        "bow"
+      ]
+    },
+    {
+      "id": "caustic_arrow",
+      "name": "Caustic Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "duration",
+        "chaos",
+        "bow"
+      ]
+    },
+    {
+      "id": "chain_hook",
+      "name": "Chain Hook",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "movement",
+        "melee"
+      ]
+    },
+    {
+      "id": "charged_dash",
+      "name": "Charged Dash",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "movement",
+        "area",
+        "channelling",
+        "attack",
+        "lightning",
+        "melee"
+      ]
+    },
+    {
+      "id": "clarity",
+      "name": "Clarity",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "cleave",
+      "name": "Cleave",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "cobra_lash",
+      "name": "Cobra Lash",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "chaos"
+      ]
+    },
+    {
+      "id": "cold_snap",
+      "name": "Cold Snap",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "cold",
+        "duration"
+      ]
+    },
+    {
+      "id": "conductivity",
+      "name": "Conductivity",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "lightning",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "conflagration",
+      "name": "Conflagration",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "fire",
+        "area",
+        "projectile",
+        "duration",
+        "bow"
+      ]
+    },
+    {
+      "id": "consecrated_path",
+      "name": "Consecrated Path",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "fire",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "movement",
+        "duration",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "contagion",
+      "name": "Contagion",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "chaos"
+      ]
+    },
+    {
+      "id": "conversion_trap",
+      "name": "Conversion Trap",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "convocation",
+      "name": "Convocation",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "minion",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "corrupting_fever",
+      "name": "Corrupting Fever",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "crackling_lance",
+      "name": "Crackling Lance",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "creeping_frost",
+      "name": "Creeping Frost",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "duration",
+        "area",
+        "cold"
+      ]
+    },
+    {
+      "id": "cremation",
+      "name": "Cremation",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "duration",
+        "projectile"
+      ]
+    },
+    {
+      "id": "crushing_fist",
+      "name": "Crushing Fist",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "retaliation",
+        "melee"
+      ]
+    },
+    {
+      "id": "cyclone",
+      "name": "Cyclone",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "movement",
+        "channelling",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "dark_pact",
+      "name": "Dark Pact",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "minion",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "chaining",
+        "chaos",
+        "nova"
+      ]
+    },
+    {
+      "id": "dash",
+      "name": "Dash",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "movement",
+        "travel",
+        "blink"
+      ]
+    },
+    {
+      "id": "decoy_totem",
+      "name": "Decoy Totem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "totem",
+        "strength",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "defiance_banner",
+      "name": "Defiance Banner",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "area",
+        "spell",
+        "duration",
+        "aura",
+        "physical",
+        "banner"
+      ]
+    },
+    {
+      "id": "desecrate",
+      "name": "Desecrate",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "chaos"
+      ]
+    },
+    {
+      "id": "despair",
+      "name": "Despair",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "chaos",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "destructive_link",
+      "name": "Destructive Link",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "link"
+      ]
+    },
+    {
+      "id": "determination",
+      "name": "Determination",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "detonate_dead",
+      "name": "Detonate Dead",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "devouring_totem",
+      "name": "Devouring Totem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "totem",
+        "strength",
+        "active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "discharge",
+      "name": "Discharge",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "cold",
+        "lightning",
+        "nova"
+      ]
+    },
+    {
+      "id": "discipline",
+      "name": "Discipline",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "divine_ire",
+      "name": "Divine Ire",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "channelling",
+        "physical"
+      ]
+    },
+    {
+      "id": "divine_retribution",
+      "name": "Divine Retribution",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning",
+        "physical",
+        "retaliation"
+      ]
+    },
+    {
+      "id": "dominating_blow",
+      "name": "Dominating Blow",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "minion",
+        "duration",
+        "melee",
+        "strike"
+      ]
+    },
+    {
+      "id": "double_strike",
+      "name": "Double Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "physical"
+      ]
+    },
+    {
+      "id": "dread_banner",
+      "name": "Dread Banner",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "area",
+        "spell",
+        "duration",
+        "aura",
+        "physical",
+        "banner"
+      ]
+    },
+    {
+      "id": "dual_strike",
+      "name": "Dual Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike"
+      ]
+    },
+    {
+      "id": "earthquake",
+      "name": "Earthquake",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "duration",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "earthshatter",
+      "name": "Earthshatter",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "slam",
+        "duration",
+        "melee"
+      ]
+    },
+    {
+      "id": "elemental_hit",
+      "name": "Elemental Hit",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "melee",
+        "strike",
+        "fire",
+        "cold",
+        "lightning",
+        "area",
+        "random_element",
+        "bow"
+      ]
+    },
+    {
+      "id": "elemental_weakness",
+      "name": "Elemental Weakness",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "enduring_cry",
+      "name": "Enduring Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "energy_blade",
+      "name": "Energy Blade",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "lightning"
+      ]
+    },
+    {
+      "id": "enfeeble",
+      "name": "Enfeeble",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "ensnaring_arrow",
+      "name": "Ensnaring Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "bow"
+      ]
+    },
+    {
+      "id": "envy",
+      "name": "Envy",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "aura",
+        "chaos"
+      ]
+    },
+    {
+      "id": "essence_drain",
+      "name": "Essence Drain",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "duration",
+        "chaos",
+        "area"
+      ]
+    },
+    {
+      "id": "ethereal_knives",
+      "name": "Ethereal Knives",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "projectile",
+        "physical",
+        "duration"
+      ]
+    },
+    {
+      "id": "eviscerate",
+      "name": "Eviscerate",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "retaliation",
+        "melee"
+      ]
+    },
+    {
+      "id": "explosive_arrow",
+      "name": "Explosive Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "duration",
+        "fire",
+        "bow"
+      ]
+    },
+    {
+      "id": "explosive_concoction",
+      "name": "Explosive Concoction",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "fire",
+        "cold",
+        "lightning",
+        "projectile"
+      ]
+    },
+    {
+      "id": "explosive_trap",
+      "name": "Explosive Trap",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "physical"
+      ]
+    },
+    {
+      "id": "exsanguinate",
+      "name": "Exsanguinate",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "chaining",
+        "physical",
+        "duration"
+      ]
+    },
+    {
+      "id": "eye_of_winter",
+      "name": "Eye of Winter",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "cold"
+      ]
+    },
+    {
+      "id": "fire_trap",
+      "name": "Fire Trap",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "fireball",
+      "name": "Fireball",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "projectile",
+        "spell",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "firestorm",
+      "name": "Firestorm",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "fire"
+      ]
+    },
+    {
+      "id": "flame_dash",
+      "name": "Flame Dash",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "movement",
+        "duration",
+        "fire",
+        "travel",
+        "blink"
+      ]
+    },
+    {
+      "id": "flame_link",
+      "name": "Flame Link",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "duration",
+        "link",
+        "fire"
+      ]
+    },
+    {
+      "id": "flame_surge",
+      "name": "Flame Surge",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "duration"
+      ]
+    },
+    {
+      "id": "flame_wall",
+      "name": "Flame Wall",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "fire"
+      ]
+    },
+    {
+      "id": "flameblast",
+      "name": "Flameblast",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "channelling"
+      ]
+    },
+    {
+      "id": "flamethrower_trap",
+      "name": "Flamethrower Trap",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "flammability",
+      "name": "Flammability",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "fire",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "flesh_and_stone",
+      "name": "Flesh and Stone",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "aura",
+        "area",
+        "stance"
+      ]
+    },
+    {
+      "id": "flesh_offering",
+      "name": "Flesh Offering",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "minion",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "flicker_strike",
+      "name": "Flicker Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "movement",
+        "duration"
+      ]
+    },
+    {
+      "id": "forbidden_rite",
+      "name": "Forbidden Rite",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "chaos",
+        "projectile"
+      ]
+    },
+    {
+      "id": "freezing_pulse",
+      "name": "Freezing Pulse",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "cold"
+      ]
+    },
+    {
+      "id": "frenzy",
+      "name": "Frenzy",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "melee",
+        "strike",
+        "bow"
+      ]
+    },
+    {
+      "id": "frost_blades",
+      "name": "Frost Blades",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "melee",
+        "strike",
+        "cold"
+      ]
+    },
+    {
+      "id": "frost_bomb",
+      "name": "Frost Bomb",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "cold",
+        "orb"
+      ]
+    },
+    {
+      "id": "frost_shield",
+      "name": "Frost Shield",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "cold"
+      ]
+    },
+    {
+      "id": "frost_wall",
+      "name": "Frost Wall",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "cold"
+      ]
+    },
+    {
+      "id": "frostbite",
+      "name": "Frostbite",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "cold",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "frostblink",
+      "name": "Frostblink",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "movement",
+        "duration",
+        "cold",
+        "travel",
+        "blink",
+        "area"
+      ]
+    },
+    {
+      "id": "frostbolt",
+      "name": "Frostbolt",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "cold"
+      ]
+    },
+    {
+      "id": "galvanic_arrow",
+      "name": "Galvanic Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "lightning",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "bow"
+      ]
+    },
+    {
+      "id": "galvanic_field",
+      "name": "Galvanic Field",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "lightning",
+        "chaining",
+        "orb"
+      ]
+    },
+    {
+      "id": "general_s_cry",
+      "name": "General's Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "glacial_cascade",
+      "name": "Glacial Cascade",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "cold",
+        "physical"
+      ]
+    },
+    {
+      "id": "glacial_hammer",
+      "name": "Glacial Hammer",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "cold"
+      ]
+    },
+    {
+      "id": "glacial_shield_swipe",
+      "name": "Glacial Shield Swipe",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "cold",
+        "physical",
+        "retaliation",
+        "melee"
+      ]
+    },
+    {
+      "id": "grace",
+      "name": "Grace",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "ground_slam",
+      "name": "Ground Slam",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "haste",
+      "name": "Haste",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "hatred",
+      "name": "Hatred",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "cold"
+      ]
+    },
+    {
+      "id": "heavy_strike",
+      "name": "Heavy Strike",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike"
+      ]
+    },
+    {
+      "id": "herald_of_agony",
+      "name": "Herald of Agony",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "herald",
+        "minion",
+        "chaos",
+        "physical"
+      ]
+    },
+    {
+      "id": "herald_of_ash",
+      "name": "Herald of Ash",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "herald",
+        "duration"
+      ]
+    },
+    {
+      "id": "herald_of_ice",
+      "name": "Herald of Ice",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "cold",
+        "herald"
+      ]
+    },
+    {
+      "id": "herald_of_purity",
+      "name": "Herald of Purity",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "herald",
+        "minion",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "herald_of_thunder",
+      "name": "Herald of Thunder",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "lightning",
+        "herald"
+      ]
+    },
+    {
+      "id": "hexblast",
+      "name": "Hexblast",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "chaos",
+        "hex"
+      ]
+    },
+    {
+      "id": "holy_flame_totem",
+      "name": "Holy Flame Totem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "totem",
+        "strength",
+        "active_skill",
+        "spell",
+        "projectile",
+        "fire",
+        "channelling",
+        "physical"
+      ]
+    },
+    {
+      "id": "hydrosphere",
+      "name": "Hydrosphere",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "cold",
+        "orb",
+        "lightning",
+        "physical"
+      ]
+    },
+    {
+      "id": "ice_crash",
+      "name": "Ice Crash",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "cold",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "ice_nova",
+      "name": "Ice Nova",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "cold",
+        "nova"
+      ]
+    },
+    {
+      "id": "ice_shot",
+      "name": "Ice Shot",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "cold",
+        "bow"
+      ]
+    },
+    {
+      "id": "ice_spear",
+      "name": "Ice Spear",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "cold"
+      ]
+    },
+    {
+      "id": "ice_trap",
+      "name": "Ice Trap",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "cold"
+      ]
+    },
+    {
+      "id": "icicle_mine",
+      "name": "Icicle Mine",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "mine",
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "cold",
+        "aura",
+        "area"
+      ]
+    },
+    {
+      "id": "immortal_call",
+      "name": "Immortal Call",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "duration",
+        "guard"
+      ]
+    },
+    {
+      "id": "incinerate",
+      "name": "Incinerate",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "fire",
+        "channelling",
+        "area"
+      ]
+    },
+    {
+      "id": "infernal_blow",
+      "name": "Infernal Blow",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "melee",
+        "strike",
+        "fire",
+        "duration"
+      ]
+    },
+    {
+      "id": "infernal_cry",
+      "name": "Infernal Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration",
+        "fire",
+        "attack",
+        "trigger",
+        "melee"
+      ]
+    },
+    {
+      "id": "intimidating_cry",
+      "name": "Intimidating Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "intuitive_link",
+      "name": "Intuitive Link",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "link"
+      ]
+    },
+    {
+      "id": "kinetic_blast",
+      "name": "Kinetic Blast",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area"
+      ]
+    },
+    {
+      "id": "kinetic_bolt",
+      "name": "Kinetic Bolt",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "attack",
+        "projectile"
+      ]
+    },
+    {
+      "id": "kinetic_fusillade",
+      "name": "Kinetic Fusillade",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "attack",
+        "projectile",
+        "duration",
+        "area"
+      ]
+    },
+    {
+      "id": "kinetic_rain",
+      "name": "Kinetic Rain",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "projectile",
+        "duration",
+        "trigger"
+      ]
+    },
+    {
+      "id": "lacerate",
+      "name": "Lacerate",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "lancing_steel",
+      "name": "Lancing Steel",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "physical"
+      ]
+    },
+    {
+      "id": "leap_slam",
+      "name": "Leap Slam",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "movement",
+        "travel",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "lightning_arrow",
+      "name": "Lightning Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "projectile",
+        "lightning",
+        "bow"
+      ]
+    },
+    {
+      "id": "lightning_conduit",
+      "name": "Lightning Conduit",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "lightning_spire_trap",
+      "name": "Lightning Spire Trap",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "lightning_strike",
+      "name": "Lightning Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "melee",
+        "strike",
+        "lightning"
+      ]
+    },
+    {
+      "id": "lightning_tendrils",
+      "name": "Lightning Tendrils",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning",
+        "channelling"
+      ]
+    },
+    {
+      "id": "lightning_trap",
+      "name": "Lightning Trap",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "lightning"
+      ]
+    },
+    {
+      "id": "lightning_warp",
+      "name": "Lightning Warp",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "movement",
+        "lightning",
+        "travel"
+      ]
+    },
+    {
+      "id": "malevolence",
+      "name": "Malevolence",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "manabond",
+      "name": "Manabond",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning",
+        "arcane"
+      ]
+    },
+    {
+      "id": "mirror_arrow",
+      "name": "Mirror Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "minion",
+        "duration",
+        "movement",
+        "travel",
+        "bow"
+      ]
+    },
+    {
+      "id": "molten_shell",
+      "name": "Molten Shell",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "fire",
+        "physical",
+        "guard"
+      ]
+    },
+    {
+      "id": "molten_strike",
+      "name": "Molten Strike",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "melee",
+        "strike",
+        "fire"
+      ]
+    },
+    {
+      "id": "orb_of_storms",
+      "name": "Orb of Storms",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "chaining",
+        "orb"
+      ]
+    },
+    {
+      "id": "penance_brand",
+      "name": "Penance Brand",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "physical",
+        "lightning",
+        "duration",
+        "brand"
+      ]
+    },
+    {
+      "id": "perforate",
+      "name": "Perforate",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "physical",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "pestilent_strike",
+      "name": "Pestilent Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "area",
+        "duration",
+        "chaos"
+      ]
+    },
+    {
+      "id": "petrified_blood",
+      "name": "Petrified Blood",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "phase_run",
+      "name": "Phase Run",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "movement",
+        "physical",
+        "travel"
+      ]
+    },
+    {
+      "id": "plague_bearer",
+      "name": "Plague Bearer",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "chaos",
+        "area"
+      ]
+    },
+    {
+      "id": "poacher_s_mark",
+      "name": "Poacher's Mark",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "curse",
+        "mark"
+      ]
+    },
+    {
+      "id": "poisonous_concoction",
+      "name": "Poisonous Concoction",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "chaos",
+        "projectile"
+      ]
+    },
+    {
+      "id": "power_siphon",
+      "name": "Power Siphon",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "intelligence",
+        "active_skill",
+        "attack",
+        "projectile"
+      ]
+    },
+    {
+      "id": "precision",
+      "name": "Precision",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "critical",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "pride",
+      "name": "Pride",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "aura",
+        "physical"
+      ]
+    },
+    {
+      "id": "protective_link",
+      "name": "Protective Link",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "duration",
+        "link"
+      ]
+    },
+    {
+      "id": "puncture",
+      "name": "Puncture",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "duration",
+        "melee",
+        "strike",
+        "physical",
+        "bow"
+      ]
+    },
+    {
+      "id": "punishment",
+      "name": "Punishment",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "curse",
+        "physical",
+        "hex"
+      ]
+    },
+    {
+      "id": "purifying_flame",
+      "name": "Purifying Flame",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "fire",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "purity_of_elements",
+      "name": "Purity of Elements",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "purity_of_fire",
+      "name": "Purity of Fire",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "purity_of_ice",
+      "name": "Purity of Ice",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "cold"
+      ]
+    },
+    {
+      "id": "purity_of_lightning",
+      "name": "Purity of Lightning",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "pyroclast_mine",
+      "name": "Pyroclast Mine",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "mine",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "fire",
+        "area",
+        "aura",
+        "nova"
+      ]
+    },
+    {
+      "id": "rage_vortex",
+      "name": "Rage Vortex",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "duration",
+        "melee"
+      ]
+    },
+    {
+      "id": "rain_of_arrows",
+      "name": "Rain of Arrows",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "raise_spectre",
+      "name": "Raise Spectre",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "minion"
+      ]
+    },
+    {
+      "id": "raise_zombie",
+      "name": "Raise Zombie",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "minion"
+      ]
+    },
+    {
+      "id": "rallying_cry",
+      "name": "Rallying Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "reap",
+      "name": "Reap",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "physical",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "reave",
+      "name": "Reave",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "melee"
+      ]
+    },
+    {
+      "id": "reckoning",
+      "name": "Reckoning",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "rejuvenation_totem",
+      "name": "Rejuvenation Totem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "totem",
+        "aura",
+        "strength",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "rending_steel",
+      "name": "Rending Steel",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "righteous_fire",
+      "name": "Righteous Fire",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "riposte",
+      "name": "Riposte",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "physical"
+      ]
+    },
+    {
+      "id": "rolling_magma",
+      "name": "Rolling Magma",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "fire",
+        "projectile",
+        "chaining"
+      ]
+    },
+    {
+      "id": "scorching_ray",
+      "name": "Scorching Ray",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "fire",
+        "duration",
+        "channelling"
+      ]
+    },
+    {
+      "id": "scourge_arrow",
+      "name": "Scourge Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "channelling",
+        "chaos",
+        "bow"
+      ]
+    },
+    {
+      "id": "searing_bond",
+      "name": "Searing Bond",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "totem",
+        "fire"
+      ]
+    },
+    {
+      "id": "seismic_cry",
+      "name": "Seismic Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "warcry",
+        "strength",
+        "active_skill",
+        "area",
+        "duration"
+      ]
+    },
+    {
+      "id": "seismic_trap",
+      "name": "Seismic Trap",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "shattering_steel",
+      "name": "Shattering Steel",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "shield_charge",
+      "name": "Shield Charge",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "movement",
+        "travel",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "shield_crush",
+      "name": "Shield Crush",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "shock_nova",
+      "name": "Shock Nova",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning",
+        "nova"
+      ]
+    },
+    {
+      "id": "shockwave_totem",
+      "name": "Shockwave Totem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "totem",
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "physical",
+        "nova"
+      ]
+    },
+    {
+      "id": "shrapnel_ballista",
+      "name": "Shrapnel Ballista",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "totem",
+        "physical",
+        "bow"
+      ]
+    },
+    {
+      "id": "siege_ballista",
+      "name": "Siege Ballista",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "totem",
+        "bow"
+      ]
+    },
+    {
+      "id": "sigil_of_power",
+      "name": "Sigil of Power",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "lightning",
+        "arcane"
+      ]
+    },
+    {
+      "id": "siphoning_trap",
+      "name": "Siphoning Trap",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "area",
+        "cold"
+      ]
+    },
+    {
+      "id": "smite",
+      "name": "Smite",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "lightning",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "duration",
+        "melee",
+        "strike",
+        "aura"
+      ]
+    },
+    {
+      "id": "smoke_mine",
+      "name": "Smoke Mine",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "mine",
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "movement",
+        "travel",
+        "blink"
+      ]
+    },
+    {
+      "id": "sniper_s_mark",
+      "name": "Sniper's Mark",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "curse",
+        "mark"
+      ]
+    },
+    {
+      "id": "somatic_shell",
+      "name": "Somatic Shell",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "duration",
+        "physical",
+        "attack",
+        "area",
+        "projectile"
+      ]
+    },
+    {
+      "id": "soul_link",
+      "name": "Soul Link",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration",
+        "link"
+      ]
+    },
+    {
+      "id": "soulrend",
+      "name": "Soulrend",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "chaos",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "projectile"
+      ]
+    },
+    {
+      "id": "spark",
+      "name": "Spark",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "projectile",
+        "duration",
+        "lightning"
+      ]
+    },
+    {
+      "id": "spectral_helix",
+      "name": "Spectral Helix",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile"
+      ]
+    },
+    {
+      "id": "spectral_shield_throw",
+      "name": "Spectral Shield Throw",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "physical"
+      ]
+    },
+    {
+      "id": "spectral_throw",
+      "name": "Spectral Throw",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile"
+      ]
+    },
+    {
+      "id": "spellslinger",
+      "name": "Spellslinger",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "intelligence",
+        "active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "spirit_offering",
+      "name": "Spirit Offering",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "minion",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "split_arrow",
+      "name": "Split Arrow",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "physical",
+        "bow"
+      ]
+    },
+    {
+      "id": "splitting_steel",
+      "name": "Splitting Steel",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "static_strike",
+      "name": "Static Strike",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "area",
+        "duration",
+        "lightning",
+        "chaining"
+      ]
+    },
+    {
+      "id": "steelskin",
+      "name": "Steelskin",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "duration",
+        "guard"
+      ]
+    },
+    {
+      "id": "storm_brand",
+      "name": "Storm Brand",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "chaining",
+        "duration",
+        "brand"
+      ]
+    },
+    {
+      "id": "storm_burst",
+      "name": "Storm Burst",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "area",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "lightning",
+        "channelling",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "storm_call",
+      "name": "Storm Call",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "lightning"
+      ]
+    },
+    {
+      "id": "storm_rain",
+      "name": "Storm Rain",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "lightning",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "stormbind",
+      "name": "Stormbind",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "channelling",
+        "lightning",
+        "duration",
+        "arcane"
+      ]
+    },
+    {
+      "id": "stormblast_mine",
+      "name": "Stormblast Mine",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "mine",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning",
+        "aura",
+        "nova"
+      ]
+    },
+    {
+      "id": "summon_carrion_golem",
+      "name": "Summon Carrion Golem",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "physical",
+        "minion",
+        "spell",
+        "golem"
+      ]
+    },
+    {
+      "id": "summon_chaos_golem",
+      "name": "Summon Chaos Golem",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "chaos",
+        "minion",
+        "spell",
+        "golem"
+      ]
+    },
+    {
+      "id": "summon_flame_golem",
+      "name": "Summon Flame Golem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "fire",
+        "minion",
+        "spell",
+        "golem"
+      ]
+    },
+    {
+      "id": "summon_holy_relic",
+      "name": "Summon Holy Relic",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "minion",
+        "spell"
+      ]
+    },
+    {
+      "id": "summon_ice_golem",
+      "name": "Summon Ice Golem",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "dexterity",
+        "active_skill",
+        "cold",
+        "minion",
+        "spell",
+        "golem"
+      ]
+    },
+    {
+      "id": "summon_lightning_golem",
+      "name": "Summon Lightning Golem",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "lightning",
+        "minion",
+        "spell",
+        "golem"
+      ]
+    },
+    {
+      "id": "summon_raging_spirit",
+      "name": "Summon Raging Spirit",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "minion",
+        "duration",
+        "fire"
+      ]
+    },
+    {
+      "id": "summon_reaper",
+      "name": "Summon Reaper",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "physical",
+        "minion",
+        "spell"
+      ]
+    },
+    {
+      "id": "summon_skeletons",
+      "name": "Summon Skeletons",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "minion",
+        "duration"
+      ]
+    },
+    {
+      "id": "summon_skitterbots",
+      "name": "Summon Skitterbots",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trap",
+        "mine",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "minion",
+        "cold",
+        "lightning",
+        "area",
+        "aura"
+      ]
+    },
+    {
+      "id": "summon_stone_golem",
+      "name": "Summon Stone Golem",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "minion",
+        "spell",
+        "golem",
+        "physical"
+      ]
+    },
+    {
+      "id": "sunder",
+      "name": "Sunder",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "sweep",
+      "name": "Sweep",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "swordstorm",
+      "name": "Swordstorm",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "retaliation",
+        "melee"
+      ]
+    },
+    {
+      "id": "tectonic_slam",
+      "name": "Tectonic Slam",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "fire",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "slam",
+        "melee"
+      ]
+    },
+    {
+      "id": "tempest_shield",
+      "name": "Tempest Shield",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "lightning",
+        "chaining"
+      ]
+    },
+    {
+      "id": "temporal_chains",
+      "name": "Temporal Chains",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "curse",
+        "hex"
+      ]
+    },
+    {
+      "id": "temporal_rift",
+      "name": "Temporal Rift",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "thunderstorm",
+      "name": "Thunderstorm",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "duration",
+        "lightning",
+        "bow",
+        "projectile",
+        "trigger"
+      ]
+    },
+    {
+      "id": "tornado",
+      "name": "Tornado",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "physical",
+        "area",
+        "orb"
+      ]
+    },
+    {
+      "id": "tornado_shot",
+      "name": "Tornado Shot",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "toxic_rain",
+      "name": "Toxic Rain",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "area",
+        "chaos",
+        "duration",
+        "projectile",
+        "bow"
+      ]
+    },
+    {
+      "id": "unearth",
+      "name": "Unearth",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "projectile",
+        "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "vampiric_link",
+      "name": "Vampiric Link",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "duration",
+        "link"
+      ]
+    },
+    {
+      "id": "vengeance",
+      "name": "Vengeance",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "strength",
+        "active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee"
+      ]
+    },
+    {
+      "id": "vengeful_cry",
+      "name": "Vengeful Cry",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "warcry",
+        "area",
+        "duration",
+        "retaliation"
+      ]
+    },
+    {
+      "id": "venom_gyre",
+      "name": "Venom Gyre",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "projectile",
+        "chaos"
+      ]
+    },
+    {
+      "id": "vigilant_strike",
+      "name": "Vigilant Strike",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "attack",
+        "strength",
+        "active_skill",
+        "melee",
+        "strike"
+      ]
+    },
+    {
+      "id": "viper_strike",
+      "name": "Viper Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "duration",
+        "melee",
+        "strike",
+        "chaos"
+      ]
+    },
+    {
+      "id": "vitality",
+      "name": "Vitality",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "strength",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    },
+    {
+      "id": "void_sphere",
+      "name": "Void Sphere",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "physical",
+        "chaos",
+        "orb"
+      ]
+    },
+    {
+      "id": "volatile_dead",
+      "name": "Volatile Dead",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "spell",
+        "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "voltaxic_burst",
+      "name": "Voltaxic Burst",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "chaos",
+        "lightning",
+        "nova",
+        "duration"
+      ]
+    },
+    {
+      "id": "vortex",
+      "name": "Vortex",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "cold",
+        "duration",
+        "nova"
+      ]
+    },
+    {
+      "id": "vulnerability",
+      "name": "Vulnerability",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "curse",
+        "physical",
+        "hex"
+      ]
+    },
+    {
+      "id": "wall_of_force",
+      "name": "Wall of Force",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "war_banner",
+      "name": "War Banner",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "area",
+        "spell",
+        "duration",
+        "aura",
+        "physical",
+        "banner"
+      ]
+    },
+    {
+      "id": "warlord_s_mark",
+      "name": "Warlord's Mark",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "active_skill",
+        "spell",
+        "curse",
+        "mark"
+      ]
+    },
+    {
+      "id": "wave_of_conviction",
+      "name": "Wave of Conviction",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "fire",
+        "lightning",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "physical"
+      ]
+    },
+    {
+      "id": "whirling_blades",
+      "name": "Whirling Blades",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "movement",
+        "travel",
+        "melee"
+      ]
+    },
+    {
+      "id": "wild_strike",
+      "name": "Wild Strike",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "attack",
+        "melee",
+        "strike",
+        "lightning",
+        "cold",
+        "fire",
+        "projectile",
+        "area",
+        "chaining",
+        "random_element"
+      ]
+    },
+    {
+      "id": "winter_orb",
+      "name": "Winter Orb",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "cold",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "channelling",
+        "area",
+        "duration",
+        "projectile",
+        "orb"
+      ]
+    },
+    {
+      "id": "wintertide_brand",
+      "name": "Wintertide Brand",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "cold",
+        "duration",
+        "brand"
+      ]
+    },
+    {
+      "id": "wither",
+      "name": "Wither",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "duration",
+        "chaos",
+        "channelling"
+      ]
+    },
+    {
+      "id": "withering_step",
+      "name": "Withering Step",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "active_skill",
+        "travel",
+        "area",
+        "chaos",
+        "movement",
+        "blink",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "wrath",
+      "name": "Wrath",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "zealotry",
+      "name": "Zealotry",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "aura",
+        "critical",
+        "intelligence",
+        "active_skill",
+        "spell",
+        "area"
+      ]
+    }
+  ],
+  "supports": [
+    {
+      "id": "added_chaos_damage_support",
+      "name": "Added Chaos Damage Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "chaos",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "added_cold_damage_support",
+      "name": "Added Cold Damage Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "cold",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "added_fire_damage_support",
+      "name": "Added Fire Damage Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "fire",
+        "physical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "added_lightning_damage_support",
+      "name": "Added Lightning Damage Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "additional_accuracy_support",
+      "name": "Additional Accuracy Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "attack",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "advanced_traps_support",
+      "name": "Advanced Traps Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "trap",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "ancestral_call_support",
+      "name": "Ancestral Call Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "strike"
+      ]
+    },
+    {
+      "id": "arcane_surge_support",
+      "name": "Arcane Surge Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "arcane",
+        "intelligence",
+        "support",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "archmage_support",
+      "name": "Archmage Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "arcane",
+        "intelligence",
+        "support",
+        "spell"
+      ]
+    },
+    {
+      "id": "arrogance_support",
+      "name": "Arrogance Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "aura",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "arrow_nova_support",
+      "name": "Arrow Nova Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "bow",
+        "attack",
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "ballista_totem_support",
+      "name": "Ballista Totem Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "bow",
+        "projectile",
+        "strength",
+        "support",
+        "totem"
+      ]
+    },
+    {
+      "id": "barrage_support",
+      "name": "Barrage Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "bow",
+        "attack",
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "behead_support",
+      "name": "Behead Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "strike"
+      ]
+    },
+    {
+      "id": "blasphemy_support",
+      "name": "Blasphemy Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "hex",
+        "aura"
+      ]
+    },
+    {
+      "id": "blastchain_mine_support",
+      "name": "Blastchain Mine Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "mine"
+      ]
+    },
+    {
+      "id": "blind_support",
+      "name": "Blind Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "block_chance_reduction_support",
+      "name": "Block Chance Reduction Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "bloodlust_support",
+      "name": "Bloodlust Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "physical",
+        "strength",
+        "support",
+        "melee"
+      ]
+    },
+    {
+      "id": "bloodthirst_support",
+      "name": "Bloodthirst Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "physical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "bonechill_support",
+      "name": "Bonechill Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "cold",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "brutality_support",
+      "name": "Brutality Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "physical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "burning_damage_support",
+      "name": "Burning Damage Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "fire",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "cast_on_critical_strike_support",
+      "name": "Cast On Critical Strike Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "critical",
+        "dexterity",
+        "support",
+        "spell",
+        "trigger"
+      ]
+    },
+    {
+      "id": "cast_on_death_support",
+      "name": "Cast on Death Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "spell",
+        "trigger"
+      ]
+    },
+    {
+      "id": "cast_on_melee_kill_support",
+      "name": "Cast on Melee Kill Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "spell",
+        "trigger"
+      ]
+    },
+    {
+      "id": "cast_when_damage_taken_support",
+      "name": "Cast when Damage Taken Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "spell",
+        "trigger"
+      ]
+    },
+    {
+      "id": "cast_when_stunned_support",
+      "name": "Cast when Stunned Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "spell",
+        "trigger"
+      ]
+    },
+    {
+      "id": "cast_while_channelling_support",
+      "name": "Cast while Channelling Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "channelling",
+        "spell",
+        "trigger"
+      ]
+    },
+    {
+      "id": "chain_support",
+      "name": "Chain Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "chaining",
+        "projectile"
+      ]
+    },
+    {
+      "id": "chance_to_bleed_support",
+      "name": "Chance to Bleed Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "physical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "chance_to_flee_support",
+      "name": "Chance to Flee Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "chance_to_poison_support",
+      "name": "Chance to Poison Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "chaos",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "charged_mines_support",
+      "name": "Charged Mines Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "critical",
+        "intelligence",
+        "support",
+        "mine"
+      ]
+    },
+    {
+      "id": "charged_traps_support",
+      "name": "Charged Traps Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "critical",
+        "dexterity",
+        "support",
+        "trap"
+      ]
+    },
+    {
+      "id": "close_combat_support",
+      "name": "Close Combat Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "melee",
+        "attack",
+        "duration"
+      ]
+    },
+    {
+      "id": "cluster_traps_support",
+      "name": "Cluster Traps Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "trap",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "cold_penetration_support",
+      "name": "Cold Penetration Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "cold",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "cold_to_fire_support",
+      "name": "Cold to Fire Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "cold",
+        "fire",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "combustion_support",
+      "name": "Combustion Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "fire",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "concentrated_effect_support",
+      "name": "Concentrated Effect Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "area"
+      ]
+    },
+    {
+      "id": "controlled_blaze_support",
+      "name": "Controlled Blaze Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "fire",
+        "melee",
+        "attack"
+      ]
+    },
+    {
+      "id": "controlled_destruction_support",
+      "name": "Controlled Destruction Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "spell",
+        "critical",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "critical_strike_affliction_support",
+      "name": "Critical Strike Affliction Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "critical",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "cruelty_support",
+      "name": "Cruelty Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "culling_strike_support",
+      "name": "Culling Strike Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "damage_on_full_life_support",
+      "name": "Damage on Full Life Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "deadly_ailments_support",
+      "name": "Deadly Ailments Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "decay_support",
+      "name": "Decay Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "chaos",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "divine_blessing_support",
+      "name": "Divine Blessing Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "aura",
+        "duration",
+        "blessing"
+      ]
+    },
+    {
+      "id": "earthbreaker_support",
+      "name": "Earthbreaker Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "melee",
+        "slam",
+        "area",
+        "strength",
+        "support",
+        "totem"
+      ]
+    },
+    {
+      "id": "efficacy_support",
+      "name": "Efficacy Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "elemental_army_support",
+      "name": "Elemental Army Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "elemental_damage_with_attacks_support",
+      "name": "Elemental Damage with Attacks Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "elemental_focus_support",
+      "name": "Elemental Focus Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "elemental_penetration_support",
+      "name": "Elemental Penetration Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "elemental_proliferation_support",
+      "name": "Elemental Proliferation Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "cold",
+        "fire",
+        "lightning",
+        "intelligence",
+        "support",
+        "area"
+      ]
+    },
+    {
+      "id": "empower_support",
+      "name": "Empower Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "low_max_level",
+        "exceptional",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "endurance_charge_on_melee_stun_support",
+      "name": "Endurance Charge on Melee Stun Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack"
+      ]
+    },
+    {
+      "id": "energy_leech_support",
+      "name": "Energy Leech Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "enhance_support",
+      "name": "Enhance Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "low_max_level",
+        "exceptional",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "enlighten_support",
+      "name": "Enlighten Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "low_max_level",
+        "exceptional",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "eternal_blessing_support",
+      "name": "Eternal Blessing Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "aura",
+        "blessing"
+      ]
+    },
+    {
+      "id": "expert_retaliation_support",
+      "name": "Expert Retaliation Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "dexterity",
+        "support",
+        "retaliation"
+      ]
+    },
+    {
+      "id": "faster_attacks_support",
+      "name": "Faster Attacks Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "attack",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "faster_casting_support",
+      "name": "Faster Casting Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "spell"
+      ]
+    },
+    {
+      "id": "faster_projectiles_support",
+      "name": "Faster Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "feeding_frenzy_support",
+      "name": "Feeding Frenzy Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion",
+        "duration"
+      ]
+    },
+    {
+      "id": "fire_penetration_support",
+      "name": "Fire Penetration Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "fire",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "fist_of_war_support",
+      "name": "Fist of War Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "slam",
+        "attack",
+        "melee",
+        "area",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "flamewood_support",
+      "name": "Flamewood Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "totem",
+        "spell",
+        "area",
+        "fire",
+        "projectile",
+        "trigger"
+      ]
+    },
+    {
+      "id": "focused_ballista_support",
+      "name": "Focused Ballista Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "projectile",
+        "dexterity",
+        "support",
+        "totem"
+      ]
+    },
+    {
+      "id": "fork_support",
+      "name": "Fork Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "fortify_support",
+      "name": "Fortify Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "strength",
+        "support",
+        "melee"
+      ]
+    },
+    {
+      "id": "generosity_support",
+      "name": "Generosity Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "aura"
+      ]
+    },
+    {
+      "id": "greater_multiple_projectiles_support",
+      "name": "Greater Multiple Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "greater_volley_support",
+      "name": "Greater Volley Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "guardians_blessing_support",
+      "name": "Guardian's Blessing Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "aura",
+        "blessing",
+        "minion"
+      ]
+    },
+    {
+      "id": "hextouch_support",
+      "name": "Hextouch Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "hex",
+        "trigger"
+      ]
+    },
+    {
+      "id": "high_impact_mine_support",
+      "name": "High-Impact Mine Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "mine",
+        "intelligence",
+        "support",
+        "area",
+        "aura"
+      ]
+    },
+    {
+      "id": "hypothermia_support",
+      "name": "Hypothermia Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "cold",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "ice_bite_support",
+      "name": "Ice Bite Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "cold",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "ignite_proliferation_support",
+      "name": "Ignite Proliferation Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "fire",
+        "intelligence",
+        "support",
+        "area"
+      ]
+    },
+    {
+      "id": "immolate_support",
+      "name": "Immolate Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "fire",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "impale_support",
+      "name": "Impale Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "attack",
+        "physical",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "impending_doom_support",
+      "name": "Impending Doom Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "hex",
+        "active_skill",
+        "spell",
+        "area",
+        "chaos",
+        "trigger"
+      ]
+    },
+    {
+      "id": "increased_area_of_effect_support",
+      "name": "Increased Area of Effect Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "area"
+      ]
+    },
+    {
+      "id": "increased_critical_damage_support",
+      "name": "Increased Critical Damage Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "critical",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "increased_critical_strikes_support",
+      "name": "Increased Critical Strikes Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "critical",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "infernal_legion_support",
+      "name": "Infernal Legion Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "fire",
+        "area",
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "infused_channelling_support",
+      "name": "Infused Channelling Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "channelling",
+        "duration"
+      ]
+    },
+    {
+      "id": "innervate_support",
+      "name": "Innervate Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "inspiration_support",
+      "name": "Inspiration Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "critical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "intensify_support",
+      "name": "Intensify Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "area",
+        "spell",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "iron_grip_support",
+      "name": "Iron Grip Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "projectile",
+        "physical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "iron_will_support",
+      "name": "Iron Will Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "spell",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "item_rarity_support",
+      "name": "Item Rarity Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "knockback_support",
+      "name": "Knockback Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "less_duration_support",
+      "name": "Less Duration Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "lesser_multiple_projectiles_support",
+      "name": "Lesser Multiple Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "life_gain_on_hit_support",
+      "name": "Life Gain on Hit Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "life_leech_support",
+      "name": "Life Leech Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "lifetap_support",
+      "name": "Lifetap Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "lightning_penetration_support",
+      "name": "Lightning Penetration Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "living_lightning_support",
+      "name": "Living Lightning Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "lightning",
+        "spell",
+        "minion",
+        "duration",
+        "trigger"
+      ]
+    },
+    {
+      "id": "maim_support",
+      "name": "Maim Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "physical",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "mana_leech_support",
+      "name": "Mana Leech Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "mark_on_hit_support",
+      "name": "Mark On Hit Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "mark",
+        "trigger"
+      ]
+    },
+    {
+      "id": "meat_shield_support",
+      "name": "Meat Shield Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "melee_physical_damage_support",
+      "name": "Melee Physical Damage Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "melee",
+        "physical",
+        "strength",
+        "support",
+        "attack"
+      ]
+    },
+    {
+      "id": "melee_splash_support",
+      "name": "Melee Splash Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "strike",
+        "area"
+      ]
+    },
+    {
+      "id": "minefield_support",
+      "name": "Minefield Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "mine"
+      ]
+    },
+    {
+      "id": "minion_damage_support",
+      "name": "Minion Damage Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "minion_life_support",
+      "name": "Minion Life Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "minion_speed_support",
+      "name": "Minion Speed Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "movement",
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "mirage_archer_support",
+      "name": "Mirage Archer Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "bow",
+        "attack",
+        "dexterity",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "manaforged_arrows_support",
+      "name": "Manaforged Arrows Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "bow",
+        "support",
+        "trigger",
+        "dexterity"
+      ]
+    },
+    {
+      "id": "momentum_support",
+      "name": "Momentum Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "attack",
+        "duration"
+      ]
+    },
+    {
+      "id": "more_duration_support",
+      "name": "More Duration Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "multiple_totems_support",
+      "name": "Multiple Totems Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "totem",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "multiple_traps_support",
+      "name": "Multiple Traps Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "trap"
+      ]
+    },
+    {
+      "id": "multistrike_support",
+      "name": "Multistrike Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "attack",
+        "melee",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "nightblade_support",
+      "name": "Nightblade Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "attack",
+        "critical",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "onslaught_support",
+      "name": "Onslaught Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "overcharge_support",
+      "name": "Overcharge Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "overexertion_support",
+      "name": "Overexertion Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack"
+      ]
+    },
+    {
+      "id": "physical_to_lightning_support",
+      "name": "Physical to Lightning Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "physical",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "pierce_support",
+      "name": "Pierce Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "pinpoint_support",
+      "name": "Pinpoint Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "projectile",
+        "spell"
+      ]
+    },
+    {
+      "id": "point_blank_support",
+      "name": "Point Blank Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "projectile",
+        "attack",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "power_charge_on_critical_support",
+      "name": "Power Charge On Critical Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "critical",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "predator_support",
+      "name": "Predator Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion",
+        "active_skill",
+        "spell",
+        "duration"
+      ]
+    },
+    {
+      "id": "pulverise_support",
+      "name": "Pulverise Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "area",
+        "strength",
+        "support",
+        "melee",
+        "attack"
+      ]
+    },
+    {
+      "id": "rage_support",
+      "name": "Rage Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack"
+      ]
+    },
+    {
+      "id": "return_projectiles_support",
+      "name": "Return Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "rupture_support",
+      "name": "Rupture Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "strength",
+        "support",
+        "attack",
+        "physical",
+        "critical"
+      ]
+    },
+    {
+      "id": "ruthless_support",
+      "name": "Ruthless Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "slam",
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "strike"
+      ]
+    },
+    {
+      "id": "second_wind_support",
+      "name": "Second Wind Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "shockwave_support",
+      "name": "Shockwave Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "active_skill",
+        "area"
+      ]
+    },
+    {
+      "id": "slower_projectiles_support",
+      "name": "Slower Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "spell_cascade_support",
+      "name": "Spell Cascade Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "area",
+        "spell",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "spell_echo_support",
+      "name": "Spell Echo Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "spell",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "spell_totem_support",
+      "name": "Spell Totem Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "spell",
+        "totem"
+      ]
+    },
+    {
+      "id": "split_projectiles_support",
+      "name": "Split Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "stun_support",
+      "name": "Stun Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "summon_phantasm_support",
+      "name": "Summon Phantasm Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "swift_affliction_support",
+      "name": "Swift Affliction Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "duration"
+      ]
+    },
+    {
+      "id": "swift_assembly_support",
+      "name": "Swift Assembly Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "trap",
+        "mine"
+      ]
+    },
+    {
+      "id": "swiftbrand_support",
+      "name": "Swiftbrand Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "brand",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "trap_and_mine_damage_support",
+      "name": "Trap and Mine Damage Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "trap",
+        "mine"
+      ]
+    },
+    {
+      "id": "trap_support",
+      "name": "Trap Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "trap"
+      ]
+    },
+    {
+      "id": "trauma_support",
+      "name": "Trauma Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "physical",
+        "melee",
+        "attack",
+        "strike",
+        "duration"
+      ]
+    },
+    {
+      "id": "trinity_support",
+      "name": "Trinity Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "unbound_ailments_support",
+      "name": "Unbound Ailments Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "unleash_support",
+      "name": "Unleash Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "spell",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "urgent_orders_support",
+      "name": "Urgent Orders Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "warcry",
+        "strength",
+        "support"
+      ]
+    },
+    {
+      "id": "vicious_projectiles_support",
+      "name": "Vicious Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "projectile",
+        "attack",
+        "physical",
+        "chaos",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "vile_toxins_support",
+      "name": "Vile Toxins Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "void_manipulation_support",
+      "name": "Void Manipulation Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "chaos",
+        "dexterity",
+        "support"
+      ]
+    },
+    {
+      "id": "volatility_support",
+      "name": "Volatility Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "attack"
+      ]
+    },
+    {
+      "id": "volley_support",
+      "name": "Volley Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
+      ]
+    },
+    {
+      "id": "windburst_support",
+      "name": "Windburst Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "attack",
+        "projectile",
+        "trigger",
+        "area",
+        "duration",
+        "bow"
+      ]
+    },
+    {
+      "id": "withering_touch_support",
+      "name": "Withering Touch Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "chaos",
+        "physical",
+        "attack",
+        "dexterity",
+        "support",
+        "duration"
+      ]
+    }
+  ]
+}
