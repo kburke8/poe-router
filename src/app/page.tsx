@@ -86,7 +86,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold text-poe-gold">PoE Router</h1>
         <p className="mt-1 text-sm text-poe-muted">
-          Plan your campaign route, manage loot filters, and organize your builds.
+          Plan your campaign route, generate vendor regex patterns, and organize your builds.
         </p>
       </div>
 
@@ -148,7 +148,7 @@ export default function DashboardPage() {
         {!lastPreset ? (
           <Card>
             <p className="text-center text-sm text-poe-muted">
-              No regex presets yet. Create one to generate PoE loot filter search strings.
+              No regex presets yet. Create one to generate PoE stash search patterns.
             </p>
           </Card>
         ) : (

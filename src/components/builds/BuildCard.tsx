@@ -63,7 +63,9 @@ export function BuildCard({ build, onClick, onDelete }: BuildCardProps) {
           size="sm"
           onClick={(e) => {
             e.stopPropagation();
-            onDelete(build.id);
+            if (window.confirm(`Delete "${build.name}"? This cannot be undone.`)) {
+              onDelete(build.id);
+            }
           }}
         >
           Delete

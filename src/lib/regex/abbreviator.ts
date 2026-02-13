@@ -418,6 +418,36 @@ const POE_ITEM_TEXT_SAMPLES = [
   'One Hand Sword', 'One Hand Axe', 'One Hand Mace',
   // Common gem description words that collide with "dom." gambas patterns
   'randomised', 'randomized',
+  // "ed.co" patterns — "Added Cold" abbreviation collides with many common texts
+  // "increased Cooldown" appears in support gem descriptions (Automation, Prismatic Burst, etc.)
+  'increased Cooldown Recovery Rate',
+  'increased Cooldown Recovery',
+  'reduced Cooldown Recovery Rate',
+  'reduced Cooldown Recovery',
+  'decreased Cooldown Recovery',
+  // "Spawned corpses" appears in corpse gems (Unearth, Desecrate, etc.)
+  'Spawned corpses are Level',
+  'Spawned corpses have',
+  // "targeted corpse" appears in Cremation and similar corpse-consuming gems
+  'targeted corpse explodes',
+  'targeted corpse',
+  'selected corpse',
+  // Armor base types with "ed Co" substring
+  'Rusted Coif',
+  'Gilded Coif',
+  // "Added Cold Damage Support" collision prevention — this gem name shares text with
+  // ubiquitous stat lines. Samples are IN-CONTEXT (not standalone "added Cold Damage")
+  // so they don't start with "added" and won't block ^prefix patterns.
+  'Supported Skills have 8 to 12 added Cold Damage',
+  'have 2 to 3 added Cold Damage per Frenzy Charge',
+  '225 to 418 Added Cold Damage',
+  'Cold Damage Supported Skills',
+  'increased Cold Damage',
+  'reduced Cold Damage',
+  'and Cold Resistance',
+  'and Cold Damage',
+  'Fire and Cold',
+  'Lightning and Cold',
 ];
 
 /**
@@ -525,8 +555,21 @@ export function abbreviate(name: string, allNames: string[]): string {
     return null;
   }
 
-  // Main search: at each length, prefer cross-word patterns over substrings
-  // for multi-word names since they bridge the word boundary more naturally.
+  // Helper: try ^prefix pattern at a given prefix length.
+  function tryPrefix(prefixLen: number): string | null {
+    if (prefixLen < 3 || prefixLen > lower.length) return null;
+    const sub = lower.substring(0, prefixLen);
+    const pattern = '^' + sub.replace(/ /g, '.');
+    if (patternMatches(pattern, name) && countMatches(pattern, fullPool) === 1) {
+      return pattern;
+    }
+    return null;
+  }
+
+  // Main search: at each length, try cross-word, substrings, and ^prefix patterns.
+  // ^prefix is checked alongside substrings because it's equally compact and very
+  // selective in PoE (anchored to line start), which helps when gem names share
+  // extensive text with common stat lines.
   for (let len = 4; len <= lower.length; len++) {
     if (isMultiWord && len <= 8) {
       const cw = tryCrossWord(len);
@@ -534,15 +577,9 @@ export function abbreviate(name: string, allNames: string[]): string {
     }
     const sub = trySubstrings(len);
     if (sub) return sub;
-  }
-
-  // Try ^prefix patterns (anchored to line start) — very selective in PoE
-  for (let len = 3; len <= Math.min(lower.length, 12); len++) {
-    const sub = lower.substring(0, len);
-    const pattern = '^' + sub.replace(/ /g, '.');
-    if (patternMatches(pattern, name) && countMatches(pattern, fullPool) === 1) {
-      return pattern;
-    }
+    // ^prefix of (len-1) chars produces a pattern of total length len (including ^)
+    const prefix = tryPrefix(len - 1);
+    if (prefix) return prefix;
   }
 
   // Try .+ spanning patterns across word gaps

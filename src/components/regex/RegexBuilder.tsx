@@ -73,7 +73,8 @@ export function RegexBuilder() {
   }
 
   async function handleDelete() {
-    if (!activePresetId) return;
+    if (!activePresetId || !activePreset) return;
+    if (!window.confirm(`Delete "${activePreset.name}"? This cannot be undone.`)) return;
     await deletePreset(activePresetId);
   }
 
