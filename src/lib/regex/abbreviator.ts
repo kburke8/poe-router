@@ -9,16 +9,23 @@
  * common game text fragments.
  */
 
+import gemDescriptions from '@/data/gem-descriptions.json';
+import baseItemNames from '@/data/base-item-names.json';
+
 /**
- * Common text fragments that appear in PoE item descriptions.
- * The abbreviator treats these as additional "names" that must not be matched,
- * preventing short generic patterns like "of.t" (matches "of the") or
- * "per" (matches "per second").
+ * Collision pool data from RePoE (Repository of Path of Exile):
+ * - Gem descriptions: in-game tooltip text for all active/support skills
+ * - Base item names: all equipment base types (weapons, armor, jewelry, flasks)
+ *
+ * Regenerate with: npx tsx scripts/fetch-repoe-data.ts
  */
+const GEM_DESCRIPTION_TEXTS: string[] = Object.values(gemDescriptions);
+const BASE_ITEM_NAMES: string[] = baseItemNames;
+
 /**
- * Simulated item text blocks that represent what PoE's search actually matches
- * against. Each entry is a realistic multi-line item snippet so that cross-word
- * patterns (like ".of.t") are correctly detected as collisions.
+ * Non-gem text that appears in PoE item tooltips (mod lines, item classes,
+ * flask suffixes, base type names, etc.). Combined with gem descriptions
+ * to form the full collision pool.
  */
 const POE_ITEM_TEXT_SAMPLES = [
   // Magic items with "of the ..." suffixes - these generate "X of the Y" patterns
@@ -418,6 +425,13 @@ const POE_ITEM_TEXT_SAMPLES = [
   'One Hand Sword', 'One Hand Axe', 'One Hand Mace',
   // Common gem description words that collide with "dom." gambas patterns
   'randomised', 'randomized',
+  // "al.th" patterns — "Spectral Throw" abbreviation collides with common description text
+  'crystal that pulses',
+  'deal that much',
+  'deal the damage',
+  'deal their damage',
+  'steal their',
+  'rical theorem',
   // "ed.co" patterns — "Added Cold" abbreviation collides with many common texts
   // "increased Cooldown" appears in support gem descriptions (Automation, Prismatic Burst, etc.)
   'increased Cooldown Recovery Rate',
@@ -518,7 +532,13 @@ export function abbreviate(name: string, allNames: string[]): string {
   const filteredSamples = POE_ITEM_TEXT_SAMPLES.filter(
     (s) => !s.toLowerCase().includes(lower),
   );
-  const fullPool = [...allNames, ...filteredSamples];
+  const filteredGemDescs = GEM_DESCRIPTION_TEXTS.filter(
+    (s) => !s.toLowerCase().includes(lower),
+  );
+  const filteredBaseItems = BASE_ITEM_NAMES.filter(
+    (s) => !s.toLowerCase().includes(lower),
+  );
+  const fullPool = [...allNames, ...filteredSamples, ...filteredGemDescs, ...filteredBaseItems];
 
   const words = lower.split(/\s+/);
   const isMultiWord = words.length >= 2;
@@ -679,7 +699,13 @@ function extendAbbreviation(
   const filteredSamples = POE_ITEM_TEXT_SAMPLES.filter(
     (s) => !s.toLowerCase().includes(lower),
   );
-  const fullPool = [...allNames, ...filteredSamples];
+  const filteredGemDescs = GEM_DESCRIPTION_TEXTS.filter(
+    (s) => !s.toLowerCase().includes(lower),
+  );
+  const filteredBaseItems = BASE_ITEM_NAMES.filter(
+    (s) => !s.toLowerCase().includes(lower),
+  );
+  const fullPool = [...allNames, ...filteredSamples, ...filteredGemDescs, ...filteredBaseItems];
 
   // Try longer substrings starting from current pattern length + 1
   const startLen = currentPattern.length + 1;

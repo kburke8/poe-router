@@ -27,6 +27,7 @@ export default function BuildsPage() {
     router.push(`/builds/${id}`);
   };
 
+
   const handleDelete = async (id: string) => {
     await deleteBuild(id);
   };
