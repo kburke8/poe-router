@@ -29,6 +29,51 @@ export default function GuidePage() {
         </Card>
       </section>
 
+      {/* Import from PoB */}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-poe-text">Import from Path of Building</h2>
+        <Card className="space-y-4">
+          <p className="text-sm text-poe-text leading-relaxed">
+            If you already have a build planned in <span className="font-medium text-poe-gold">Path of Building</span>,
+            you can import it directly instead of setting up gem pickups manually.
+          </p>
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-poe-gold">How to Import</h3>
+            <ol className="list-decimal list-inside space-y-1 text-sm text-poe-muted">
+              <li>Click <span className="text-poe-text">Import from PoB</span> on the Builds page or inside the build editor.</li>
+              <li>Paste a <span className="text-poe-text">pobb.in URL</span> (e.g. pobb.in/XXXXX) or a raw PoB export code.</li>
+              <li>Review the import summary &mdash; class, ascendancy, gem count, and any warnings.</li>
+              <li>Click <span className="text-poe-text">Create Build</span> to finalize the import.</li>
+            </ol>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-poe-gold">What Gets Imported</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-poe-muted">
+              <li><span className="text-poe-text">Class and ascendancy</span> from the PoB build.</li>
+              <li><span className="text-poe-text">Gem pickups</span> placed at the earliest campaign stop where each gem is available for your class. Quest rewards are preferred over vendor purchases.</li>
+              <li><span className="text-poe-text">Link groups</span> built from PoB&apos;s skill groups with progressive phases showing how your links evolve through the campaign.</li>
+            </ul>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-poe-gold">Multi-Set Builds</h3>
+            <p className="text-sm text-poe-muted leading-relaxed">
+              If the PoB build has multiple Skill Sets with level annotations (e.g. &ldquo;Level 12&rdquo;
+              or &ldquo;Level 30&rdquo; in the set titles), the importer treats each set as a snapshot of
+              your gem setup at that point in the campaign. This creates link group phases that show
+              exactly how your links change at each stage.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-poe-gold">After Importing</h3>
+            <p className="text-sm text-poe-muted leading-relaxed">
+              The imported build is a starting point. You can refine gem sources (quest reward vs.
+              vendor), adjust which stops are enabled, add gear goals, and configure mule gems just
+              like any manually created build.
+            </p>
+          </div>
+        </Card>
+      </section>
+
       {/* Builds */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-poe-text">Builds</h2>
@@ -41,7 +86,7 @@ export default function GuidePage() {
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-poe-gold">Creating a Build</h3>
             <ol className="list-decimal list-inside space-y-1 text-sm text-poe-muted">
-              <li>Go to the <span className="text-poe-text">Builds</span> page and click <span className="text-poe-text">New Build</span>.</li>
+              <li>Go to the <span className="text-poe-text">Builds</span> page and click <span className="text-poe-text">New Build</span>, or use <span className="text-poe-text">Import from PoB</span> to start from a Path of Building export.</li>
               <li>Pick your class and ascendancy.</li>
               <li>The editor shows every town stop in the campaign. Enable the stops you care about and disable the ones you want to skip.</li>
               <li>At each stop, add gem pickups from quest rewards or vendor purchases.</li>
@@ -131,13 +176,19 @@ export default function GuidePage() {
       {/* Import/Export */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-poe-text">Import / Export</h2>
-        <Card>
+        <Card className="space-y-3">
           <p className="text-sm text-poe-text leading-relaxed">
             All your data (builds, regex presets, and run history) is stored locally in your
             browser using IndexedDB. Nothing is sent to a server.
           </p>
-          <p className="mt-3 text-sm text-poe-muted leading-relaxed">
-            To share a build or back up your data, use the <span className="text-poe-text">Export All Data</span> button
+          <p className="text-sm text-poe-muted leading-relaxed">
+            <span className="text-poe-text font-medium">Path of Building</span> &mdash; Import a build
+            directly from a pobb.in URL or PoB export code. See the &ldquo;Import from Path of Building&rdquo;
+            section above for details.
+          </p>
+          <p className="text-sm text-poe-muted leading-relaxed">
+            <span className="text-poe-text font-medium">JSON Export/Import</span> &mdash; To share builds or
+            back up all your data, use the <span className="text-poe-text">Export All Data</span> button
             on the Dashboard. This downloads a JSON file you can share with others or import on
             another machine using <span className="text-poe-text">Import from JSON</span>.
           </p>

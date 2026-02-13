@@ -56,6 +56,9 @@ interface BuildState {
   removeCustomStop: (buildId: string, stopId: string) => Promise<void>;
   updateCustomStopLabel: (buildId: string, stopId: string, label: string) => Promise<void>;
 
+  // Import
+  importBuild: (build: BuildPlan) => Promise<string>;
+
   // Mule mutations
   updateMuleClass: (buildId: string, muleClassName: string) => Promise<void>;
   addMulePickup: (buildId: string, pickup: MulePickup) => Promise<void>;
@@ -455,6 +458,17 @@ export const useBuildStore = create<BuildState>()(
         result.build.updatedAt = new Date().toISOString();
       });
       debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    // === Import ===
+
+    async importBuild(build: BuildPlan) {
+      await db.builds.add(JSON.parse(JSON.stringify(build)));
+      set((state) => {
+        state.builds.push(build);
+        state.activeBuildId = build.id;
+      });
+      return build.id;
     },
 
     // === Mule mutations ===

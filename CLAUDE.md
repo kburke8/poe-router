@@ -37,6 +37,8 @@ src/
 │   │   ├── page.tsx        # Build list
 │   │   ├── [id]/page.tsx   # Build editor
 │   │   └── [id]/run/page.tsx  # Run view (guided playthrough)
+│   ├── api/pob-proxy/      # Server-side proxy for pobb.in (avoids CORS)
+│   ├── guide/page.tsx      # Guide / documentation
 │   └── history/page.tsx    # Run history
 ├── components/
 │   ├── ui/                 # Button, Card, Input, Textarea, Badge, CopyButton, SocketColorIndicator
@@ -45,7 +47,8 @@ src/
 │   │                         ItemSearchPicker, RegexEntryRow, RegexPreview
 │   ├── builds/             # BuildEditor, BuildHeader, BuildCard, StopSection, StopHeader,
 │   │                         PhaseEditor, GemPickerDialog, GemPickupList, GearGoalsPanel,
-│   │                         GemSlotCombobox, MuleSection, InheritedLinkGroupCard, RunView
+│   │                         GemSlotCombobox, MuleSection, InheritedLinkGroupCard, RunView,
+│   │                         PobImportDialog
 │   └── history/            # RunForm, RunCard, ActSplitTimesEditor
 ├── stores/                 # Zustand stores (useRegexStore, useBuildStore, useRunHistoryStore)
 ├── db/database.ts          # Dexie DB definition
@@ -59,6 +62,11 @@ src/
 │   ├── regex/
 │   │   ├── abbreviator.ts  # Name -> shortest unique regex pattern engine
 │   │   └── combiner.ts     # Combines categories into final one-liner
+│   ├── pob/
+│   │   ├── decode.ts       # Base64 + zlib decode of PoB export codes
+│   │   ├── parse.ts        # XML parser for PoB builds (skill groups, skill sets)
+│   │   ├── gem-matcher.ts  # Match PoB gem names to our gems.json database
+│   │   └── backfill.ts     # Core backfill: places gem pickups at earliest stops, builds link groups
 │   ├── gem-availability.ts # Gem availability logic by quest/vendor
 │   ├── gem-costs.ts        # Gem purchase cost calculations
 │   ├── link-group-resolver.ts # Resolves gem link groups across stops
@@ -105,6 +113,20 @@ PoE 1 stash search has a **250 character limit**.
 ### Regex Categories
 
 Six categories defined in `RegexCategoryId`: `gems`, `links`, `stats`, `items`, `item_gambas`, `dont_ever_show`. The `dont_ever_show` category entries are exclusions (prefixed with `!`).
+
+### PoB Import Pipeline (`src/lib/pob/`)
+
+Imports builds from Path of Building via pobb.in URLs or raw export codes:
+
+1. **Decode** (`decode.ts`): Base64 (URL-safe) → bytes → pako inflate → XML string
+2. **Parse** (`parse.ts`): DOMParser extracts class, ascendancy, skill groups, and skill sets from PoB XML. Supports both flat `<Skill>` elements and `<SkillSet>` wrappers with level annotations.
+3. **Match** (`gem-matcher.ts`): Maps PoB `nameSpec` to our `gems.json`. Handles missing "Support" suffix, alternate quality prefixes, skips Vaal/item-granted skills.
+4. **Backfill** (`backfill.ts`): Places gem pickups at earliest available stops per class. Two code paths:
+   - **Single-set**: Progressive phases with aura/herald splitting and support holdback
+   - **Multi-set** (level-annotated skill sets): Per-slot phase snapshots mapped via `LEVEL_TO_STOP` breakpoints. Standalone actives (no supports) become individual 1L entries.
+   - Gem sources default to `quest_reward` when available, falling back to `vendor`. Tracks used reward sets (one pick per quest reward set).
+
+**Dependency**: `pako` for zlib decompression.
 
 ### Stores
 

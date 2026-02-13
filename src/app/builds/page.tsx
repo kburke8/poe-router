@@ -1,14 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { useBuildStore } from '@/stores/useBuildStore';
 import { BuildCard } from '@/components/builds/BuildCard';
 import { Button } from '@/components/ui/Button';
+import { PobImportDialog } from '@/components/builds/PobImportDialog';
+import type { BackfillResult } from '@/lib/pob/backfill';
 
 export default function BuildsPage() {
   const router = useRouter();
-  const { builds, isLoading, loadBuilds, createBuild, deleteBuild } = useBuildStore();
+  const { builds, isLoading, loadBuilds, createBuild, deleteBuild, importBuild } = useBuildStore();
+  const [importOpen, setImportOpen] = useState(false);
 
   useEffect(() => {
     loadBuilds().then(() => {
@@ -27,12 +31,35 @@ export default function BuildsPage() {
     await deleteBuild(id);
   };
 
+  const handlePobImport = async (result: BackfillResult) => {
+    try {
+      const id = await importBuild(result.build);
+      const warnCount = result.warnings.length;
+      toast.success(
+        `Imported "${result.build.name}"` + (warnCount > 0 ? ` with ${warnCount} warning${warnCount !== 1 ? 's' : ''}` : ''),
+      );
+      router.push(`/builds/${id}`);
+    } catch (err) {
+      toast.error('Failed to import build');
+      console.error('Import error:', err);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-poe-gold">Builds</h1>
-        <Button onClick={handleNewBuild}>New Build</Button>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" onClick={() => setImportOpen(true)}>Import from PoB</Button>
+          <Button onClick={handleNewBuild}>New Build</Button>
+        </div>
       </div>
+
+      <PobImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onImport={handlePobImport}
+      />
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
