@@ -9,9 +9,10 @@ interface BuildCardProps {
   build: BuildPlan;
   onClick: () => void;
   onDelete: (id: string) => void;
+  onExport: (id: string) => void;
 }
 
-export function BuildCard({ build, onClick, onDelete }: BuildCardProps) {
+export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps) {
   const updatedDate = new Date(build.updatedAt).toLocaleDateString(undefined, {
     month: 'short',
     day: 'numeric',
@@ -58,18 +59,30 @@ export function BuildCard({ build, onClick, onDelete }: BuildCardProps) {
           </div>
           <p className="text-xs text-poe-muted">Updated {updatedDate}</p>
         </div>
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (window.confirm(`Delete "${build.name}"? This cannot be undone.`)) {
-              onDelete(build.id);
-            }
-          }}
-        >
-          Delete
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onExport(build.id);
+            }}
+          >
+            Export
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm(`Delete "${build.name}"? This cannot be undone.`)) {
+                onDelete(build.id);
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       </div>
     </Card>
   );

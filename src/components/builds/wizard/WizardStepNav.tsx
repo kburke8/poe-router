@@ -10,6 +10,7 @@ interface WizardStepNavProps {
   onBack: () => void;
   onNext: () => void;
   onSkip: () => void;
+  onFinish?: () => void;
 }
 
 export function WizardStepNav({
@@ -20,6 +21,7 @@ export function WizardStepNav({
   onBack,
   onNext,
   onSkip,
+  onFinish,
 }: WizardStepNavProps) {
   const isFirst = currentStep === 1;
   const isLast = currentStep === totalSteps;
@@ -42,7 +44,7 @@ export function WizardStepNav({
         <Button
           variant="primary"
           size="md"
-          onClick={onNext}
+          onClick={isLast && onFinish ? onFinish : onNext}
           disabled={!canNext}
         >
           {isLast ? 'Finish' : 'Next \u2192'}

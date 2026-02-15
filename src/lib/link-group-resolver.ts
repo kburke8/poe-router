@@ -59,6 +59,9 @@ export function resolveLinkGroupsAtStop(
     const resolved = resolvePhaseAtStop(blg, stopId);
     if (!resolved) continue;
 
+    // Skip retired groups (empty gems array is the retirement sentinel)
+    if (resolved.phase.gems.length === 0) continue;
+
     results.push({
       buildLinkGroup: blg,
       activePhase: resolved.phase,

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { SocketColorIndicator } from '@/components/ui/SocketColorIndicator';
@@ -35,6 +36,17 @@ export function PhaseEditor({
   stopGemNames,
   previousPhaseGems,
 }: PhaseEditorProps) {
+  const [expandedSlots, setExpandedSlots] = useState<Set<number>>(() => new Set());
+
+  const toggleSlotExpanded = (index: number) => {
+    setExpandedSlots((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
   const handleColorClick = (index: number) => {
     const newGems = [...phase.gems];
     newGems[index] = { ...newGems[index], socketColor: cycleColor(newGems[index].socketColor) };
@@ -63,6 +75,47 @@ export function PhaseEditor({
     onChange({
       gems: phase.gems.slice(0, -1),
     });
+  };
+
+  const handleAddAlternative = (slotIndex: number) => {
+    const newGems = [...phase.gems];
+    const slot = newGems[slotIndex];
+    const alts = slot.alternatives ? [...slot.alternatives] : [];
+    alts.push({ gemName: '', socketColor: 'R' });
+    newGems[slotIndex] = { ...slot, alternatives: alts };
+    onChange({ gems: newGems });
+    setExpandedSlots((prev) => new Set(prev).add(slotIndex));
+  };
+
+  const handleRemoveAlternative = (slotIndex: number, altIndex: number) => {
+    const newGems = [...phase.gems];
+    const slot = newGems[slotIndex];
+    const alts = [...(slot.alternatives ?? [])];
+    alts.splice(altIndex, 1);
+    newGems[slotIndex] = { ...slot, alternatives: alts.length > 0 ? alts : undefined };
+    onChange({ gems: newGems });
+  };
+
+  const handleAltGemSelect = (slotIndex: number, altIndex: number, gemName: string, newSocketColor?: SocketColor) => {
+    const newGems = [...phase.gems];
+    const slot = newGems[slotIndex];
+    const alts = [...(slot.alternatives ?? [])];
+    alts[altIndex] = {
+      ...alts[altIndex],
+      gemName,
+      ...(newSocketColor ? { socketColor: newSocketColor } : {}),
+    };
+    newGems[slotIndex] = { ...slot, alternatives: alts };
+    onChange({ gems: newGems });
+  };
+
+  const handleAltColorClick = (slotIndex: number, altIndex: number) => {
+    const newGems = [...phase.gems];
+    const slot = newGems[slotIndex];
+    const alts = [...(slot.alternatives ?? [])];
+    alts[altIndex] = { ...alts[altIndex], socketColor: cycleColor(alts[altIndex].socketColor) };
+    newGems[slotIndex] = { ...slot, alternatives: alts };
+    onChange({ gems: newGems });
   };
 
   // Compute transition diffs from previous phase
@@ -152,18 +205,73 @@ export function PhaseEditor({
 
       {/* Gem slots */}
       <div className="space-y-1">
-        {phase.gems.map((gem: GemSlot, i: number) => (
-          <div key={i} className="flex items-center gap-2">
-            <SocketColorIndicator color={gem.socketColor} />
-            <GemSlotCombobox
-              value={gem.gemName}
-              socketColor={gem.socketColor}
-              onSelect={(name, sc) => handleGemSelect(i, name, sc)}
-              priorityGemNames={stopGemNames}
-              placeholder={`Gem ${i + 1}`}
-            />
-          </div>
-        ))}
+        {phase.gems.map((gem: GemSlot, i: number) => {
+          const altCount = gem.alternatives?.length ?? 0;
+          const isExpanded = expandedSlots.has(i);
+
+          return (
+            <div key={i}>
+              <div className="flex items-center gap-2">
+                <SocketColorIndicator color={gem.socketColor} />
+                <GemSlotCombobox
+                  value={gem.gemName}
+                  socketColor={gem.socketColor}
+                  onSelect={(name, sc) => handleGemSelect(i, name, sc)}
+                  priorityGemNames={stopGemNames}
+                  placeholder={`Gem ${i + 1}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => altCount > 0 ? toggleSlotExpanded(i) : handleAddAlternative(i)}
+                  className="shrink-0 text-[10px] px-1.5 py-0.5 rounded border border-poe-border/40 text-poe-muted hover:text-poe-text hover:border-poe-gold/40 transition-colors cursor-pointer"
+                  title={altCount > 0 ? 'Toggle alternatives' : 'Add alternative gem'}
+                >
+                  {altCount > 0 ? `Alt ${altCount}` : 'Alt'}
+                </button>
+              </div>
+
+              {/* Alternatives section */}
+              {isExpanded && (
+                <div className="ml-5 mt-1 mb-1 pl-2 border-l-2 border-poe-gold/20 space-y-1">
+                  {gem.alternatives?.map((alt, ai) => (
+                    <div key={ai} className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleAltColorClick(i, ai)}
+                        className="cursor-pointer p-0.5 rounded hover:bg-poe-border/50 transition-colors"
+                        title={`Click to cycle socket color (${alt.socketColor})`}
+                      >
+                        <SocketColorIndicator color={alt.socketColor} className="h-3.5 w-3.5" />
+                      </button>
+                      <GemSlotCombobox
+                        value={alt.gemName}
+                        socketColor={alt.socketColor}
+                        onSelect={(name, sc) => handleAltGemSelect(i, ai, name, sc)}
+                        priorityGemNames={stopGemNames}
+                        placeholder="Alternative gem"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAlternative(i, ai)}
+                        className="shrink-0 text-xs text-poe-muted hover:text-red-400 transition-colors cursor-pointer px-1"
+                        title="Remove alternative"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => handleAddAlternative(i)}
+                    className="flex items-center gap-1 text-[10px] text-poe-muted hover:text-poe-text transition-colors py-0.5 cursor-pointer"
+                  >
+                    <span className="text-poe-gold/60">+</span> Add alt
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
         {phase.gems.length < 6 && (
           <button
             type="button"

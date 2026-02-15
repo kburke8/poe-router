@@ -54,6 +54,15 @@ export function InheritedLinkGroupCard({
             <span key={i} className="inline-flex items-center gap-0.5">
               <SocketColorIndicator color={gem.socketColor} className="h-2 w-2" />
               {gem.gemName}
+              {gem.alternatives && gem.alternatives.length > 0 && (
+                <span className="text-poe-muted/50 text-[10px]">
+                  {gem.alternatives.map((alt, ai) => (
+                    <span key={ai} className="inline-flex items-center gap-0.5 ml-1">
+                      (or <SocketColorIndicator color={alt.socketColor} className="h-1.5 w-1.5" /> {alt.gemName})
+                    </span>
+                  ))}
+                </span>
+              )}
             </span>
           ))}
         </div>

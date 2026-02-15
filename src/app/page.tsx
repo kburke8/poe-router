@@ -120,7 +120,7 @@ export default function DashboardPage() {
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {recentBuilds.map((build) => (
-              <Link key={build.id} href={`/builds/${build.id}`}>
+              <Link key={build.id} href={`/builds/${build.id}/run`}>
                 <Card className="cursor-pointer transition-colors hover:border-poe-gold/50">
                   <h3 className="truncate font-semibold text-poe-text">{build.name}</h3>
                   <div className="mt-2 flex flex-wrap gap-1">

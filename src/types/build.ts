@@ -3,6 +3,7 @@ export type SocketColor = 'R' | 'G' | 'B' | 'W';
 export interface GemSlot {
   gemName: string;
   socketColor: SocketColor;
+  alternatives?: GemSlot[];
 }
 
 export interface GemPickup {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useBuildStore } from '@/stores/useBuildStore';
 import { WizardProgressBar, type WizardStepDef } from './WizardProgressBar';
 import { WizardStepNav } from './WizardStepNav';
@@ -114,6 +115,7 @@ interface BuildWizardInnerProps {
 }
 
 function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced }: BuildWizardInnerProps) {
+  const router = useRouter();
   const {
     updateBuildInfo,
     initializeStops,
@@ -258,6 +260,7 @@ function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced }: B
           onBack={goBack}
           onNext={goNext}
           onSkip={goNext}
+          onFinish={() => router.push(`/builds/${buildId}/run`)}
         />
       </div>
     </div>

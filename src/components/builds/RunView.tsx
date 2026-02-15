@@ -561,6 +561,8 @@ function LinkGroupLine({ resolved }: { resolved: ResolvedLinkGroup }) {
     }
   }
 
+  const gemsWithAlts = activeGems.filter((g) => g.alternatives && g.alternatives.length > 0);
+
   return (
     <div className="text-xs">
       <div className="flex items-center gap-1 flex-wrap">
@@ -582,6 +584,16 @@ function LinkGroupLine({ resolved }: { resolved: ResolvedLinkGroup }) {
           </span>
         ))}
       </div>
+      {gemsWithAlts.map((gem, i) => (
+        <div key={i} className="flex items-center gap-1 flex-wrap ml-4 text-poe-muted/60">
+          {gem.alternatives!.map((alt, ai) => (
+            <span key={ai} className="inline-flex items-center gap-0.5">
+              or <SocketColorIndicator color={alt.socketColor} className="h-2 w-2" />
+              <span className={socketTextColor(alt.socketColor)}>{alt.gemName}</span>
+            </span>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,18 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useBuildStore } from '@/stores/useBuildStore';
 import { BuildCard } from '@/components/builds/BuildCard';
 import { Button } from '@/components/ui/Button';
 import { PobImportDialog } from '@/components/builds/PobImportDialog';
+import { downloadBuildJson, readFileAsJson } from '@/lib/export';
 import type { BackfillResult } from '@/lib/pob/backfill';
 
 export default function BuildsPage() {
   const router = useRouter();
   const { builds, isLoading, loadBuilds, createBuild, deleteBuild, importBuild } = useBuildStore();
   const [importOpen, setImportOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadBuilds().then(() => {
@@ -46,11 +48,55 @@ export default function BuildsPage() {
     }
   };
 
+  const handleExport = (id: string) => {
+    const build = builds.find((b) => b.id === id);
+    if (build) {
+      downloadBuildJson(build);
+      toast.success(`Exported "${build.name}"`);
+    }
+  };
+
+  const handleJsonImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const data = await readFileAsJson(file);
+      const importedBuilds = data.builds ?? [];
+      if (importedBuilds.length === 0) {
+        toast.error('No builds found in import file');
+        return;
+      }
+      for (const build of importedBuilds) {
+        const now = new Date().toISOString();
+        await importBuild({
+          ...build,
+          id: crypto.randomUUID(),
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+      toast.success(`Imported ${importedBuilds.length} build${importedBuilds.length !== 1 ? 's' : ''}`);
+    } catch (err) {
+      toast.error('Failed to import: invalid file format');
+      console.error('JSON import error:', err);
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-poe-gold">Builds</h1>
         <div className="flex items-center gap-2">
+          <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>Import JSON</Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={handleJsonImport}
+          />
           <Button variant="secondary" onClick={() => setImportOpen(true)}>Import from PoB</Button>
           <Button onClick={handleNewBuild}>New Build</Button>
         </div>
@@ -79,6 +125,7 @@ export default function BuildsPage() {
               build={build}
               onClick={() => router.push(`/builds/${build.id}/run`)}
               onDelete={handleDelete}
+              onExport={handleExport}
             />
           ))}
         </div>

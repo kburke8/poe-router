@@ -63,6 +63,20 @@ export function parseImportFile(jsonString: string): ExportData {
 }
 
 /**
+ * Export a single build as a JSON file download.
+ */
+export function downloadBuildJson(build: BuildPlan): void {
+  const data: ExportData = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    builds: [build],
+  };
+  const safeName = build.name.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
+  const date = new Date().toISOString().split('T')[0];
+  downloadJson(data, `${safeName}-export-${date}.json`);
+}
+
+/**
  * Read a File object and parse it as ExportData.
  */
 export function readFileAsJson(file: File): Promise<ExportData> {
