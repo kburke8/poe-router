@@ -13,6 +13,8 @@ import type { ResolvedLinkGroup } from '@/lib/link-group-resolver';
 import { getPreviousPhase } from '@/lib/link-group-resolver';
 import { TOWN_STOPS, type TownStop } from '@/data/town-stops';
 import { getExcludedQuests } from '@/lib/gem-availability';
+import { summarizeVendorCosts } from '@/lib/gem-costs';
+import { CurrencyBadge } from '@/components/ui/CurrencyBadge';
 
 interface StopSectionProps {
   stopPlan: StopPlan;
@@ -136,6 +138,22 @@ export function StopSection({
               onAdd={onAddGemPickup}
               onRemove={onRemoveGemPickup}
             />
+            {className && (() => {
+              const vendorPickups = stopPlan.gemPickups.filter((p) => p.source === 'vendor');
+              if (vendorPickups.length === 0) return null;
+              const costs = summarizeVendorCosts(vendorPickups, className);
+              if (costs.length === 0) return null;
+              const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Regret'];
+              const sorted = costs.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
+              return (
+                <div className="flex items-center gap-1.5 mt-2">
+                  <span className="text-xs text-poe-muted">Cost:</span>
+                  {sorted.map((c) => (
+                    <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
+                  ))}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Link Groups */}

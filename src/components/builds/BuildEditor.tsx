@@ -1,7 +1,11 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical, ChevronDown, ChevronRight } from 'lucide-react';
 import { useBuildStore } from '@/stores/useBuildStore';
 import { BuildHeader } from '@/components/builds/BuildHeader';
 import { StopSection } from '@/components/builds/StopSection';
@@ -10,6 +14,76 @@ import { Button } from '@/components/ui/Button';
 import { getStopsForAct, getActNumbers } from '@/data/town-stops';
 import { getBeachGems } from '@/data/classes';
 import { resolveLinkGroupsAtStop } from '@/lib/link-group-resolver';
+import type { BuildLinkGroup } from '@/types/build';
+
+function SortableLinkGroupItem({ id, linkGroup }: { id: string; linkGroup: BuildLinkGroup }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+  const totalGems = linkGroup.phases.reduce((sum, p) => Math.max(sum, p.gems.length), 0);
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center gap-2 rounded border border-poe-border/40 bg-poe-panel/50 px-2 py-1.5">
+      <button type="button" {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-0.5 text-poe-muted/50 hover:text-poe-muted">
+        <GripVertical className="h-3.5 w-3.5" />
+      </button>
+      <span className="text-sm text-poe-text truncate flex-1">
+        {linkGroup.label || 'Untitled'}
+      </span>
+      <span className="text-xs text-poe-muted shrink-0">
+        {totalGems}L / {linkGroup.phases.length} phase{linkGroup.phases.length !== 1 ? 's' : ''}
+      </span>
+    </div>
+  );
+}
+
+function LinkGroupReorder({ buildId, linkGroups }: { buildId: string; linkGroups: BuildLinkGroup[] }) {
+  const { reorderLinkGroups } = useBuildStore();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = linkGroups.findIndex((lg) => lg.id === active.id);
+    const newIndex = linkGroups.findIndex((lg) => lg.id === over.id);
+    if (oldIndex >= 0 && newIndex >= 0) {
+      reorderLinkGroups(buildId, oldIndex, newIndex);
+    }
+  };
+
+  if (linkGroups.length < 2) return null;
+
+  return (
+    <div className="rounded-md border border-poe-border/30 bg-poe-panel/30">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-poe-muted hover:text-poe-text transition-colors cursor-pointer"
+      >
+        {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+        Reorder Link Groups
+      </button>
+      {isOpen && (
+        <div className="px-3 pb-3 space-y-1">
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={linkGroups.map((lg) => lg.id)} strategy={verticalListSortingStrategy}>
+              {linkGroups.map((lg) => (
+                <SortableLinkGroupItem key={lg.id} id={lg.id} linkGroup={lg} />
+              ))}
+            </SortableContext>
+          </DndContext>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface BuildEditorProps {
   buildId: string;
@@ -125,6 +199,9 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
         onAddPickup={(pickup) => addMulePickup(buildId, pickup)}
         onRemovePickup={(pickupId) => removeMulePickup(buildId, pickupId)}
       />
+
+      {/* Reorder Link Groups */}
+      <LinkGroupReorder buildId={buildId} linkGroups={build.linkGroups} />
 
       {/* Stop Timeline grouped by act */}
       <div className="space-y-4">

@@ -1,8 +1,12 @@
 'use client';
 
+import { Share2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { useRegexStore } from '@/stores/useRegexStore';
+import { encodeBuild } from '@/lib/share';
 import type { BuildPlan } from '@/types/build';
 
 interface BuildCardProps {
@@ -13,6 +17,8 @@ interface BuildCardProps {
 }
 
 export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps) {
+  const { presets } = useRegexStore();
+
   const updatedDate = new Date(build.updatedAt).toLocaleDateString(undefined, {
     month: 'short',
     day: 'numeric',
@@ -20,6 +26,21 @@ export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps
     hour: '2-digit',
     minute: '2-digit',
   });
+
+  const handleShare = () => {
+    const regexPreset = build.regexPresetId
+      ? presets.find((p) => p.id === build.regexPresetId)
+      : undefined;
+    const encoded = encodeBuild(build, regexPreset);
+    const url = `${window.location.origin}/builds/import?data=${encoded}`;
+    if (url.length > 8000) {
+      toast.error('Build too large for URL sharing. Use JSON export instead.');
+      return;
+    }
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success('Share link copied!');
+    });
+  };
 
   const totalStops = build.stops?.length ?? 0;
   const enabledStops = build.stops?.filter((s) => s.enabled).length ?? 0;
@@ -60,6 +81,17 @@ export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps
           <p className="text-xs text-poe-muted">Updated {updatedDate}</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare();
+            }}
+            title="Copy share link"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+          </Button>
           <Button
             variant="secondary"
             size="sm"

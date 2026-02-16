@@ -56,6 +56,10 @@ interface BuildState {
   removeCustomStop: (buildId: string, stopId: string) => Promise<void>;
   updateCustomStopLabel: (buildId: string, stopId: string, label: string) => Promise<void>;
 
+  // Reorder
+  reorderGemsInPhase: (buildId: string, linkGroupId: string, phaseId: string, fromIndex: number, toIndex: number) => Promise<void>;
+  reorderLinkGroups: (buildId: string, fromIndex: number, toIndex: number) => Promise<void>;
+
   // Import
   importBuild: (build: BuildPlan) => Promise<string>;
 
@@ -235,6 +239,12 @@ export const useBuildStore = create<BuildState>()(
       set((state) => {
         const result = findBuildAndStop(state.builds, buildId, stopId);
         if (!result) return;
+        // Quest rewards: replace existing pick from the same reward set
+        if (pickup.source === 'quest_reward' && pickup.rewardSetId) {
+          result.stop.gemPickups = result.stop.gemPickups.filter(
+            (p) => !(p.source === 'quest_reward' && p.rewardSetId === pickup.rewardSetId)
+          );
+        }
         result.stop.gemPickups.push(pickup);
         result.build.updatedAt = new Date().toISOString();
       });
@@ -456,6 +466,34 @@ export const useBuildStore = create<BuildState>()(
         if (!result || !result.stop.isCustom) return;
         result.stop.customLabel = label;
         result.build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    // === Reorder ===
+
+    async reorderGemsInPhase(buildId, linkGroupId, phaseId, fromIndex, toIndex) {
+      set((state) => {
+        const build = state.builds.find((b) => b.id === buildId);
+        if (!build) return;
+        const lg = build.linkGroups.find((g) => g.id === linkGroupId);
+        if (!lg) return;
+        const phase = lg.phases.find((p) => p.id === phaseId);
+        if (!phase) return;
+        const [moved] = phase.gems.splice(fromIndex, 1);
+        phase.gems.splice(toIndex, 0, moved);
+        build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    async reorderLinkGroups(buildId, fromIndex, toIndex) {
+      set((state) => {
+        const build = state.builds.find((b) => b.id === buildId);
+        if (!build) return;
+        const [moved] = build.linkGroups.splice(fromIndex, 1);
+        build.linkGroups.splice(toIndex, 0, moved);
+        build.updatedAt = new Date().toISOString();
       });
       debouncedSave(() => get().builds.find((b) => b.id === buildId));
     },

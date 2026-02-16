@@ -150,7 +150,10 @@ function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced }: B
   const clampedStep = Math.min(currentStep, steps.length - 1);
 
   const setCurrentStep = useCallback(
-    (step: number) => setCurrentStepRaw(Math.min(step, steps.length - 1)),
+    (step: number) => {
+      setCurrentStepRaw(Math.min(step, steps.length - 1));
+      window.scrollTo(0, 0);
+    },
     [steps.length],
   );
 

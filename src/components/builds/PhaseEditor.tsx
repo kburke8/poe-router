@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { SocketColorIndicator } from '@/components/ui/SocketColorIndicator';
@@ -26,6 +30,23 @@ function cycleColor(current: SocketColor): SocketColor {
   return SOCKET_CYCLE[(idx + 1) % SOCKET_CYCLE.length];
 }
 
+function SortableGemSlot({ id, children }: { id: string; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center gap-1">
+      <button type="button" {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-0.5 text-poe-muted/50 hover:text-poe-muted">
+        <GripVertical className="h-3.5 w-3.5" />
+      </button>
+      <div className="flex-1">{children}</div>
+    </div>
+  );
+}
+
 export function PhaseEditor({
   phase,
   buildLinkGroup,
@@ -36,6 +57,24 @@ export function PhaseEditor({
   stopGemNames,
   previousPhaseGems,
 }: PhaseEditorProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = Number(String(active.id).split('-')[1]);
+    const newIndex = Number(String(over.id).split('-')[1]);
+    const newGems = [...phase.gems];
+    const [moved] = newGems.splice(oldIndex, 1);
+    newGems.splice(newIndex, 0, moved);
+    onChange({ gems: newGems });
+  };
+
+  const gemIds = phase.gems.map((_: GemSlot, i: number) => `gem-${i}`);
+
   const [expandedSlots, setExpandedSlots] = useState<Set<number>>(() => new Set());
 
   const toggleSlotExpanded = (index: number) => {
@@ -204,84 +243,90 @@ export function PhaseEditor({
       )}
 
       {/* Gem slots */}
-      <div className="space-y-1">
-        {phase.gems.map((gem: GemSlot, i: number) => {
-          const altCount = gem.alternatives?.length ?? 0;
-          const isExpanded = expandedSlots.has(i);
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={gemIds} strategy={verticalListSortingStrategy}>
+          <div className="space-y-1">
+            {phase.gems.map((gem: GemSlot, i: number) => {
+              const altCount = gem.alternatives?.length ?? 0;
+              const isExpanded = expandedSlots.has(i);
 
-          return (
-            <div key={i}>
-              <div className="flex items-center gap-2">
-                <SocketColorIndicator color={gem.socketColor} />
-                <GemSlotCombobox
-                  value={gem.gemName}
-                  socketColor={gem.socketColor}
-                  onSelect={(name, sc) => handleGemSelect(i, name, sc)}
-                  priorityGemNames={stopGemNames}
-                  placeholder={`Gem ${i + 1}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => altCount > 0 ? toggleSlotExpanded(i) : handleAddAlternative(i)}
-                  className="shrink-0 text-[10px] px-1.5 py-0.5 rounded border border-poe-border/40 text-poe-muted hover:text-poe-text hover:border-poe-gold/40 transition-colors cursor-pointer"
-                  title={altCount > 0 ? 'Toggle alternatives' : 'Add alternative gem'}
-                >
-                  {altCount > 0 ? `Alt ${altCount}` : 'Alt'}
-                </button>
-              </div>
-
-              {/* Alternatives section */}
-              {isExpanded && (
-                <div className="ml-5 mt-1 mb-1 pl-2 border-l-2 border-poe-gold/20 space-y-1">
-                  {gem.alternatives?.map((alt, ai) => (
-                    <div key={ai} className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleAltColorClick(i, ai)}
-                        className="cursor-pointer p-0.5 rounded hover:bg-poe-border/50 transition-colors"
-                        title={`Click to cycle socket color (${alt.socketColor})`}
-                      >
-                        <SocketColorIndicator color={alt.socketColor} className="h-3.5 w-3.5" />
-                      </button>
+              return (
+                <SortableGemSlot key={gemIds[i]} id={gemIds[i]}>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <SocketColorIndicator color={gem.socketColor} />
                       <GemSlotCombobox
-                        value={alt.gemName}
-                        socketColor={alt.socketColor}
-                        onSelect={(name, sc) => handleAltGemSelect(i, ai, name, sc)}
+                        value={gem.gemName}
+                        socketColor={gem.socketColor}
+                        onSelect={(name, sc) => handleGemSelect(i, name, sc)}
                         priorityGemNames={stopGemNames}
-                        placeholder="Alternative gem"
+                        placeholder={`Gem ${i + 1}`}
                       />
                       <button
                         type="button"
-                        onClick={() => handleRemoveAlternative(i, ai)}
-                        className="shrink-0 text-xs text-poe-muted hover:text-red-400 transition-colors cursor-pointer px-1"
-                        title="Remove alternative"
+                        onClick={() => altCount > 0 ? toggleSlotExpanded(i) : handleAddAlternative(i)}
+                        className="shrink-0 text-[10px] px-1.5 py-0.5 rounded border border-poe-border/40 text-poe-muted hover:text-poe-text hover:border-poe-gold/40 transition-colors cursor-pointer"
+                        title={altCount > 0 ? 'Toggle alternatives' : 'Add alternative gem'}
                       >
-                        &times;
+                        {altCount > 0 ? `Alt ${altCount}` : 'Alt'}
                       </button>
                     </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => handleAddAlternative(i)}
-                    className="flex items-center gap-1 text-[10px] text-poe-muted hover:text-poe-text transition-colors py-0.5 cursor-pointer"
-                  >
-                    <span className="text-poe-gold/60">+</span> Add alt
-                  </button>
-                </div>
-              )}
-            </div>
-          );
-        })}
-        {phase.gems.length < 6 && (
-          <button
-            type="button"
-            onClick={addSocket}
-            className="flex items-center gap-1.5 text-xs text-poe-muted hover:text-poe-text transition-colors py-1 cursor-pointer"
-          >
-            <span className="text-poe-gold/60">+</span> Add socket
-          </button>
-        )}
-      </div>
+
+                    {/* Alternatives section */}
+                    {isExpanded && (
+                      <div className="ml-5 mt-1 mb-1 pl-2 border-l-2 border-poe-gold/20 space-y-1">
+                        {gem.alternatives?.map((alt, ai) => (
+                          <div key={ai} className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleAltColorClick(i, ai)}
+                              className="cursor-pointer p-0.5 rounded hover:bg-poe-border/50 transition-colors"
+                              title={`Click to cycle socket color (${alt.socketColor})`}
+                            >
+                              <SocketColorIndicator color={alt.socketColor} className="h-3.5 w-3.5" />
+                            </button>
+                            <GemSlotCombobox
+                              value={alt.gemName}
+                              socketColor={alt.socketColor}
+                              onSelect={(name, sc) => handleAltGemSelect(i, ai, name, sc)}
+                              priorityGemNames={stopGemNames}
+                              placeholder="Alternative gem"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveAlternative(i, ai)}
+                              className="shrink-0 text-xs text-poe-muted hover:text-red-400 transition-colors cursor-pointer px-1"
+                              title="Remove alternative"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => handleAddAlternative(i)}
+                          className="flex items-center gap-1 text-[10px] text-poe-muted hover:text-poe-text transition-colors py-0.5 cursor-pointer"
+                        >
+                          <span className="text-poe-gold/60">+</span> Add alt
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </SortableGemSlot>
+              );
+            })}
+            {phase.gems.length < 6 && (
+              <button
+                type="button"
+                onClick={addSocket}
+                className="flex items-center gap-1.5 text-xs text-poe-muted hover:text-poe-text transition-colors py-1 cursor-pointer"
+              >
+                <span className="text-poe-gold/60">+</span> Add socket
+              </button>
+            )}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {/* Notes */}
       <Input

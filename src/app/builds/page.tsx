@@ -7,13 +7,16 @@ import { useBuildStore } from '@/stores/useBuildStore';
 import { BuildCard } from '@/components/builds/BuildCard';
 import { Button } from '@/components/ui/Button';
 import { PobImportDialog } from '@/components/builds/PobImportDialog';
+import { TemplatePickerDialog } from '@/components/builds/TemplatePickerDialog';
 import { downloadBuildJson, readFileAsJson } from '@/lib/export';
 import type { BackfillResult } from '@/lib/pob/backfill';
+import type { BuildTemplate } from '@/data/templates';
 
 export default function BuildsPage() {
   const router = useRouter();
   const { builds, isLoading, loadBuilds, createBuild, deleteBuild, importBuild } = useBuildStore();
   const [importOpen, setImportOpen] = useState(false);
+  const [templateOpen, setTemplateOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -45,6 +48,23 @@ export default function BuildsPage() {
     } catch (err) {
       toast.error('Failed to import build');
       console.error('Import error:', err);
+    }
+  };
+
+  const handleTemplateSelect = async (template: BuildTemplate) => {
+    try {
+      const now = new Date().toISOString();
+      const build = JSON.parse(JSON.stringify(template.build));
+      build.id = crypto.randomUUID();
+      build.createdAt = now;
+      build.updatedAt = now;
+      const id = await importBuild(build);
+      toast.success(`Created "${template.name}" from template`);
+      setTemplateOpen(false);
+      router.push(`/builds/${id}`);
+    } catch (err) {
+      toast.error('Failed to create build from template');
+      console.error('Template import error:', err);
     }
   };
 
@@ -98,6 +118,7 @@ export default function BuildsPage() {
             onChange={handleJsonImport}
           />
           <Button variant="secondary" onClick={() => setImportOpen(true)}>Import from PoB</Button>
+          <Button variant="secondary" onClick={() => setTemplateOpen(true)}>New from Template</Button>
           <Button onClick={handleNewBuild}>New Build</Button>
         </div>
       </div>
@@ -106,6 +127,12 @@ export default function BuildsPage() {
         open={importOpen}
         onOpenChange={setImportOpen}
         onImport={handlePobImport}
+      />
+
+      <TemplatePickerDialog
+        open={templateOpen}
+        onOpenChange={setTemplateOpen}
+        onSelect={handleTemplateSelect}
       />
 
       {isLoading ? (

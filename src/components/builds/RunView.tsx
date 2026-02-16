@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { CopyButton } from '@/components/ui/CopyButton';
+import { CurrencyBadge } from '@/components/ui/CurrencyBadge';
 import { SocketColorIndicator } from '@/components/ui/SocketColorIndicator';
 import { getStopById, getStopsForAct, getActNumbers, getQuestById } from '@/data/town-stops';
 import { getRewardPickersAtStop, getExcludedQuests } from '@/lib/gem-availability';
@@ -14,6 +16,7 @@ import { resolveLinkGroupsAtStop, getPreviousPhase } from '@/lib/link-group-reso
 import { summarizeVendorCosts } from '@/lib/gem-costs';
 import { useRegexStore } from '@/stores/useRegexStore';
 import { combineCategories } from '@/lib/regex/combiner';
+import { encodeBuild } from '@/lib/share';
 import type { BuildPlan, StopPlan, GemPickup, BuildLinkGroup } from '@/types/build';
 import type { ResolvedLinkGroup } from '@/lib/link-group-resolver';
 
@@ -53,6 +56,21 @@ export function RunView({ build }: RunViewProps) {
     if (!preset) return '';
     return combineCategories(preset.categories);
   }, [build.regexPresetId, presets]);
+
+  const handleShare = () => {
+    const regexPreset = build.regexPresetId
+      ? presets.find((p) => p.id === build.regexPresetId)
+      : undefined;
+    const encoded = encodeBuild(build, regexPreset);
+    const url = `${window.location.origin}/builds/import?data=${encoded}`;
+    if (url.length > 8000) {
+      toast.error('Build too large for URL sharing. Use JSON export instead.');
+      return;
+    }
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success('Share link copied!');
+    });
+  };
 
   // Derive visibility flags from detail level
   const showGems = detail <= 1;
@@ -136,13 +154,45 @@ export function RunView({ build }: RunViewProps) {
             </Button>
           </div>
         </div>
-        <Link
-          href={`/builds/${build.id}`}
-          className="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium text-poe-muted hover:bg-poe-border/50 hover:text-poe-text transition-colors"
-        >
-          &larr; Edit
-        </Link>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleShare}
+            title="Copy share link"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+          </Button>
+          <Link
+            href={`/builds/${build.id}`}
+            className="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium text-poe-muted hover:bg-poe-border/50 hover:text-poe-text transition-colors"
+          >
+            &larr; Edit
+          </Link>
+        </div>
       </div>
+
+      {/* Full-run vendor budget */}
+      {build.className && (() => {
+        const allVendorPickups = build.stops
+          .filter((s) => s.enabled)
+          .flatMap((s) => s.gemPickups.filter((p) => p.source === 'vendor'));
+        if (allVendorPickups.length === 0) return null;
+        const totalCosts = summarizeVendorCosts(allVendorPickups, build.className);
+        if (totalCosts.length === 0) return null;
+        const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Regret'];
+        const sorted = totalCosts.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
+        return (
+          <div className="flex items-center gap-2 rounded-md border border-poe-border bg-poe-card px-3 py-1.5">
+            <span className="text-xs text-poe-muted shrink-0">Budget:</span>
+            <div className="flex flex-wrap gap-1">
+              {sorted.map((c) => (
+                <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Detail slider */}
       <div className="flex items-center gap-3">
@@ -248,10 +298,27 @@ export function RunView({ build }: RunViewProps) {
             const hasEndOfAct = endOfActLinks.length > 0 && endOfActChanged;
             if (!hasStopsToShow && !hasEndOfAct) return null;
 
+            const actVendorPickups = build.className
+              ? interleavedStops.flatMap(({ stopPlan }) =>
+                  stopPlan.gemPickups.filter((p) => p.source === 'vendor'))
+              : [];
+            const actCosts = build.className && actVendorPickups.length > 0
+              ? summarizeVendorCosts(actVendorPickups, build.className)
+              : [];
+            const COST_ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Regret'];
+            const sortedActCosts = actCosts.sort((a, b) => COST_ORDER.indexOf(a.shortName) - COST_ORDER.indexOf(b.shortName));
+
             return (
               <div key={actNum}>
-                <h2 className="text-xs font-bold text-poe-gold/70 uppercase tracking-widest mb-1.5 border-b border-poe-border/50 pb-1">
-                  Act {actNum}
+                <h2 className="text-xs font-bold text-poe-gold/70 uppercase tracking-widest mb-1.5 border-b border-poe-border/50 pb-1 flex items-center gap-2">
+                  <span>Act {actNum}</span>
+                  {sortedActCosts.length > 0 && (
+                    <span className="flex items-center gap-1 font-normal normal-case tracking-normal">
+                      {sortedActCosts.map((c) => (
+                        <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
+                      ))}
+                    </span>
+                  )}
                 </h2>
                 {showStops && interleavedStops.length > 0 && (
                   <div className="divide-y divide-poe-border/20">
