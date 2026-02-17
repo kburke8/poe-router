@@ -5,6 +5,7 @@ const CURRENCY_STYLES: Record<string, string> = {
   Trans: 'text-blue-400 bg-blue-700/30',
   Alt: 'text-amber-400 bg-amber-700/30',
   Chance: 'text-green-400 bg-green-700/30',
+  Alch: 'text-yellow-400 bg-yellow-700/30',
   Regret: 'text-red-400 bg-red-700/30',
 };
 

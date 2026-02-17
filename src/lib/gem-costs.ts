@@ -10,6 +10,7 @@ const WISDOM: GemCost = { currency: 'Scroll of Wisdom', shortName: 'Wisdom' };
 const TRANS: GemCost = { currency: 'Orb of Transmutation', shortName: 'Trans' };
 const ALT: GemCost = { currency: 'Orb of Alteration', shortName: 'Alt' };
 const CHANCE: GemCost = { currency: 'Orb of Chance', shortName: 'Chance' };
+const ALCH: GemCost = { currency: 'Orb of Alchemy', shortName: 'Alch' };
 const REGRET: GemCost = { currency: 'Orb of Regret', shortName: 'Regret' };
 
 // Vendor gem costs by quest milestone (not strictly by act).
@@ -31,9 +32,9 @@ const QUEST_COST: Record<string, GemCost> = {
   a_fixture_of_fate:  ALT,
   // Act 3 late (Gravicius onward) — Orb of Chance
   sever_the_right_hand: CHANCE,
-  // Act 4 — Orb of Chance
-  breaking_the_seal:    CHANCE,
-  the_eternal_nightmare: CHANCE,
+  // Act 4 — Orb of Alchemy
+  breaking_the_seal:    ALCH,
+  the_eternal_nightmare: ALCH,
   // Act 6+ (Lilly Roth) — Orb of Regret
   fallen_from_grace: REGRET,
 };
