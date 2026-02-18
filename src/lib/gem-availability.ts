@@ -1,5 +1,5 @@
-import { TOWN_STOPS, getStopById, getQuestById } from '@/data/town-stops';
-import { QUEST_GEM_TABLES, LILLY_ROTH_QUEST_ID, type ClassName } from '@/data/gem-rewards';
+import { TOWN_STOPS, GEM_QUESTS, getStopById, getQuestById } from '@/data/town-stops';
+import { QUEST_GEM_TABLES, LILLY_ROTH_QUEST_ID, SIOSA_QUEST_ID, ALL_CLASSES, type ClassName } from '@/data/gem-rewards';
 import gemsData from '@/data/gems.json';
 import type { Gem } from '@/types/gem';
 
@@ -111,6 +111,30 @@ function getVendorGemNames(questsCompleted: Set<string>, className: ClassName): 
   return names;
 }
 
+/** Quest IDs for Acts 1-3 (used for Siosa cross-class vendor access). */
+const ACTS_1_3_QUEST_IDS = new Set(
+  GEM_QUESTS.filter((q) => q.actNumber <= 3).map((q) => q.id),
+);
+
+/**
+ * Collect ALL vendor gem names from completed Acts 1-3 quests across ALL classes.
+ * Used when Siosa (A Fixture of Fate) is completed — he sells all Acts 1-3 vendor gems to every class.
+ */
+function getSiosaCrossClassVendorGemNames(questsCompleted: Set<string>): Set<string> {
+  const names = new Set<string>();
+  for (const table of QUEST_GEM_TABLES) {
+    if (!questsCompleted.has(table.questId)) continue;
+    if (!ACTS_1_3_QUEST_IDS.has(table.questId)) continue;
+    for (const cls of ALL_CLASSES) {
+      const classVendor = table.vendorRewards[cls];
+      if (classVendor) {
+        for (const gemName of classVendor) names.add(gemName);
+      }
+    }
+  }
+  return names;
+}
+
 /**
  * Check if a specific gem is available at a given stop for a class.
  */
@@ -127,6 +151,11 @@ export function isGemAvailable(gemName: string, stopId: string, className: strin
     if (!questsAtStop.has(table.questId)) continue;
     const classRewards = table.questRewards[cls];
     if (classRewards?.includes(gemName)) return true;
+  }
+
+  // Siosa cross-class vendor access for Acts 1-3
+  if (questsAtStop.has(SIOSA_QUEST_ID)) {
+    if (getSiosaCrossClassVendorGemNames(questsAtStop).has(gemName)) return true;
   }
 
   // Check vendor availability
@@ -311,8 +340,18 @@ export function getVendorGemsAtStop(stopId: string, className: string, disabledS
     return result;
   }
 
-  const currentVendor = getVendorGemNames(questsAtStop, cls);
-  const prevVendor = getVendorGemNames(previousQuests, cls);
+  let currentVendor = getVendorGemNames(questsAtStop, cls);
+  let prevVendor = getVendorGemNames(previousQuests, cls);
+
+  // Siosa cross-class vendor access for Acts 1-3
+  if (questsAtStop.has(SIOSA_QUEST_ID)) {
+    const siosaCurrent = getSiosaCrossClassVendorGemNames(questsAtStop);
+    currentVendor = new Set([...currentVendor, ...siosaCurrent]);
+  }
+  if (previousQuests.has(SIOSA_QUEST_ID)) {
+    const siosaPrev = getSiosaCrossClassVendorGemNames(previousQuests);
+    prevVendor = new Set([...prevVendor, ...siosaPrev]);
+  }
 
   for (const gemName of currentVendor) {
     const gem = findGemByName(gemName);

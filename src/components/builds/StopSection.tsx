@@ -143,7 +143,7 @@ export function StopSection({
               if (vendorPickups.length === 0) return null;
               const costs = summarizeVendorCosts(vendorPickups, className);
               if (costs.length === 0) return null;
-              const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Regret'];
+              const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
               const sorted = costs.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
               return (
                 <div className="flex items-center gap-1.5 mt-2">

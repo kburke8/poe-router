@@ -180,7 +180,7 @@ export function RunView({ build }: RunViewProps) {
         if (allVendorPickups.length === 0) return null;
         const totalCosts = summarizeVendorCosts(allVendorPickups, build.className);
         if (totalCosts.length === 0) return null;
-        const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Regret'];
+        const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
         const sorted = totalCosts.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
         return (
           <div className="flex items-center gap-2 rounded-md border border-poe-border bg-poe-card px-3 py-1.5">
@@ -305,7 +305,7 @@ export function RunView({ build }: RunViewProps) {
             const actCosts = build.className && actVendorPickups.length > 0
               ? summarizeVendorCosts(actVendorPickups, build.className)
               : [];
-            const COST_ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Regret'];
+            const COST_ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
             const sortedActCosts = actCosts.sort((a, b) => COST_ORDER.indexOf(a.shortName) - COST_ORDER.indexOf(b.shortName));
 
             return (

@@ -23,6 +23,9 @@ export interface QuestGemTable {
 // After this quest, ALL gems become available as vendor purchases for ALL classes
 export const LILLY_ROTH_QUEST_ID = 'fallen_from_grace';
 
+// After this quest, Siosa sells ALL Acts 1-3 vendor gems to ALL classes
+export const SIOSA_QUEST_ID = 'a_fixture_of_fate';
+
 // =============================================================================
 // Act 1
 // =============================================================================
@@ -305,10 +308,51 @@ const LOST_IN_LOVE_MARAMOA: QuestGemTable = {
 };
 
 // https://www.poewiki.net/wiki/A_Fixture_of_Fate
-// Siosa becomes a gem vendor selling a wide range of gems
+// Siosa becomes a gem vendor selling a wide range of gems.
+// Quest rewards are class-specific; vendor access (all Acts 1-3 gems, all classes) is
+// handled via special-case logic in gem-availability.ts.
 const A_FIXTURE_OF_FATE: QuestGemTable = {
   questId: 'a_fixture_of_fate',
-  questRewards: {},
+  questRewards: {
+    Witch: [
+      'Fire Penetration Support', 'Cold Penetration Support', 'Lightning Penetration Support',
+      'Burning Damage Support', 'Blasphemy Support', 'Swift Affliction Support',
+      'Energy Leech Support', 'Intensify Support', 'Pinpoint Support',
+      'Feeding Frenzy Support', 'Meat Shield Support', 'Archmage Support',
+      'Impending Doom Support',
+    ],
+    Shadow: [
+      'Second Wind Support', 'Cold Penetration Support', 'Lightning Penetration Support',
+      'Faster Projectiles Support', 'Ice Bite Support', 'Innervate Support',
+      'Critical Strike Affliction Support', 'Swift Affliction Support',
+      'Charged Traps Support', 'High-Impact Mine Support', 'Energy Leech Support',
+      'Charged Mines Support', 'Archmage Support', 'Impending Doom Support',
+      'Pinpoint Support',
+    ],
+    Ranger: [
+      'Life Leech Support', 'Fortify Support', 'Hypothermia Support',
+      'Ice Bite Support', 'Critical Strike Affliction Support', 'Impale Support',
+      'Second Wind Support', 'Focused Ballista Support',
+    ],
+    Duelist: [
+      'Life Leech Support', 'Fortify Support', 'Arrogance Support',
+      'Hypothermia Support', 'Pulverise Support', 'Impale Support',
+      'Urgent Orders Support', 'Bloodthirst Support',
+    ],
+    Marauder: [
+      'Life Leech Support', 'Fortify Support', 'Arrogance Support',
+      'Pulverise Support', 'Impale Support', 'Urgent Orders Support',
+      'Bloodthirst Support', 'Controlled Blaze Support',
+    ],
+    Templar: [
+      'Fire Penetration Support', 'Cold Penetration Support', 'Lightning Penetration Support',
+      'Fortify Support', 'Burning Damage Support', 'Blasphemy Support',
+      'Energy Leech Support', 'Intensify Support', 'Pulverise Support',
+      'Divine Blessing Support', 'Archmage Support', 'Swiftbrand Support',
+      'Arrogance Support',
+    ],
+    Scion: [],
+  },
   vendorRewards: {},
 };
 

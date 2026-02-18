@@ -137,22 +137,22 @@ export const TOWN_STOPS: TownStop[] = [
     sortOrder: 11,
   },
   {
-    id: 'a3_after_library',
-    label: 'After Library (Fixture of Fate)',
-    actNumber: 3,
-    questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate'],
-    defaultEnabled: true,
-    sortOrder: 12,
-    exclusiveQuests: ['a_fixture_of_fate'],
-  },
-  {
     id: 'a3_after_gravicius',
     label: 'After Gravicius',
     actNumber: 3,
-    questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand'],
+    questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'sever_the_right_hand'],
+    defaultEnabled: true,
+    sortOrder: 12,
+    exclusiveQuests: ['sever_the_right_hand'],
+  },
+  {
+    id: 'a3_after_library',
+    label: 'After Library (Fixture of Fate)',
+    actNumber: 3,
+    questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'sever_the_right_hand', 'a_fixture_of_fate'],
     defaultEnabled: true,
     sortOrder: 13,
-    exclusiveQuests: ['sever_the_right_hand'],
+    exclusiveQuests: ['a_fixture_of_fate'],
   },
 
   // Act 4
