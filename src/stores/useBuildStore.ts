@@ -63,6 +63,10 @@ interface BuildState {
   // Import
   importBuild: (build: BuildPlan) => Promise<string>;
 
+  // Gem drop mutations
+  dropGem: (buildId: string, stopId: string, gemName: string) => Promise<void>;
+  undropGem: (buildId: string, stopId: string, gemName: string) => Promise<void>;
+
   // Mule mutations
   updateMuleClass: (buildId: string, muleClassName: string) => Promise<void>;
   addMulePickup: (buildId: string, pickup: MulePickup) => Promise<void>;
@@ -507,6 +511,36 @@ export const useBuildStore = create<BuildState>()(
         state.activeBuildId = build.id;
       });
       return build.id;
+    },
+
+    // === Gem drop mutations ===
+
+    async dropGem(buildId, stopId, gemName) {
+      set((state) => {
+        const result = findBuildAndStop(state.builds, buildId, stopId);
+        if (!result) return;
+        if (!result.stop.droppedGems) result.stop.droppedGems = [];
+        if (!result.stop.droppedGems.includes(gemName)) {
+          result.stop.droppedGems.push(gemName);
+        }
+        result.build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    async undropGem(buildId, stopId, gemName) {
+      set((state) => {
+        const result = findBuildAndStop(state.builds, buildId, stopId);
+        if (!result) return;
+        if (result.stop.droppedGems) {
+          result.stop.droppedGems = result.stop.droppedGems.filter((n) => n !== gemName);
+          if (result.stop.droppedGems.length === 0) {
+            delete result.stop.droppedGems;
+          }
+        }
+        result.build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
     },
 
     // === Mule mutations ===

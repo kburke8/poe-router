@@ -110,6 +110,8 @@ export function BuildEditor({ buildId, inventoryOnly }: BuildEditorProps) {
     updateMuleClass,
     addMulePickup,
     removeMulePickup,
+    dropGem,
+    undropGem,
     addCustomStop,
     removeCustomStop,
     updateCustomStopLabel,
@@ -256,6 +258,8 @@ export function BuildEditor({ buildId, inventoryOnly }: BuildEditorProps) {
                         onRemovePhase={(lgId, phaseId) => removePhase(buildId, lgId, phaseId)}
                         onUpdateLinkGroupLabel={(lgId, label) => updateLinkGroupLabel(buildId, lgId, label)}
                         onUpdateNotes={(notes) => updateStopNotes(buildId, townStop.id, notes)}
+                        onDropGem={(gemName) => dropGem(buildId, townStop.id, gemName)}
+                        onUndropGem={(gemName) => undropGem(buildId, townStop.id, gemName)}
                       />
                       {/* Custom stops anchored after this town stop */}
                       {(() => {
@@ -292,6 +296,8 @@ export function BuildEditor({ buildId, inventoryOnly }: BuildEditorProps) {
                             onRemovePhase={(lgId, phaseId) => removePhase(buildId, lgId, phaseId)}
                             onUpdateLinkGroupLabel={(lgId, label) => updateLinkGroupLabel(buildId, lgId, label)}
                             onUpdateNotes={(notes) => updateStopNotes(buildId, cs.stopId, notes)}
+                            onDropGem={(gemName) => dropGem(buildId, cs.stopId, gemName)}
+                            onUndropGem={(gemName) => undropGem(buildId, cs.stopId, gemName)}
                             onDeleteCustomStop={() => removeCustomStop(buildId, cs.stopId)}
                             onUpdateCustomLabel={(label) => updateCustomStopLabel(buildId, cs.stopId, label)}
                           />

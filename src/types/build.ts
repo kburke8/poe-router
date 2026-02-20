@@ -22,6 +22,7 @@ export interface StopPlan {
   isCustom?: boolean;
   customLabel?: string;
   afterStopId?: string;
+  droppedGems?: string[];
 }
 
 export interface GearGoal {

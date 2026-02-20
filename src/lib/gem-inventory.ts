@@ -54,6 +54,13 @@ export function getInventoryAtStop(build: BuildPlan, stopId: string): Set<string
     for (const pickup of stop.gemPickups) {
       inventory.add(pickup.gemName);
     }
+
+    // Remove gems dropped at this stop
+    if (stop.droppedGems) {
+      for (const name of stop.droppedGems) {
+        inventory.delete(name);
+      }
+    }
   }
 
   return inventory;

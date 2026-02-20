@@ -15,6 +15,7 @@ import { TOWN_STOPS, type TownStop } from '@/data/town-stops';
 import { getExcludedQuests } from '@/lib/gem-availability';
 import { summarizeVendorCosts } from '@/lib/gem-costs';
 import { CurrencyBadge } from '@/components/ui/CurrencyBadge';
+import { InventoryPanel } from '@/components/builds/InventoryPanel';
 
 interface StopSectionProps {
   stopPlan: StopPlan;
@@ -37,6 +38,8 @@ interface StopSectionProps {
   onRemovePhase: (lgId: string, phaseId: string) => void;
   onUpdateLinkGroupLabel: (lgId: string, label: string) => void;
   onUpdateNotes: (notes: string) => void;
+  onDropGem?: (gemName: string) => void;
+  onUndropGem?: (gemName: string) => void;
   onDeleteCustomStop?: () => void;
   onUpdateCustomLabel?: (label: string) => void;
 }
@@ -61,6 +64,8 @@ export function StopSection({
   onRemovePhase,
   onUpdateLinkGroupLabel,
   onUpdateNotes,
+  onDropGem,
+  onUndropGem,
   onDeleteCustomStop,
   onUpdateCustomLabel,
 }: StopSectionProps) {
@@ -108,6 +113,38 @@ export function StopSection({
   // For custom stops, use the anchor town stop's stopId for link group actions
   const effectiveStopId = stopPlan.stopId;
 
+  // Compute gems used in each link group for cross-group filtering
+  const gemsByLinkGroup = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    for (const resolved of resolvedLinkGroups) {
+      const names = new Set(
+        resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean),
+      );
+      map.set(resolved.buildLinkGroup.id, names);
+    }
+    return map;
+  }, [resolvedLinkGroups]);
+
+  // All gems currently in any link group at this stop
+  const gemsInLinkGroups = useMemo(() => {
+    const all = new Set<string>();
+    for (const names of gemsByLinkGroup.values()) {
+      for (const n of names) all.add(n);
+    }
+    return all;
+  }, [gemsByLinkGroup]);
+
+  // Filter inventory per link group: exclude gems used in OTHER groups
+  const getFilteredInventory = (linkGroupId: string) => {
+    const otherUsed = new Set<string>();
+    for (const [lgId, names] of gemsByLinkGroup) {
+      if (lgId !== linkGroupId) {
+        for (const n of names) otherUsed.add(n);
+      }
+    }
+    return inventoryGemNames.filter((name) => !otherUsed.has(name));
+  };
+
   return (
     <div>
       <StopHeader
@@ -127,35 +164,44 @@ export function StopSection({
 
       <Collapsible.Root open={open && stopPlan.enabled} onOpenChange={setOpen}>
         <Collapsible.Content className="mt-1 ml-6 rounded-md border border-poe-border bg-poe-card p-4 space-y-4">
-          {/* Gem Pickups */}
-          <div>
-            <h4 className="text-sm font-medium text-poe-text mb-2">Gems</h4>
-            <GemPickupList
-              pickups={stopPlan.gemPickups}
-              stopId={isCustomStop ? (stopPlan.afterStopId ?? townStop.id) : stopPlan.stopId}
-              className={className}
-              disabledStopIds={disabledStopIds}
-              isCustomStop={isCustomStop}
-              showQuestRewards={isCustomStop ? showQuestRewards : true}
-              onAdd={onAddGemPickup}
-              onRemove={onRemoveGemPickup}
+          {/* Gems + Inventory row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm font-medium text-poe-text mb-2">Gems</h4>
+              <GemPickupList
+                pickups={stopPlan.gemPickups}
+                stopId={isCustomStop ? (stopPlan.afterStopId ?? townStop.id) : stopPlan.stopId}
+                className={className}
+                disabledStopIds={disabledStopIds}
+                isCustomStop={isCustomStop}
+                showQuestRewards={isCustomStop ? showQuestRewards : true}
+                onAdd={onAddGemPickup}
+                onRemove={onRemoveGemPickup}
+              />
+              {className && (() => {
+                const vendorPickups = stopPlan.gemPickups.filter((p) => p.source === 'vendor');
+                if (vendorPickups.length === 0) return null;
+                const costs = summarizeVendorCosts(vendorPickups, className);
+                if (costs.length === 0) return null;
+                const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
+                const sorted = costs.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
+                return (
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <span className="text-xs text-poe-muted">Cost:</span>
+                    {sorted.map((c) => (
+                      <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+            <InventoryPanel
+              inventoryGemNames={inventoryGemNames}
+              droppedGems={stopPlan.droppedGems ?? []}
+              gemsInLinkGroups={gemsInLinkGroups}
+              onDrop={onDropGem ?? (() => {})}
+              onUndrop={onUndropGem ?? (() => {})}
             />
-            {className && (() => {
-              const vendorPickups = stopPlan.gemPickups.filter((p) => p.source === 'vendor');
-              if (vendorPickups.length === 0) return null;
-              const costs = summarizeVendorCosts(vendorPickups, className);
-              if (costs.length === 0) return null;
-              const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
-              const sorted = costs.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
-              return (
-                <div className="flex items-center gap-1.5 mt-2">
-                  <span className="text-xs text-poe-muted">Cost:</span>
-                  {sorted.map((c) => (
-                    <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
-                  ))}
-                </div>
-              );
-            })()}
           </div>
 
           {/* Link Groups */}
@@ -178,7 +224,7 @@ export function StopSection({
                       onChange={(updates) => onUpdatePhase(resolved.buildLinkGroup.id, resolved.activePhase.id, updates)}
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
-                      inventoryGemNames={inventoryGemNames}
+                      inventoryGemNames={getFilteredInventory(resolved.buildLinkGroup.id)}
                       inventoryOnly={inventoryOnly}
                       previousPhaseGems={prevPhase?.gems}
                     />
