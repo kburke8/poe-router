@@ -252,6 +252,17 @@ export function PhaseEditor({
               const altCount = gem.alternatives?.length ?? 0;
               const isExpanded = expandedSlots.has(i);
 
+              // Exclude gems already used in other slots of this phase
+              const usedInOtherSlots = new Set(
+                phase.gems
+                  .filter((_, idx) => idx !== i)
+                  .map((g) => g.gemName)
+                  .filter(Boolean)
+              );
+              const filteredInventory = inventoryGemNames.filter(
+                (name) => !usedInOtherSlots.has(name)
+              );
+
               return (
                 <SortableGemSlot key={gemIds[i]} id={gemIds[i]}>
                   <div>
@@ -261,7 +272,7 @@ export function PhaseEditor({
                         value={gem.gemName}
                         socketColor={gem.socketColor}
                         onSelect={(name, sc) => handleGemSelect(i, name, sc)}
-                        inventoryGemNames={inventoryGemNames}
+                        inventoryGemNames={filteredInventory}
                         inventoryOnly={inventoryOnly}
                         placeholder={`Gem ${i + 1}`}
                       />
@@ -292,8 +303,8 @@ export function PhaseEditor({
                               value={alt.gemName}
                               socketColor={alt.socketColor}
                               onSelect={(name, sc) => handleAltGemSelect(i, ai, name, sc)}
-                              inventoryGemNames={inventoryGemNames}
-                        inventoryOnly={inventoryOnly}
+                              inventoryGemNames={filteredInventory}
+                              inventoryOnly={inventoryOnly}
                               placeholder="Alternative gem"
                             />
                             <button
