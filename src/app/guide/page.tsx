@@ -6,7 +6,7 @@ export default function GuidePage() {
       <div>
         <h1 className="text-3xl font-bold text-poe-gold">Guide</h1>
         <p className="mt-1 text-sm text-poe-muted">
-          Learn how to plan your Path of Exile campaign speed runs with PoE Router.
+          Learn how to plan your Path of Exile campaign runs with PoE Router.
         </p>
       </div>
 
@@ -15,7 +15,7 @@ export default function GuidePage() {
         <h2 className="text-lg font-semibold text-poe-text">Overview</h2>
         <Card>
           <p className="text-sm text-poe-text leading-relaxed">
-            PoE Router is a campaign planning tool for Path of Exile 1 speed runs. It helps you
+            PoE Router is a campaign planning tool for Path of Exile 1. It helps you
             plan which gems to pick up at each town stop, what gear to look for, and generates
             compact regex patterns you can paste into PoE&apos;s stash search to quickly find what
             you need.
@@ -139,7 +139,7 @@ export default function GuidePage() {
         <Card className="space-y-4">
           <p className="text-sm text-poe-text leading-relaxed">
             Once your build is planned, open the <span className="font-medium text-poe-gold">Run View</span> for
-            a guided playthrough. This is the screen you use during an actual speed run.
+            a guided playthrough. This is the screen you use during an actual campaign run.
           </p>
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-poe-gold">How It Works</h3>

@@ -55,6 +55,7 @@ export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps
     <Card
       className="cursor-pointer hover:border-poe-gold/50 transition-colors"
       onClick={onClick}
+      data-build-card
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2 min-w-0 flex-1">

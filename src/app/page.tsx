@@ -11,6 +11,7 @@ import { CopyButton } from '@/components/ui/CopyButton';
 import { downloadJson, readFileAsJson, type ExportData } from '@/lib/export';
 import { combineCategories } from '@/lib/regex/combiner';
 import { db } from '@/db/database';
+import { DashboardTour } from '@/components/tutorial/DashboardTour';
 
 export default function DashboardPage() {
   const { presets, loadPresets } = useRegexStore();
@@ -82,7 +83,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6">
+    <>
+      <DashboardTour />
+      <div className="mx-auto max-w-4xl space-y-8 p-6">
       <div>
         <h1 className="text-3xl font-bold text-poe-gold">PoE Router</h1>
         <p className="mt-1 text-sm text-poe-muted">
@@ -91,20 +94,20 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <section className="space-y-3">
+      <section className="space-y-3" data-tour-quick-actions>
         <h2 className="text-lg font-semibold text-poe-text">Quick Actions</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/builds">
+          <Link href="/builds" data-tour-new-build>
             <Button variant="primary">New Build</Button>
           </Link>
-          <Link href="/regex">
+          <Link href="/regex" data-tour-regex-builder>
             <Button variant="secondary">New Regex Preset</Button>
           </Link>
         </div>
       </section>
 
       {/* Recent Builds */}
-      <section className="space-y-3">
+      <section className="space-y-3" data-tour-recent-builds>
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-poe-text">Recent Builds</h2>
           <Link href="/builds" className="text-sm text-poe-gold hover:underline">
@@ -173,7 +176,7 @@ export default function DashboardPage() {
       </section>
 
       {/* Import/Export */}
-      <section className="space-y-3">
+      <section className="space-y-3" data-tour-data-management>
         <h2 className="text-lg font-semibold text-poe-text">Data Management</h2>
         <Card>
           <div className="flex flex-wrap items-center gap-3">
@@ -196,6 +199,7 @@ export default function DashboardPage() {
           </p>
         </Card>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

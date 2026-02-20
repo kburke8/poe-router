@@ -1,0 +1,47 @@
+/* Driver.js custom styles for PoE theme */
+.poe-tour-popover {
+  background: #1a1a2e !important;
+  border: 1px solid #c7a44a !important;
+  color: #e0e0e0 !important;
+}
+
+.poe-tour-popover .driver-popover-title {
+  color: #c7a44a !important;
+  font-weight: 600 !important;
+}
+
+.poe-tour-popover .driver-popover-description {
+  color: #b8b8b8 !important;
+}
+
+.poe-tour-popover .driver-popover-close-btn {
+  color: #b8b8b8 !important;
+}
+
+.poe-tour-popover .driver-popover-close-btn:hover {
+  color: #e0e0e0 !important;
+}
+
+.poe-tour-popover .driver-popover-arrow {
+  background: #1a1a2e !important;
+  border-color: #c7a44a !important;
+}
+
+.poe-tour-popover .driver-popover-navigation-btns button {
+  background: #16213e !important;
+  border: 1px solid #c7a44a !important;
+  color: #e0e0e0 !important;
+}
+
+.poe-tour-popover .driver-popover-navigation-btns button:hover {
+  background: #c7a44a !important;
+  color: #1a1a2e !important;
+}
+
+.driver-popover-progress-text {
+  color: #b8b8b8 !important;
+}
+
+.driver-active-element {
+  box-shadow: 0 0 0 2px #c7a44a !important;
+}

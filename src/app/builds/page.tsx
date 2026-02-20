@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { PobImportDialog } from '@/components/builds/PobImportDialog';
 import { TemplatePickerDialog } from '@/components/builds/TemplatePickerDialog';
 import { downloadBuildJson, readFileAsJson } from '@/lib/export';
+import { BuildsTour } from '@/components/tutorial/BuildsTour';
 import type { BackfillResult } from '@/lib/pob/backfill';
-import type { BuildTemplate } from '@/data/templates';
 
 export default function BuildsPage() {
   const router = useRouter();
@@ -51,21 +51,8 @@ export default function BuildsPage() {
     }
   };
 
-  const handleTemplateSelect = async (template: BuildTemplate) => {
-    try {
-      const now = new Date().toISOString();
-      const build = JSON.parse(JSON.stringify(template.build));
-      build.id = crypto.randomUUID();
-      build.createdAt = now;
-      build.updatedAt = now;
-      const id = await importBuild(build);
-      toast.success(`Created "${template.name}" from template`);
-      setTemplateOpen(false);
-      router.push(`/builds/${id}`);
-    } catch (err) {
-      toast.error('Failed to create build from template');
-      console.error('Template import error:', err);
-    }
+  const handleTemplateSelect = async () => {
+    // This function will never be called since templates are disabled
   };
 
   const handleExport = (id: string) => {
@@ -105,7 +92,9 @@ export default function BuildsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <BuildsTour hasBuilds={builds.length > 0} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-poe-gold">Builds</h1>
         <div className="flex items-center gap-2">
@@ -157,6 +146,7 @@ export default function BuildsPage() {
           ))}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
