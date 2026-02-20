@@ -32,12 +32,6 @@ export function DashboardTour() {
           onDestroyed: () => {
             markTourCompleted(TOUR_ID);
           },
-          onNext: (element, step, options) => {
-            console.log('Next step:', step, element);
-          },
-          onPrevious: (element, step, options) => {
-            console.log('Previous step:', step, element);
-          },
           steps: [
             {
               popover: {
