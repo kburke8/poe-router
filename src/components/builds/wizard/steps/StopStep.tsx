@@ -15,6 +15,7 @@ interface StopStepProps {
   build: BuildPlan;
   stopPlan: StopPlan;
   townStop: TownStop;
+  inventoryOnly?: boolean;
   onToggleStopEnabled: (stopId: string) => void;
   onAddGemPickup: (stopId: string, pickup: GemPickup) => void;
   onRemoveGemPickup: (stopId: string, pickupId: string) => void;
@@ -34,6 +35,7 @@ export function StopStep({
   build,
   stopPlan,
   townStop,
+  inventoryOnly,
   onToggleStopEnabled,
   onAddGemPickup,
   onRemoveGemPickup,
@@ -132,6 +134,7 @@ export function StopStep({
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
                       inventoryGemNames={inventoryGemNames}
+                      inventoryOnly={inventoryOnly}
                       previousPhaseGems={prevPhase?.gems}
                     />
                   );
@@ -175,6 +178,7 @@ export function StopStep({
                   townStop={townStop}
                   build={build}
                   disabledStopIds={disabledStopIds}
+                  inventoryOnly={inventoryOnly}
                   onToggleStopEnabled={onToggleStopEnabled}
                   onAddGemPickup={onAddGemPickup}
                   onRemoveGemPickup={onRemoveGemPickup}
@@ -214,6 +218,7 @@ interface CustomStopSubSectionProps {
   townStop: TownStop;
   build: BuildPlan;
   disabledStopIds: Set<string>;
+  inventoryOnly?: boolean;
   onToggleStopEnabled: (stopId: string) => void;
   onAddGemPickup: (stopId: string, pickup: GemPickup) => void;
   onRemoveGemPickup: (stopId: string, pickupId: string) => void;
@@ -233,6 +238,7 @@ function CustomStopSubSection({
   townStop,
   build,
   disabledStopIds,
+  inventoryOnly,
   onToggleStopEnabled,
   onAddGemPickup,
   onRemoveGemPickup,
@@ -315,6 +321,7 @@ function CustomStopSubSection({
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
                       inventoryGemNames={csInventoryGemNames}
+                      inventoryOnly={inventoryOnly}
                       previousPhaseGems={prevPhase?.gems}
                     />
                   );

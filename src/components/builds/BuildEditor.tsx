@@ -87,9 +87,10 @@ function LinkGroupReorder({ buildId, linkGroups }: { buildId: string; linkGroups
 
 interface BuildEditorProps {
   buildId: string;
+  inventoryOnly: boolean;
 }
 
-export function BuildEditor({ buildId }: BuildEditorProps) {
+export function BuildEditor({ buildId, inventoryOnly }: BuildEditorProps) {
   const {
     builds,
     loadBuilds,
@@ -172,8 +173,6 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
     );
   }
 
-  const [inventoryOnly, setInventoryOnly] = useState(false);
-
   const actNumbers = getActNumbers();
 
   return (
@@ -186,15 +185,6 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
           />
         </div>
         <div className="flex items-center gap-3 shrink-0 ml-4 mt-1">
-          <label className="flex items-center gap-1.5 text-xs text-poe-muted cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={inventoryOnly}
-              onChange={(e) => setInventoryOnly(e.target.checked)}
-              className="accent-poe-gold"
-            />
-            Inventory Only
-          </label>
           <Link
             href={`/builds/${buildId}/run`}
             className="inline-flex items-center rounded-md border border-poe-gold/50 bg-poe-gold/10 px-3 py-1.5 text-sm font-medium text-poe-gold hover:bg-poe-gold/20 transition-colors"

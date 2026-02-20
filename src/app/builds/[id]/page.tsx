@@ -16,6 +16,7 @@ function BuildEditorContent({ id }: { id: string }) {
   const searchParams = useSearchParams();
   const { deleteBuild, importBuild } = useBuildStore();
   const [importOpen, setImportOpen] = useState(false);
+  const [inventoryOnly, setInventoryOnly] = useState(true);
 
   const mode = (searchParams.get('mode') === 'advanced' ? 'advanced' : 'wizard') as 'wizard' | 'advanced';
 
@@ -54,7 +55,18 @@ function BuildEditorContent({ id }: { id: string }) {
             Import from PoB
           </Button>
         </div>
-        <WizardModeToggle mode={mode} onModeChange={handleModeChange} />
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-1.5 text-xs text-poe-muted cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={inventoryOnly}
+              onChange={(e) => setInventoryOnly(e.target.checked)}
+              className="accent-poe-gold"
+            />
+            Inventory Only
+          </label>
+          <WizardModeToggle mode={mode} onModeChange={handleModeChange} />
+        </div>
       </div>
 
       <PobImportDialog
@@ -64,9 +76,9 @@ function BuildEditorContent({ id }: { id: string }) {
       />
 
       {mode === 'wizard' ? (
-        <BuildWizard buildId={id} onSwitchToAdvanced={() => handleModeChange('advanced')} />
+        <BuildWizard buildId={id} onSwitchToAdvanced={() => handleModeChange('advanced')} inventoryOnly={inventoryOnly} />
       ) : (
-        <BuildEditor buildId={id} />
+        <BuildEditor buildId={id} inventoryOnly={inventoryOnly} />
       )}
     </div>
   );

@@ -16,6 +16,7 @@ import type { BuildPlan } from '@/types/build';
 interface BuildWizardProps {
   buildId: string;
   onSwitchToAdvanced: () => void;
+  inventoryOnly: boolean;
 }
 
 function computeSteps(build: BuildPlan): WizardStepDef[] {
@@ -61,7 +62,7 @@ function detectInitialStep(build: BuildPlan, steps: WizardStepDef[]): number {
 }
 
 /** Outer wrapper: handles loading, then mounts the inner wizard with the correct initial step */
-export function BuildWizard({ buildId, onSwitchToAdvanced }: BuildWizardProps) {
+export function BuildWizard({ buildId, onSwitchToAdvanced, inventoryOnly }: BuildWizardProps) {
   const { builds, loadBuilds, isLoading, initializeStops } = useBuildStore();
   const build = builds.find((b) => b.id === buildId);
 
@@ -103,6 +104,7 @@ export function BuildWizard({ buildId, onSwitchToAdvanced }: BuildWizardProps) {
       buildId={buildId}
       initialStep={initialStep}
       onSwitchToAdvanced={onSwitchToAdvanced}
+      inventoryOnly={inventoryOnly}
     />
   );
 }
@@ -112,9 +114,10 @@ interface BuildWizardInnerProps {
   buildId: string;
   initialStep: number;
   onSwitchToAdvanced: () => void;
+  inventoryOnly: boolean;
 }
 
-function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced }: BuildWizardInnerProps) {
+function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced, inventoryOnly }: BuildWizardInnerProps) {
   const router = useRouter();
   const {
     updateBuildInfo,
@@ -220,6 +223,7 @@ function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced }: B
             build={build}
             stopPlan={build.stops.find((s) => s.stopId === currentStepDef.stopPlan.stopId)!}
             townStop={currentStepDef.townStop}
+            inventoryOnly={inventoryOnly}
             onToggleStopEnabled={(stopId) => toggleStopEnabled(buildId, stopId)}
             onAddGemPickup={(stopId, pickup) => addGemPickup(buildId, stopId, pickup)}
             onRemoveGemPickup={(stopId, pickupId) => removeGemPickup(buildId, stopId, pickupId)}
