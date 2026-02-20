@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { useTutorial } from './TutorialProvider';
@@ -8,17 +8,11 @@ import { useTutorial } from './TutorialProvider';
 const TOUR_ID = 'dashboard-tour';
 
 export function DashboardTour() {
-  const { hasSeenTour, markTourCompleted } = useTutorial();
-  const [isClient, setIsClient] = useState(false);
+  const { hasSeenTour, markTourCompleted, isReady } = useTutorial();
 
   useEffect(() => {
-    // Ensure we're on the client side
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    // Only run if not seen before, on client side, and after a small delay for page load
-    if (!isClient || hasSeenTour(TOUR_ID)) return;
+    // Only run after localStorage is loaded and if not seen before
+    if (!isReady || hasSeenTour(TOUR_ID)) return;
       const timer = setTimeout(() => {
         const driverObj = driver({
           showProgress: true,
@@ -88,7 +82,7 @@ export function DashboardTour() {
       }, 800);
 
       return () => clearTimeout(timer);
-  }, [isClient, hasSeenTour, markTourCompleted]);
+  }, [isReady, hasSeenTour, markTourCompleted]);
 
   return null;
 }

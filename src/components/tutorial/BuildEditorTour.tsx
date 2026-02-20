@@ -12,12 +12,13 @@ interface BuildEditorTourProps {
 }
 
 export function BuildEditorTour({ mode }: BuildEditorTourProps) {
-  const { hasSeenTour, markTourCompleted } = useTutorial();
+  const { hasSeenTour, markTourCompleted, isReady } = useTutorial();
 
   useEffect(() => {
-    // Only run if not seen before
-    if (!hasSeenTour(TOUR_ID)) {
-      const timer = setTimeout(() => {
+    // Only run after localStorage is loaded and if not seen before
+    if (!isReady || hasSeenTour(TOUR_ID)) return;
+
+    const timer = setTimeout(() => {
         const wizardSteps = [
           {
             popover: {
@@ -163,9 +164,8 @@ export function BuildEditorTour({ mode }: BuildEditorTourProps) {
         }
       }, 1000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [hasSeenTour, markTourCompleted, mode]);
+    return () => clearTimeout(timer);
+  }, [isReady, hasSeenTour, markTourCompleted, mode]);
 
   return null;
 }

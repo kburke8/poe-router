@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { useTutorial } from './TutorialProvider';
@@ -12,16 +12,11 @@ interface BuildsTourProps {
 }
 
 export function BuildsTour({ hasBuilds }: BuildsTourProps) {
-  const { hasSeenTour, markTourCompleted } = useTutorial();
-  const [isClient, setIsClient] = useState(false);
+  const { hasSeenTour, markTourCompleted, isReady } = useTutorial();
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    // Only run if not seen before and on client side
-    if (!isClient || hasSeenTour(TOUR_ID)) return;
+    // Only run after localStorage is loaded and if not seen before
+    if (!isReady || hasSeenTour(TOUR_ID)) return;
       const timer = setTimeout(() => {
         const steps = hasBuilds ? [
           {
@@ -113,7 +108,7 @@ export function BuildsTour({ hasBuilds }: BuildsTourProps) {
       }, 600);
 
       return () => clearTimeout(timer);
-  }, [isClient, hasSeenTour, markTourCompleted, hasBuilds]);
+  }, [isReady, hasSeenTour, markTourCompleted, hasBuilds]);
 
   return null;
 }

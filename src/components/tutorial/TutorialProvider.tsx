@@ -9,6 +9,7 @@ interface TutorialContextType {
   resetAllTours: () => void;
   isGloballyDisabled: boolean;
   setGloballyDisabled: (disabled: boolean) => void;
+  isReady: boolean;
 }
 
 const TutorialContext = createContext<TutorialContextType | undefined>(undefined);
@@ -16,6 +17,7 @@ const TutorialContext = createContext<TutorialContextType | undefined>(undefined
 export function TutorialProvider({ children }: { children: ReactNode }) {
   const [completedTours, setCompletedTours] = useState<Set<string>>(new Set());
   const [isGloballyDisabled, setIsGloballyDisabled] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   // Load state from localStorage on mount
   useEffect(() => {
@@ -31,16 +33,19 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
 
     const disabled = localStorage.getItem('tutorial-disabled') === 'true';
     setIsGloballyDisabled(disabled);
+    setHydrated(true);
   }, []);
 
-  // Save to localStorage whenever state changes
+  // Save to localStorage whenever state changes (only after initial load)
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem('tutorial-completed-tours', JSON.stringify(Array.from(completedTours)));
-  }, [completedTours]);
+  }, [completedTours, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem('tutorial-disabled', String(isGloballyDisabled));
-  }, [isGloballyDisabled]);
+  }, [isGloballyDisabled, hydrated]);
 
   const hasSeenTour = (tourId: string) => {
     return isGloballyDisabled || completedTours.has(tourId);
@@ -76,6 +81,7 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
         resetAllTours,
         isGloballyDisabled,
         setGloballyDisabled: setGloballyDisabledWrapper,
+        isReady: hydrated,
       }}
     >
       {children}

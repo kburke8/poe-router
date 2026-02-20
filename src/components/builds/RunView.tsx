@@ -308,6 +308,9 @@ export function RunView({ build }: RunViewProps) {
             const COST_ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
             const sortedActCosts = actCosts.sort((a, b) => COST_ORDER.indexOf(a.shortName) - COST_ORDER.indexOf(b.shortName));
 
+            // Compact mode: show end-of-act links as a side column next to stops
+            const compactSideColumn = detail === 1 && endOfActLinks.length > 0 && endOfActChanged;
+
             return (
               <div key={actNum}>
                 <h2 className="text-xs font-bold text-poe-gold/70 uppercase tracking-widest mb-1.5 border-b border-poe-border/50 pb-1 flex items-center gap-2">
@@ -321,27 +324,39 @@ export function RunView({ build }: RunViewProps) {
                   )}
                 </h2>
                 {showStops && interleavedStops.length > 0 && (
-                  <div className="divide-y divide-poe-border/20">
-                    {interleavedStops.map(({ stopPlan, label, isCustom, showQuestRewards: showRewards, effectiveDisabledIds }) => (
-                      <StopBlock
-                        key={stopPlan.stopId}
-                        stopPlan={stopPlan}
-                        stopLabel={label}
-                        className={build.className}
-                        buildLinkGroups={build.linkGroups}
-                        disabledStopIds={effectiveDisabledIds}
-                        isCustomStop={isCustom}
-                        showQuestRewards={showRewards}
-                        showGems={showGems}
-                        showNotes={showNotes}
-                        showLinks={showLinks}
-                        showInherited={showInherited}
-                      />
-                    ))}
+                  <div className={compactSideColumn ? 'grid grid-cols-[1fr_auto] gap-x-6 items-start' : ''}>
+                    <div className="divide-y divide-poe-border/20">
+                      {interleavedStops.map(({ stopPlan, label, isCustom, showQuestRewards: showRewards, effectiveDisabledIds }) => (
+                        <StopBlock
+                          key={stopPlan.stopId}
+                          stopPlan={stopPlan}
+                          stopLabel={label}
+                          className={build.className}
+                          buildLinkGroups={build.linkGroups}
+                          disabledStopIds={effectiveDisabledIds}
+                          isCustomStop={isCustom}
+                          showQuestRewards={showRewards}
+                          showGems={showGems}
+                          showNotes={showNotes}
+                          showLinks={showLinks}
+                          showInherited={showInherited}
+                        />
+                      ))}
+                    </div>
+                    {compactSideColumn && (
+                      <div className="border-l border-poe-border/30 pl-4 py-2 space-y-0.5 sticky top-4">
+                        <div className="text-[10px] font-semibold text-poe-muted/50 uppercase tracking-wider mb-1">
+                          End of Act {actNum}
+                        </div>
+                        {endOfActLinks.map((r) => (
+                          <LinkGroupLine key={r.buildLinkGroup.id} resolved={r} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
-                {/* End-of-act link state summary — only if links changed from previous act */}
-                {endOfActLinks.length > 0 && endOfActChanged && (
+                {/* End-of-act link state summary — only if links changed from previous act (Full / Links modes) */}
+                {!compactSideColumn && endOfActLinks.length > 0 && endOfActChanged && (
                   <EndOfActSummary
                     actNum={actNum}
                     endOfActLinks={endOfActLinks}
