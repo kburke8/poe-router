@@ -40,7 +40,7 @@ const gemColorToVariant = {
 } as const;
 
 export function RunView({ build }: RunViewProps) {
-  const [detail, setDetail] = useState<DetailLevel>(0);
+  const [detail, setDetail] = useState<DetailLevel>(1);
   const [fontScale, setFontScale] = useState(100);
   const actNumbers = getActNumbers();
 

@@ -57,30 +57,10 @@ export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps
       onClick={onClick}
       data-build-card
     >
-      <div className="flex items-start justify-between">
-        <div className="space-y-2 min-w-0 flex-1">
-          <h3 className="text-lg font-semibold text-poe-text truncate">
-            {build.name}
-          </h3>
-          <div className="flex flex-wrap items-center gap-2">
-            {build.className && <Badge variant="gold">{build.className}</Badge>}
-            {build.ascendancy && <Badge variant="default">{build.ascendancy}</Badge>}
-            {hasMule && <Badge variant="green">Mule</Badge>}
-            {hasLibrary && <Badge variant="blue">Library</Badge>}
-            {hasGravicius && <Badge variant="red">Gravicius</Badge>}
-            {totalStops > 0 && (
-              <Badge variant="default">
-                {enabledStops}/{totalStops} stops
-              </Badge>
-            )}
-            {totalLinkGroups > 0 && (
-              <Badge variant="default">
-                {totalLinkGroups} link group{totalLinkGroups !== 1 ? 's' : ''}
-              </Badge>
-            )}
-          </div>
-          <p className="text-xs text-poe-muted">Updated {updatedDate}</p>
-        </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold text-poe-text truncate">
+          {build.name}
+        </h3>
         <div className="flex items-center gap-2">
           <Button
             variant="secondary"
@@ -116,6 +96,24 @@ export function BuildCard({ build, onClick, onDelete, onExport }: BuildCardProps
             Delete
           </Button>
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {build.className && <Badge variant="gold">{build.className}</Badge>}
+          {build.ascendancy && <Badge variant="default">{build.ascendancy}</Badge>}
+          {hasMule && <Badge variant="green">Mule</Badge>}
+          {hasLibrary && <Badge variant="blue">Library</Badge>}
+          {hasGravicius && <Badge variant="red">Gravicius</Badge>}
+          {totalStops > 0 && (
+            <Badge variant="default">
+              {enabledStops}/{totalStops} stops
+            </Badge>
+          )}
+          {totalLinkGroups > 0 && (
+            <Badge variant="default">
+              {totalLinkGroups} link group{totalLinkGroups !== 1 ? 's' : ''}
+            </Badge>
+          )}
+        </div>
+        <p className="text-xs text-poe-muted">Updated {updatedDate}</p>
       </div>
     </Card>
   );

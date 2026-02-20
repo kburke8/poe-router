@@ -65,22 +65,25 @@ export function generateLinkPatterns(linkGroups: BuildLinkGroup[]): LinkPattern[
   for (const lg of linkGroups) {
     if (lg.phases.length === 0) continue;
 
-    const lastPhase = lg.phases[lg.phases.length - 1];
-    const gemCount = lastPhase.gems.length;
+    // Check all phases so earlier link sizes (e.g. 3L before a group grows to 4L)
+    // still produce patterns.
+    for (const phase of lg.phases) {
+      const gemCount = phase.gems.length;
 
-    // Skip 1-links and 4+ links
-    if (gemCount < 2 || gemCount > 3) continue;
+      // Skip 1-links and 4+ links
+      if (gemCount < 2 || gemCount > 3) continue;
 
-    const colors = lastPhase.gems.map((g) => g.socketColor.toLowerCase()).sort();
-    const sourceName = lg.label || `${gemCount}L`;
+      const colors = phase.gems.map((g) => g.socketColor.toLowerCase()).sort();
+      const sourceName = lg.label || `${gemCount}L`;
 
-    const perms = uniquePermutations(colors);
-    const pattern = perms.map((p) => p.join('-')).join('|');
+      const perms = uniquePermutations(colors);
+      const pattern = perms.map((p) => p.join('-')).join('|');
 
-    if (seen.has(pattern)) continue;
-    seen.add(pattern);
+      if (seen.has(pattern)) continue;
+      seen.add(pattern);
 
-    results.push({ pattern, sourceName, linkSize: gemCount });
+      results.push({ pattern, sourceName, linkSize: gemCount });
+    }
   }
 
   return results;
@@ -502,11 +505,9 @@ export function hasBuildRegexContent(build: BuildPlan): boolean {
     .flatMap((s) => s.gemPickups)
     .some((p) => p.source === 'vendor');
 
-  const hasLinkGroups = build.linkGroups.some((lg) => {
-    if (lg.phases.length === 0) return false;
-    const lastPhase = lg.phases[lg.phases.length - 1];
-    return lastPhase.gems.length >= 2 && lastPhase.gems.length <= 3;
-  });
+  const hasLinkGroups = build.linkGroups.some((lg) =>
+    lg.phases.some((phase) => phase.gems.length >= 2 && phase.gems.length <= 3),
+  );
 
   const hasClassName = !!build.className;
 

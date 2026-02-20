@@ -111,6 +111,14 @@ export const TOWN_STOPS: TownStop[] = [
     sortOrder: 8,
   },
   {
+    id: 'a2_act1_town',
+    label: 'Act 1 Town (Way Forward)',
+    actNumber: 2,
+    questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel'],
+    defaultEnabled: true,
+    sortOrder: 8.5,
+  },
+  {
     id: 'a2_before_vaal',
     label: 'Before Vaal Oversoul',
     actNumber: 2,
@@ -150,7 +158,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'After Library (Fixture of Fate)',
     actNumber: 3,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'sever_the_right_hand', 'a_fixture_of_fate'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 13,
     exclusiveQuests: ['a_fixture_of_fate'],
   },
@@ -169,7 +177,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'After Kaom/Daresso',
     actNumber: 4,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand', 'breaking_the_seal'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 15,
   },
   {
@@ -187,7 +195,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'Town Arrival',
     actNumber: 5,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand', 'breaking_the_seal', 'the_eternal_nightmare'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 17,
   },
   {
@@ -223,7 +231,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'Town Arrival',
     actNumber: 7,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand', 'breaking_the_seal', 'the_eternal_nightmare', 'fallen_from_grace'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 21,
   },
   {
@@ -241,7 +249,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'Town Arrival',
     actNumber: 8,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand', 'breaking_the_seal', 'the_eternal_nightmare', 'fallen_from_grace'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 23,
   },
   {
@@ -259,7 +267,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'Town Arrival',
     actNumber: 9,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand', 'breaking_the_seal', 'the_eternal_nightmare', 'fallen_from_grace'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 25,
   },
   {
@@ -277,7 +285,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'Town Arrival',
     actNumber: 10,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute', 'the_caged_brute_nessa', 'the_sirens_cadence', 'intruders_in_black', 'sharp_and_cruel', 'lost_in_love', 'a_fixture_of_fate', 'sever_the_right_hand', 'breaking_the_seal', 'the_eternal_nightmare', 'fallen_from_grace'],
-    defaultEnabled: true,
+    defaultEnabled: false,
     sortOrder: 27,
   },
   {
