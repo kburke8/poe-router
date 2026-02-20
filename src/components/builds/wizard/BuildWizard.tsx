@@ -139,6 +139,8 @@ function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced, inv
     updateGearGoal,
     removeGearGoal,
     toggleGearGoalAcquired,
+    dropGem,
+    undropGem,
     addCustomStop,
     removeCustomStop,
     updateCustomStopLabel,
@@ -234,6 +236,8 @@ function BuildWizardInner({ build, buildId, initialStep, onSwitchToAdvanced, inv
             onUpdatePhase={(lgId, phaseId, updates) => updatePhase(buildId, lgId, phaseId, updates)}
             onRemovePhase={(lgId, phaseId) => removePhase(buildId, lgId, phaseId)}
             onUpdateLinkGroupLabel={(lgId, label) => updateLinkGroupLabel(buildId, lgId, label)}
+            onDropGem={(stopId, gemName) => dropGem(buildId, stopId, gemName)}
+            onUndropGem={(stopId, gemName) => undropGem(buildId, stopId, gemName)}
             onAddCustomStop={(afterStopId) => addCustomStop(buildId, afterStopId)}
             onRemoveCustomStop={(stopId) => removeCustomStop(buildId, stopId)}
             onUpdateCustomStopLabel={(stopId, label) => updateCustomStopLabel(buildId, stopId, label)}

@@ -8,6 +8,7 @@ import { PhaseEditor } from '@/components/builds/PhaseEditor';
 import { InheritedLinkGroupCard } from '@/components/builds/InheritedLinkGroupCard';
 import { resolveLinkGroupsAtStop, getPreviousPhase } from '@/lib/link-group-resolver';
 import { getInventoryAtStop } from '@/lib/gem-inventory';
+import { InventoryPanel } from '@/components/builds/InventoryPanel';
 import type { TownStop } from '@/data/town-stops';
 import type { BuildPlan, StopPlan, GemPickup, LinkGroupPhase } from '@/types/build';
 
@@ -26,6 +27,8 @@ interface StopStepProps {
   onUpdatePhase: (lgId: string, phaseId: string, updates: Partial<Pick<LinkGroupPhase, 'gems' | 'notes'>>) => void;
   onRemovePhase: (lgId: string, phaseId: string) => void;
   onUpdateLinkGroupLabel: (lgId: string, label: string) => void;
+  onDropGem: (stopId: string, gemName: string) => void;
+  onUndropGem: (stopId: string, gemName: string) => void;
   onAddCustomStop: (afterStopId: string) => void;
   onRemoveCustomStop: (stopId: string) => void;
   onUpdateCustomStopLabel: (stopId: string, label: string) => void;
@@ -46,6 +49,8 @@ export function StopStep({
   onUpdatePhase,
   onRemovePhase,
   onUpdateLinkGroupLabel,
+  onDropGem,
+  onUndropGem,
   onAddCustomStop,
   onRemoveCustomStop,
   onUpdateCustomStopLabel,
@@ -72,6 +77,36 @@ export function StopStep({
   );
 
   const linkCount = resolvedLinkGroups.length;
+
+  // Cross-link-group filtering
+  const gemsByLinkGroup = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    for (const resolved of resolvedLinkGroups) {
+      const names = new Set(
+        resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean),
+      );
+      map.set(resolved.buildLinkGroup.id, names);
+    }
+    return map;
+  }, [resolvedLinkGroups]);
+
+  const gemsInLinkGroups = useMemo(() => {
+    const all = new Set<string>();
+    for (const names of gemsByLinkGroup.values()) {
+      for (const n of names) all.add(n);
+    }
+    return all;
+  }, [gemsByLinkGroup]);
+
+  const getFilteredInventory = (linkGroupId: string) => {
+    const otherUsed = new Set<string>();
+    for (const [lgId, names] of gemsByLinkGroup) {
+      if (lgId !== linkGroupId) {
+        for (const n of names) otherUsed.add(n);
+      }
+    }
+    return inventoryGemNames.filter((name) => !otherUsed.has(name));
+  };
 
   return (
     <div className="space-y-6">
@@ -100,16 +135,25 @@ export function StopStep({
 
       {stopPlan.enabled && (
         <>
-          {/* Gem Pickups */}
-          <div>
-            <h4 className="text-sm font-medium text-poe-text mb-2">Gems</h4>
-            <GemPickupList
-              pickups={stopPlan.gemPickups}
-              stopId={stopPlan.stopId}
-              className={build.className}
-              disabledStopIds={disabledStopIds}
-              onAdd={(pickup) => onAddGemPickup(townStop.id, pickup)}
-              onRemove={(pickupId) => onRemoveGemPickup(townStop.id, pickupId)}
+          {/* Gems + Inventory row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm font-medium text-poe-text mb-2">Gems</h4>
+              <GemPickupList
+                pickups={stopPlan.gemPickups}
+                stopId={stopPlan.stopId}
+                className={build.className}
+                disabledStopIds={disabledStopIds}
+                onAdd={(pickup) => onAddGemPickup(townStop.id, pickup)}
+                onRemove={(pickupId) => onRemoveGemPickup(townStop.id, pickupId)}
+              />
+            </div>
+            <InventoryPanel
+              inventoryGemNames={inventoryGemNames}
+              droppedGems={stopPlan.droppedGems ?? []}
+              gemsInLinkGroups={gemsInLinkGroups}
+              onDrop={(gemName) => onDropGem(townStop.id, gemName)}
+              onUndrop={(gemName) => onUndropGem(townStop.id, gemName)}
             />
           </div>
 
@@ -133,7 +177,7 @@ export function StopStep({
                       onChange={(updates) => onUpdatePhase(resolved.buildLinkGroup.id, resolved.activePhase.id, updates)}
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
-                      inventoryGemNames={inventoryGemNames}
+                      inventoryGemNames={getFilteredInventory(resolved.buildLinkGroup.id)}
                       inventoryOnly={inventoryOnly}
                       previousPhaseGems={prevPhase?.gems}
                     />
@@ -189,6 +233,8 @@ export function StopStep({
                   onUpdatePhase={onUpdatePhase}
                   onRemovePhase={onRemovePhase}
                   onUpdateLinkGroupLabel={onUpdateLinkGroupLabel}
+                  onDropGem={onDropGem}
+                  onUndropGem={onUndropGem}
                   onRemoveCustomStop={onRemoveCustomStop}
                   onUpdateCustomStopLabel={onUpdateCustomStopLabel}
                 />
@@ -229,6 +275,8 @@ interface CustomStopSubSectionProps {
   onUpdatePhase: (lgId: string, phaseId: string, updates: Partial<Pick<LinkGroupPhase, 'gems' | 'notes'>>) => void;
   onRemovePhase: (lgId: string, phaseId: string) => void;
   onUpdateLinkGroupLabel: (lgId: string, label: string) => void;
+  onDropGem: (stopId: string, gemName: string) => void;
+  onUndropGem: (stopId: string, gemName: string) => void;
   onRemoveCustomStop: (stopId: string) => void;
   onUpdateCustomStopLabel: (stopId: string, label: string) => void;
 }
@@ -249,6 +297,8 @@ function CustomStopSubSection({
   onUpdatePhase,
   onRemovePhase,
   onUpdateLinkGroupLabel,
+  onDropGem,
+  onUndropGem,
   onRemoveCustomStop,
   onUpdateCustomStopLabel,
 }: CustomStopSubSectionProps) {
@@ -263,6 +313,35 @@ function CustomStopSubSection({
   );
 
   const effectiveStopId = customStop.stopId;
+
+  const csGemsByLinkGroup = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    for (const resolved of csResolved) {
+      const names = new Set(
+        resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean),
+      );
+      map.set(resolved.buildLinkGroup.id, names);
+    }
+    return map;
+  }, [csResolved]);
+
+  const csGemsInLinkGroups = useMemo(() => {
+    const all = new Set<string>();
+    for (const names of csGemsByLinkGroup.values()) {
+      for (const n of names) all.add(n);
+    }
+    return all;
+  }, [csGemsByLinkGroup]);
+
+  const csGetFilteredInventory = (linkGroupId: string) => {
+    const otherUsed = new Set<string>();
+    for (const [lgId, names] of csGemsByLinkGroup) {
+      if (lgId !== linkGroupId) {
+        for (const n of names) otherUsed.add(n);
+      }
+    }
+    return csInventoryGemNames.filter((name) => !otherUsed.has(name));
+  };
 
   return (
     <div className="rounded-md border border-poe-border bg-poe-panel/50 p-4 space-y-3">
@@ -294,16 +373,27 @@ function CustomStopSubSection({
 
       {customStop.enabled && (
         <>
-          {/* Gem Pickups */}
-          <GemPickupList
-            pickups={customStop.gemPickups}
-            stopId={customStop.afterStopId ?? townStop.id}
-            className={build.className}
-            disabledStopIds={disabledStopIds}
-            isCustomStop
-            onAdd={(pickup) => onAddGemPickup(customStop.stopId, pickup)}
-            onRemove={(pickupId) => onRemoveGemPickup(customStop.stopId, pickupId)}
-          />
+          {/* Gems + Inventory row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <GemPickupList
+                pickups={customStop.gemPickups}
+                stopId={customStop.afterStopId ?? townStop.id}
+                className={build.className}
+                disabledStopIds={disabledStopIds}
+                isCustomStop
+                onAdd={(pickup) => onAddGemPickup(customStop.stopId, pickup)}
+                onRemove={(pickupId) => onRemoveGemPickup(customStop.stopId, pickupId)}
+              />
+            </div>
+            <InventoryPanel
+              inventoryGemNames={csInventoryGemNames}
+              droppedGems={customStop.droppedGems ?? []}
+              gemsInLinkGroups={csGemsInLinkGroups}
+              onDrop={(gemName) => onDropGem(customStop.stopId, gemName)}
+              onUndrop={(gemName) => onUndropGem(customStop.stopId, gemName)}
+            />
+          </div>
 
           {/* Link Groups */}
           {csResolved.length > 0 && (
@@ -320,7 +410,7 @@ function CustomStopSubSection({
                       onChange={(updates) => onUpdatePhase(resolved.buildLinkGroup.id, resolved.activePhase.id, updates)}
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
-                      inventoryGemNames={csInventoryGemNames}
+                      inventoryGemNames={csGetFilteredInventory(resolved.buildLinkGroup.id)}
                       inventoryOnly={inventoryOnly}
                       previousPhaseGems={prevPhase?.gems}
                     />
