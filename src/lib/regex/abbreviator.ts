@@ -462,6 +462,18 @@ const POE_ITEM_TEXT_SAMPLES = [
   'and Cold Damage',
   'Fire and Cold',
   'Lightning and Cold',
+  // "l's.c" / "l's C" patterns — "General's Cry" abbreviation collides with common gem stat lines
+  // "This Skill's Cooldown does not recover during its effect" appears on many cooldown gems (Steelskin, Withering Step, etc.)
+  // "This Spell's Cast Speed cannot be modified" appears on Dash and similar gems
+  "Skill's Cooldown does not recover",
+  "Skill's Cooldown Recovery",
+  "Spell's Cast Speed cannot",
+  "Spell's Cast Time",
+  // "l.thr" patterns — "Spectral Throw" abbreviation collides with Trap Support's description
+  // "you will throw a trap that will use the skill for you" appears in Trap Support, and similar text in trap gem descriptions
+  'will throw a trap',
+  'will throw a mine',
+  'skill for you when',
 ];
 
 /**

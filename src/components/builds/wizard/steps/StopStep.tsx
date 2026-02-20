@@ -7,7 +7,7 @@ import { GemPickupList } from '@/components/builds/GemPickupList';
 import { PhaseEditor } from '@/components/builds/PhaseEditor';
 import { InheritedLinkGroupCard } from '@/components/builds/InheritedLinkGroupCard';
 import { resolveLinkGroupsAtStop, getPreviousPhase } from '@/lib/link-group-resolver';
-import { getBeachGems } from '@/data/classes';
+import { getInventoryAtStop } from '@/lib/gem-inventory';
 import type { TownStop } from '@/data/town-stops';
 import type { BuildPlan, StopPlan, GemPickup, LinkGroupPhase } from '@/types/build';
 
@@ -58,28 +58,9 @@ export function StopStep({
     [build.linkGroups, townStop.id],
   );
 
-  // Beach gem names for a1_after_hillock
-  const beachNames = useMemo(() => {
-    if (townStop.id !== 'a1_after_hillock') return [];
-    const names: string[] = [];
-    const mainBeach = getBeachGems(build.className);
-    if (mainBeach) names.push(mainBeach.skillGem, mainBeach.supportGem);
-    const muleBeach = build.muleClassName ? getBeachGems(build.muleClassName) : null;
-    if (muleBeach) names.push(muleBeach.skillGem, muleBeach.supportGem);
-    return names;
-  }, [townStop.id, build.className, build.muleClassName]);
-
-  const stopGemNames = useMemo(
-    () => [
-      ...new Set([
-        ...stopPlan.gemPickups.map((p) => p.gemName),
-        ...beachNames,
-        ...(townStop.id === 'a1_after_hillock'
-          ? (build.mulePickups ?? []).map((p) => p.gemName)
-          : []),
-      ]),
-    ],
-    [stopPlan.gemPickups, beachNames, townStop.id, build.mulePickups],
+  const inventoryGemNames = useMemo(
+    () => [...getInventoryAtStop(build, townStop.id)],
+    [build, townStop.id],
   );
 
   // Custom stops attached after this town stop
@@ -150,7 +131,7 @@ export function StopStep({
                       onChange={(updates) => onUpdatePhase(resolved.buildLinkGroup.id, resolved.activePhase.id, updates)}
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
-                      stopGemNames={stopGemNames}
+                      inventoryGemNames={inventoryGemNames}
                       previousPhaseGems={prevPhase?.gems}
                     />
                   );
@@ -270,9 +251,9 @@ function CustomStopSubSection({
     [build.linkGroups, customStop.stopId],
   );
 
-  const csGemNames = useMemo(
-    () => [...new Set(customStop.gemPickups.map((p) => p.gemName))],
-    [customStop.gemPickups],
+  const csInventoryGemNames = useMemo(
+    () => [...getInventoryAtStop(build, customStop.stopId)],
+    [build, customStop.stopId],
   );
 
   const effectiveStopId = customStop.stopId;
@@ -333,7 +314,7 @@ function CustomStopSubSection({
                       onChange={(updates) => onUpdatePhase(resolved.buildLinkGroup.id, resolved.activePhase.id, updates)}
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
-                      stopGemNames={csGemNames}
+                      inventoryGemNames={csInventoryGemNames}
                       previousPhaseGems={prevPhase?.gems}
                     />
                   );

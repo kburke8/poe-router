@@ -12,8 +12,8 @@ import { StopSection } from '@/components/builds/StopSection';
 import { MuleSection } from '@/components/builds/MuleSection';
 import { Button } from '@/components/ui/Button';
 import { getStopsForAct, getActNumbers } from '@/data/town-stops';
-import { getBeachGems } from '@/data/classes';
 import { resolveLinkGroupsAtStop } from '@/lib/link-group-resolver';
+import { getInventoryAtStop } from '@/lib/gem-inventory';
 import type { BuildLinkGroup } from '@/types/build';
 
 function SortableLinkGroupItem({ id, linkGroup }: { id: string; linkGroup: BuildLinkGroup }) {
@@ -172,6 +172,8 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
     );
   }
 
+  const [inventoryOnly, setInventoryOnly] = useState(false);
+
   const actNumbers = getActNumbers();
 
   return (
@@ -183,12 +185,23 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
             onUpdate={(updates) => updateBuildInfo(buildId, updates)}
           />
         </div>
-        <Link
-          href={`/builds/${buildId}/run`}
-          className="inline-flex items-center rounded-md border border-poe-gold/50 bg-poe-gold/10 px-3 py-1.5 text-sm font-medium text-poe-gold hover:bg-poe-gold/20 transition-colors shrink-0 ml-4 mt-1"
-        >
-          Run View &rarr;
-        </Link>
+        <div className="flex items-center gap-3 shrink-0 ml-4 mt-1">
+          <label className="flex items-center gap-1.5 text-xs text-poe-muted cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={inventoryOnly}
+              onChange={(e) => setInventoryOnly(e.target.checked)}
+              className="accent-poe-gold"
+            />
+            Inventory Only
+          </label>
+          <Link
+            href={`/builds/${buildId}/run`}
+            className="inline-flex items-center rounded-md border border-poe-gold/50 bg-poe-gold/10 px-3 py-1.5 text-sm font-medium text-poe-gold hover:bg-poe-gold/20 transition-colors"
+          >
+            Run View &rarr;
+          </Link>
+        </div>
       </div>
 
       {/* Mule (optional) */}
@@ -224,24 +237,8 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
               <div className="space-y-1">
                 {actStopPlans.map(({ townStop, stopPlan }) => {
                   const resolved = resolveLinkGroupsAtStop(build.linkGroups, townStop.id);
-                  // Gem names available at this stop for the link group combobox
-                  const beachNames: string[] = [];
-                  if (townStop.id === 'a1_after_hillock') {
-                    const mainBeach = getBeachGems(build.className);
-                    if (mainBeach) beachNames.push(mainBeach.skillGem, mainBeach.supportGem);
-                    const muleBeach = build.muleClassName ? getBeachGems(build.muleClassName) : null;
-                    if (muleBeach) beachNames.push(muleBeach.skillGem, muleBeach.supportGem);
-                  }
-                  const stopGemNames = [
-                    ...new Set([
-                      ...stopPlan!.gemPickups.map((p) => p.gemName),
-                      ...beachNames,
-                      // Include mule gems at After Hillock
-                      ...(townStop.id === 'a1_after_hillock'
-                        ? (build.mulePickups ?? []).map((p) => p.gemName)
-                        : []),
-                    ]),
-                  ];
+                  const inventory = getInventoryAtStop(build, townStop.id);
+                  const inventoryGemNames = [...inventory];
 
                   // Find custom stops anchored after this town stop
                   const customStopsAfter = build.stops.filter(
@@ -255,7 +252,8 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
                         townStop={townStop}
                         buildId={buildId}
                         className={build.className}
-                        stopGemNames={stopGemNames}
+                        inventoryGemNames={inventoryGemNames}
+                        inventoryOnly={inventoryOnly}
                         resolvedLinkGroups={resolved}
                         disabledStopIds={townStopDisabledIds}
                         onToggleEnabled={() => toggleStopEnabled(buildId, townStop.id)}
@@ -279,7 +277,8 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
 
                         return customStopsAfter.map((cs) => {
                         const csResolved = resolveLinkGroupsAtStop(build.linkGroups, cs.stopId);
-                        const csGemNames = [...new Set(cs.gemPickups.map((p) => p.gemName))];
+                        const csInventory = getInventoryAtStop(build, cs.stopId);
+                        const csInventoryGemNames = [...csInventory];
                         return (
                           <StopSection
                             key={cs.stopId}
@@ -287,7 +286,8 @@ export function BuildEditor({ buildId }: BuildEditorProps) {
                             townStop={townStop}
                             buildId={buildId}
                             className={build.className}
-                            stopGemNames={csGemNames}
+                            inventoryGemNames={csInventoryGemNames}
+                            inventoryOnly={inventoryOnly}
                             resolvedLinkGroups={csResolved}
                             disabledStopIds={disabledStopIds}
                             isCustomStop

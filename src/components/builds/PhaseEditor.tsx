@@ -19,7 +19,8 @@ interface PhaseEditorProps {
   onChange: (updates: Partial<Pick<LinkGroupPhase, 'gems' | 'notes'>>) => void;
   onChangeLabel: (label: string) => void;
   onDelete: () => void;
-  stopGemNames: string[];
+  inventoryGemNames: string[];
+  inventoryOnly?: boolean;
   previousPhaseGems?: GemSlot[];
 }
 
@@ -54,7 +55,8 @@ export function PhaseEditor({
   onChange,
   onChangeLabel,
   onDelete,
-  stopGemNames,
+  inventoryGemNames,
+  inventoryOnly,
   previousPhaseGems,
 }: PhaseEditorProps) {
   const sensors = useSensors(
@@ -259,7 +261,8 @@ export function PhaseEditor({
                         value={gem.gemName}
                         socketColor={gem.socketColor}
                         onSelect={(name, sc) => handleGemSelect(i, name, sc)}
-                        priorityGemNames={stopGemNames}
+                        inventoryGemNames={inventoryGemNames}
+                        inventoryOnly={inventoryOnly}
                         placeholder={`Gem ${i + 1}`}
                       />
                       <button
@@ -289,7 +292,8 @@ export function PhaseEditor({
                               value={alt.gemName}
                               socketColor={alt.socketColor}
                               onSelect={(name, sc) => handleAltGemSelect(i, ai, name, sc)}
-                              priorityGemNames={stopGemNames}
+                              inventoryGemNames={inventoryGemNames}
+                        inventoryOnly={inventoryOnly}
                               placeholder="Alternative gem"
                             />
                             <button

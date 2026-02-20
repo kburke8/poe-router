@@ -10,7 +10,8 @@ interface GemSlotComboboxProps {
   value: string;
   socketColor: SocketColor;
   onSelect: (gemName: string, socketColor?: SocketColor) => void;
-  priorityGemNames: string[];
+  inventoryGemNames: string[];
+  inventoryOnly?: boolean;
   placeholder?: string;
 }
 
@@ -46,7 +47,8 @@ export function GemSlotCombobox({
   value,
   socketColor,
   onSelect,
-  priorityGemNames,
+  inventoryGemNames,
+  inventoryOnly,
   placeholder,
 }: GemSlotComboboxProps) {
   const [query, setQuery] = useState('');
@@ -54,34 +56,45 @@ export function GemSlotCombobox({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const prioritySet = useMemo(() => new Set(priorityGemNames), [priorityGemNames]);
+  const inventorySet = useMemo(() => new Set(inventoryGemNames), [inventoryGemNames]);
 
-  const priorityGems = useMemo(
-    () => allGemsCache.filter((g) => prioritySet.has(g.name)).sort((a, b) => a.name.localeCompare(b.name)),
-    [prioritySet],
+  const inventoryGems = useMemo(
+    () => allGemsCache.filter((g) => inventorySet.has(g.name)).sort((a, b) => a.name.localeCompare(b.name)),
+    [inventorySet],
   );
 
   const otherGems = useMemo(
-    () => allGemsCache.filter((g) => !prioritySet.has(g.name)).sort((a, b) => a.name.localeCompare(b.name)),
-    [prioritySet],
+    () => allGemsCache.filter((g) => !inventorySet.has(g.name)).sort((a, b) => a.name.localeCompare(b.name)),
+    [inventorySet],
+  );
+
+  const searchPool = useMemo(
+    () => inventoryOnly ? inventoryGems : allGemsCache,
+    [inventoryOnly, inventoryGems],
   );
 
   const fuse = useMemo(
-    () => new Fuse(allGemsCache, { keys: ['name', 'tags'], threshold: 0.3 }),
-    [],
+    () => new Fuse(searchPool, { keys: ['name', 'tags'], threshold: 0.3 }),
+    [searchPool],
   );
 
   const filteredResults = useMemo(() => {
     const text = query.trim();
     if (!text) {
-      return { priority: priorityGems, other: otherGems.slice(0, 40) };
+      if (inventoryOnly) {
+        return { priority: inventoryGems, other: [] };
+      }
+      return { priority: inventoryGems, other: otherGems.slice(0, 40) };
     }
     const matches = fuse.search(text, { limit: 40 }).map((r) => r.item);
+    if (inventoryOnly) {
+      return { priority: matches, other: [] };
+    }
     return {
-      priority: matches.filter((g) => prioritySet.has(g.name)),
-      other: matches.filter((g) => !prioritySet.has(g.name)),
+      priority: matches.filter((g) => inventorySet.has(g.name)),
+      other: matches.filter((g) => !inventorySet.has(g.name)),
     };
-  }, [query, fuse, priorityGems, otherGems, prioritySet]);
+  }, [query, fuse, inventoryGems, otherGems, inventorySet, inventoryOnly]);
 
   // Close on outside click
   useEffect(() => {
@@ -161,7 +174,7 @@ export function GemSlotCombobox({
           {filteredResults.priority.length > 0 && (
             <div>
               <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-poe-gold/70 border-b border-poe-border/50 bg-poe-bg/50">
-                Picking up this town
+                In Inventory
               </div>
               {filteredResults.priority.map((gem) => (
                 <button
@@ -179,7 +192,7 @@ export function GemSlotCombobox({
               ))}
             </div>
           )}
-          {filteredResults.other.length > 0 && (
+          {filteredResults.other.length > 0 && !inventoryOnly && (
             <div>
               {filteredResults.priority.length > 0 && (
                 <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-poe-muted/70 border-b border-poe-border/50 bg-poe-bg/50">
@@ -194,7 +207,7 @@ export function GemSlotCombobox({
                     e.preventDefault();
                     handleGemClick(gem);
                   }}
-                  className="flex w-full items-center gap-2 px-3 py-1 text-left text-sm hover:bg-poe-border/50 transition-colors"
+                  className="flex w-full items-center gap-2 px-3 py-1 text-left text-sm hover:bg-poe-border/50 transition-colors opacity-60"
                 >
                   <span className={GEM_COLOR_TEXT[gem.color] ?? 'text-poe-text'}>{gem.name}</span>
                   <span className="ml-auto text-[10px] uppercase text-poe-muted">{gem.type}</span>

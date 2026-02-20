@@ -65,7 +65,7 @@ export const TOWN_STOPS: TownStop[] = [
     label: 'After Dweller',
     actNumber: 1,
     questsCompleted: ['enemy_at_the_gate', 'breaking_some_eggs', 'mercy_mission', 'the_caged_brute_nessa'],
-    defaultEnabled: false,
+    defaultEnabled: true,
     sortOrder: 3,
   },
   {

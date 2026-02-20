@@ -427,9 +427,23 @@ function buildLinkGroupsFromSkillSets(
           .join('+');
         const key = `${slotName}::${activeNames}`;
 
+        // Clamp phase start: no earlier than the latest gem pickup stop
+        let effectiveStopId = stopId;
+        let effectiveOrder = stopOrderMap.get(stopId) ?? 0;
+        for (const gem of gems) {
+          const pickupStopId = placedGems.get(gem.gemName);
+          if (pickupStopId) {
+            const pickupOrder = stopOrderMap.get(pickupStopId) ?? 0;
+            if (pickupOrder > effectiveOrder) {
+              effectiveOrder = pickupOrder;
+              effectiveStopId = pickupStopId;
+            }
+          }
+        }
+
         const phase: LinkGroupPhase = {
           id: crypto.randomUUID(),
-          fromStopId: stopId,
+          fromStopId: effectiveStopId,
           gems,
         };
 

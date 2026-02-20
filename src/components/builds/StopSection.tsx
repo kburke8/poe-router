@@ -21,7 +21,8 @@ interface StopSectionProps {
   townStop: TownStop;
   buildId: string;
   className: string;
-  stopGemNames: string[];
+  inventoryGemNames: string[];
+  inventoryOnly?: boolean;
   resolvedLinkGroups: ResolvedLinkGroup[];
   disabledStopIds?: Set<string>;
   isCustomStop?: boolean;
@@ -44,7 +45,8 @@ export function StopSection({
   stopPlan,
   townStop,
   className,
-  stopGemNames,
+  inventoryGemNames,
+  inventoryOnly,
   resolvedLinkGroups,
   disabledStopIds,
   isCustomStop,
@@ -176,7 +178,8 @@ export function StopSection({
                       onChange={(updates) => onUpdatePhase(resolved.buildLinkGroup.id, resolved.activePhase.id, updates)}
                       onChangeLabel={(label) => onUpdateLinkGroupLabel(resolved.buildLinkGroup.id, label)}
                       onDelete={() => onRemovePhase(resolved.buildLinkGroup.id, resolved.activePhase.id)}
-                      stopGemNames={stopGemNames}
+                      inventoryGemNames={inventoryGemNames}
+                      inventoryOnly={inventoryOnly}
                       previousPhaseGems={prevPhase?.gems}
                     />
                   );
