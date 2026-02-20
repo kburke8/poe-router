@@ -130,11 +130,10 @@ function findEarliestStop(gemName: string, className: string): string | null {
   return null;
 }
 
-/** Map PoB slot names to a friendlier label. */
-function slotLabel(slot: string, label: string): string {
+/** Get a label for a skill group, ignoring equipment slot names. */
+function slotLabel(_slot: string, label: string): string {
   if (label) return label;
-  if (slot) return slot;
-  return 'Link Group';
+  return '';
 }
 
 /** Check if a gem has aura or herald tags. */
@@ -402,7 +401,7 @@ function buildLinkGroupsFromSkillSets(
 
       if (matched.length === 0) continue;
 
-      const slotName = sg.slot || sg.label || 'Link Group';
+      const slotName = sg.label || '';
       const actives = matched.filter((m) => m.gem.type === 'skill');
       const supports = matched.filter((m) => m.gem.type === 'support');
 

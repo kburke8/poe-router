@@ -48,7 +48,7 @@ src/
 │   ├── builds/             # BuildEditor, BuildHeader, BuildCard, StopSection, StopHeader,
 │   │                         PhaseEditor, GemPickerDialog, GemPickupList, GearGoalsPanel,
 │   │                         GemSlotCombobox, MuleSection, InheritedLinkGroupCard, RunView,
-│   │                         PobImportDialog
+│   │                         PobImportDialog, InventoryPanel
 │   └── history/            # RunForm, RunCard, ActSplitTimesEditor
 ├── stores/                 # Zustand stores (useRegexStore, useBuildStore, useRunHistoryStore)
 ├── db/database.ts          # Dexie DB definition
@@ -69,6 +69,7 @@ src/
 │   │   └── backfill.ts     # Core backfill: places gem pickups at earliest stops, builds link groups
 │   ├── gem-availability.ts # Gem availability logic by quest/vendor
 │   ├── gem-costs.ts        # Gem purchase cost calculations
+│   ├── gem-inventory.ts    # Gem inventory tracking across stops (with drop support)
 │   ├── link-group-resolver.ts # Resolves gem link groups across stops
 │   ├── migration.ts        # IndexedDB schema migration helpers
 │   ├── export.ts           # JSON import/export
@@ -76,7 +77,7 @@ src/
 ├── hooks/                  # useDebounce, useCopyToClipboard
 └── types/
     ├── regex.ts            # RegexPreset, RegexCategory, RegexEntry, RegexCategoryId
-    ├── build.ts            # BuildPlan, ActPlan, GemSetup, GearGoal, SkillTransition
+    ├── build.ts            # BuildPlan, StopPlan (with droppedGems), GemSetup, GearGoal, SkillTransition
     ├── history.ts          # RunRecord, ActSplit
     └── gem.ts              # Gem, Item, GemColor, GemType, ItemCategory
 ```
@@ -131,6 +132,20 @@ Imports builds from Path of Building via pobb.in URLs or raw export codes:
 ### Stores
 
 All Zustand stores use Immer for immutable updates and Dexie for IndexedDB persistence with debounced saves (300ms).
+
+### Gem Inventory & Dropping (`src/lib/gem-inventory.ts`)
+
+`getInventoryAtStop(build, stopId)` walks all enabled stops up to `stopId`, collecting gem pickups plus beach/mule gems. It also removes any gems listed in each stop's `droppedGems` array — a gem dropped at stop X won't appear at stop X or any later stop. The `droppedGems?: string[]` field on `StopPlan` is optional; existing data works without migration.
+
+Store mutations: `dropGem(buildId, stopId, gemName)` and `undropGem(buildId, stopId, gemName)`.
+
+### Cross-Link-Group Filtering
+
+When multiple link groups exist at a stop, `StopSection` and the wizard's `StopStep` compute which gems are used in each link group. Each `PhaseEditor`'s inventory dropdown excludes gems already slotted in *other* link groups at that stop, preventing the same physical gem from being assigned to two setups.
+
+### Inventory Panel (`src/components/builds/InventoryPanel.tsx`)
+
+Displayed alongside gem pickups in a two-column layout at each stop (both Wizard and Advanced modes). Shows all accumulated gems color-coded by attribute, with slotted gems dimmed. Unslotted gems have a drop button; dropped gems appear in a "Dropped" subsection with an undo button.
 
 ### Gem Data
 

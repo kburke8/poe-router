@@ -100,6 +100,27 @@ export default function GuidePage() {
               The build editor shows which links are available at each stage based on the gems
               you&apos;ve picked up so far.
             </p>
+            <p className="text-sm text-poe-muted leading-relaxed">
+              When multiple link groups exist at a stop, the gem dropdowns automatically filter
+              out gems already used in other link groups. Since each physical gem can only be
+              socketed in one item at a time, this prevents accidentally assigning the same gem
+              to two different setups.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-poe-gold">Gem Inventory &amp; Dropping</h3>
+            <p className="text-sm text-poe-muted leading-relaxed">
+              Each stop shows an <span className="text-poe-text font-medium">Inventory</span> panel
+              alongside the gem pickups. This displays all gems you&apos;ve accumulated up to that point,
+              color-coded by attribute (red/green/blue). Gems currently slotted in link groups appear
+              dimmed.
+            </p>
+            <p className="text-sm text-poe-muted leading-relaxed">
+              You can <span className="text-poe-text font-medium">drop</span> unwanted gems (e.g., the
+              free Dual Strike you get as a Duelist on the beach) by clicking the &times; button on
+              any unslotted gem. Dropped gems are removed from your inventory at that stop and all
+              subsequent stops. You can undo a drop at any time.
+            </p>
           </div>
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-poe-gold">Mule</h3>
