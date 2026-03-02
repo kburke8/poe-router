@@ -67,6 +67,9 @@ interface BuildState {
   dropGem: (buildId: string, stopId: string, gemName: string) => Promise<void>;
   undropGem: (buildId: string, stopId: string, gemName: string) => Promise<void>;
 
+  // Bulk buy regex toggle
+  toggleBulkBuyRegex: (buildId: string) => Promise<void>;
+
   // Mule mutations
   updateMuleClass: (buildId: string, muleClassName: string) => Promise<void>;
   addMulePickup: (buildId: string, pickup: MulePickup) => Promise<void>;
@@ -539,6 +542,18 @@ export const useBuildStore = create<BuildState>()(
           }
         }
         result.build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    // === Bulk buy regex toggle ===
+
+    async toggleBulkBuyRegex(buildId) {
+      set((state) => {
+        const build = state.builds.find((b) => b.id === buildId);
+        if (!build) return;
+        build.bulkBuyRegex = !build.bulkBuyRegex;
+        build.updatedAt = new Date().toISOString();
       });
       debouncedSave(() => get().builds.find((b) => b.id === buildId));
     },

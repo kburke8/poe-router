@@ -64,6 +64,7 @@ export interface BuildPlan {
   stops: StopPlan[];
   linkGroups: BuildLinkGroup[];
   gearGoals: GearGoal[];
+  bulkBuyRegex?: boolean;
   muleClassName?: string;
   mulePickups?: MulePickup[];
   createdAt: string;

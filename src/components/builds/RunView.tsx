@@ -15,9 +15,12 @@ import { getBeachGems } from '@/data/classes';
 import { resolveLinkGroupsAtStop, getPreviousPhase } from '@/lib/link-group-resolver';
 import { summarizeVendorCosts } from '@/lib/gem-costs';
 import { useRegexStore } from '@/stores/useRegexStore';
+import { useBuildStore } from '@/stores/useBuildStore';
 import { combineCategories } from '@/lib/regex/combiner';
 import { encodeBuild } from '@/lib/share';
+import { getBulkBuyVendor, getBulkBuyGemsByStop, getExclusiveBulkBuyGemNames, computeBulkBuyRegex } from '@/lib/bulk-buy';
 import type { BuildPlan, StopPlan, GemPickup, BuildLinkGroup } from '@/types/build';
+import type { RegexCategory } from '@/types/regex';
 import type { ResolvedLinkGroup } from '@/lib/link-group-resolver';
 
 interface RunViewProps {
@@ -42,7 +45,24 @@ const gemColorToVariant = {
 export function RunView({ build }: RunViewProps) {
   const [detail, setDetail] = useState<DetailLevel>(1);
   const [fontScale, setFontScale] = useState(100);
+  const [charName, setCharName] = useState('');
   const actNumbers = getActNumbers();
+
+  // Persist character name per build in localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem(`poe-charname-${build.id}`);
+    if (stored) setCharName(stored);
+  }, [build.id]);
+
+  const handleCharNameChange = (value: string) => {
+    setCharName(value);
+    if (value) {
+      localStorage.setItem(`poe-charname-${build.id}`, value);
+    } else {
+      localStorage.removeItem(`poe-charname-${build.id}`);
+    }
+  };
+  const toggleBulkBuyRegex = useBuildStore((s) => s.toggleBulkBuyRegex);
 
   // Load linked regex preset
   const { presets, loadPresets } = useRegexStore();
@@ -50,12 +70,42 @@ export function RunView({ build }: RunViewProps) {
     if (presets.length === 0) loadPresets();
   }, [presets.length, loadPresets]);
 
+  // Bulk buy data
+  const bulkBuyGemsByStop = useMemo(() => getBulkBuyGemsByStop(build), [build]);
+  const hasBulkBuyStops = bulkBuyGemsByStop.size > 0;
+
+  const bulkBuyRegexes = useMemo(() => {
+    if (!build.bulkBuyRegex) return new Map<string, string>();
+    const result = new Map<string, string>();
+    for (const [stopId, gems] of bulkBuyGemsByStop) {
+      const regex = computeBulkBuyRegex(gems);
+      if (regex) result.set(stopId, regex);
+    }
+    return result;
+  }, [build.bulkBuyRegex, bulkBuyGemsByStop]);
+
   const linkedRegex = useMemo(() => {
     if (!build.regexPresetId) return '';
     const preset = presets.find((p) => p.id === build.regexPresetId);
     if (!preset) return '';
+
+    // When bulk buy is enabled, filter exclusive bulk buy gems from the gems category
+    if (build.bulkBuyRegex) {
+      const exclusiveNames = getExclusiveBulkBuyGemNames(build);
+      if (exclusiveNames.size > 0) {
+        const filtered = preset.categories.map((cat): RegexCategory => {
+          if (cat.id !== 'gems') return cat;
+          return {
+            ...cat,
+            entries: cat.entries.filter((e) => !e.sourceName || !exclusiveNames.has(e.sourceName)),
+          };
+        });
+        return combineCategories(filtered);
+      }
+    }
+
     return combineCategories(preset.categories);
-  }, [build.regexPresetId, presets]);
+  }, [build, presets]);
 
   const handleShare = () => {
     const regexPreset = build.regexPresetId
@@ -194,7 +244,7 @@ export function RunView({ build }: RunViewProps) {
         );
       })()}
 
-      {/* Detail slider */}
+      {/* Detail slider + bulk buy toggle + character name */}
       <div className="flex items-center gap-3">
         <span className="text-xs text-poe-muted shrink-0">Detail</span>
         <input
@@ -207,6 +257,27 @@ export function RunView({ build }: RunViewProps) {
           className="w-32 accent-poe-gold"
         />
         <span className="text-xs font-medium text-poe-gold w-16">{DETAIL_LABELS[detail]}</span>
+        {hasBulkBuyStops && (
+          <label className="flex items-center gap-1.5 ml-4 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={!!build.bulkBuyRegex}
+              onChange={() => toggleBulkBuyRegex(build.id)}
+              className="accent-poe-gold h-3.5 w-3.5"
+            />
+            <span className="text-xs text-poe-muted">Bulk buy regex</span>
+          </label>
+        )}
+        <div className="flex items-center gap-1.5 rounded-md border border-poe-border bg-poe-card px-2 py-1 ml-auto shrink-0">
+          <input
+            type="text"
+            value={charName}
+            onChange={(e) => handleCharNameChange(e.target.value)}
+            placeholder="Character name"
+            className="bg-transparent text-sm text-poe-text placeholder:text-poe-muted/40 outline-none w-32 font-mono"
+          />
+          {charName && <CopyButton text={charName} className="shrink-0" />}
+        </div>
       </div>
 
       {/* Linked Regex */}
@@ -216,6 +287,24 @@ export function RunView({ build }: RunViewProps) {
           <CopyButton text={linkedRegex} className="shrink-0" />
         </div>
       )}
+
+      {/* Bulk Buy Regex blocks */}
+      {bulkBuyRegexes.size > 0 && [...bulkBuyRegexes.entries()].map(([stopId, regex]) => {
+        const vendor = getBulkBuyVendor(stopId);
+        const label = vendor === 'siosa' ? 'Siosa (Library)' : 'Lily Roth';
+        return (
+          <div key={stopId} className="flex items-center gap-2 rounded-md border border-poe-border/60 bg-poe-card px-3 py-2">
+            <span className="text-xs text-poe-muted shrink-0">{label}:</span>
+            <code className="flex-1 text-sm font-mono text-poe-text select-all break-all">{regex}</code>
+            <CopyButton text={regex} className="shrink-0" />
+            {regex.length > 200 && (
+              <span className={`text-[10px] shrink-0 ${regex.length > 250 ? 'text-red-400' : 'text-poe-muted/50'}`}>
+                {regex.length}/250
+              </span>
+            )}
+          </div>
+        );
+      })}
 
       {/* Mule */}
       {build.muleClassName && (build.mulePickups?.length ?? 0) > 0 && detail <= 1 && (

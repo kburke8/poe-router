@@ -1,6 +1,7 @@
 import type { BuildPlan, BuildLinkGroup, SocketColor } from '@/types/build';
 import type { RegexPreset } from '@/types/regex';
 import { abbreviate, computeAbbreviations } from './abbreviator';
+import { getExclusiveBulkBuyGemNames } from '@/lib/bulk-buy';
 import gemsData from '@/data/gems.json';
 import itemsData from '@/data/items.json';
 import type { Gem, GemColor, Item, ItemDatabase } from '@/types/gem';
@@ -392,7 +393,8 @@ export async function generateBuildRegex(
     ) => Promise<void>;
   },
 ): Promise<string> {
-  // Collect vendor gem names
+  // Collect vendor gem names, excluding bulk buy exclusives when enabled
+  const bulkBuyExclusive = build.bulkBuyRegex ? getExclusiveBulkBuyGemNames(build) : new Set<string>();
   const vendorGemNames = [
     ...new Set(
       build.stops
@@ -400,7 +402,7 @@ export async function generateBuildRegex(
         .filter((p) => p.source === 'vendor')
         .map((p) => p.gemName)
     ),
-  ];
+  ].filter((name) => !bulkBuyExclusive.has(name));
 
   // Compute link patterns
   const linkPatterns = generateLinkPatterns(build.linkGroups);
