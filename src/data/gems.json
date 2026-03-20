@@ -1,4 +1,10 @@
 {
+  "_metadata": {
+    "generated": "2026-03-20T21:06:06.169Z",
+    "source": "https://repoe-fork.github.io/gems_minimal.min.json",
+    "entryCount": 482,
+    "poeVersion": "3.28"
+  },
   "skills": [
     {
       "id": "absolution",
@@ -7,23 +13,23 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "minion",
         "duration",
-        "area",
         "physical",
-        "lightning"
+        "lightning",
+        "area"
       ]
     },
     {
-      "id": "alchemist_s_mark",
+      "id": "alchemists_mark",
       "name": "Alchemist's Mark",
       "color": "green",
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "curse",
         "mark",
@@ -34,6 +40,21 @@
       ]
     },
     {
+      "id": "ambush",
+      "name": "Ambush",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "critical",
+        "dexterity",
+        "grants_active_skill",
+        "spell",
+        "movement",
+        "duration",
+        "travel"
+      ]
+    },
+    {
       "id": "ancestral_cry",
       "name": "Ancestral Cry",
       "color": "red",
@@ -41,7 +62,7 @@
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration"
       ]
@@ -53,7 +74,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "totem",
         "melee",
@@ -67,12 +88,12 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "totem",
+        "melee",
         "area",
-        "slam",
-        "melee"
+        "slam"
       ]
     },
     {
@@ -83,7 +104,7 @@
       "tags": [
         "aura",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire"
@@ -96,10 +117,9 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
-        "minion",
-        "physical"
+        "minion"
       ]
     },
     {
@@ -109,7 +129,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "duration",
         "minion",
         "spell",
@@ -123,7 +143,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "chaining",
         "lightning"
@@ -136,7 +156,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "guard",
@@ -152,7 +172,7 @@
       "tags": [
         "trigger",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "brand"
@@ -165,7 +185,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "cold"
@@ -178,7 +198,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -193,7 +213,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "totem",
         "area",
@@ -203,14 +223,14 @@
       ]
     },
     {
-      "id": "assassin_s_mark",
+      "id": "assassins_mark",
       "name": "Assassin's Mark",
       "color": "blue",
       "type": "skill",
       "tags": [
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "curse",
         "mark"
@@ -222,10 +242,22 @@
       "color": "red",
       "type": "skill",
       "tags": [
-        "strength",
-        "active_skill",
         "warcry",
         "trigger",
+        "strength",
+        "grants_active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "automation",
+      "name": "Automation",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "trigger",
+        "intelligence",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -236,7 +268,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "area",
@@ -252,7 +284,7 @@
         "chaos",
         "trigger",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -266,22 +298,23 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "bow"
       ]
     },
     {
-      "id": "battlemage_s_cry",
+      "id": "battlemages_cry",
       "name": "Battlemage's Cry",
       "color": "red",
       "type": "skill",
       "tags": [
         "warcry",
         "critical",
+        "trigger",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration"
       ]
@@ -294,7 +327,7 @@
       "tags": [
         "trap",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "physical"
@@ -307,7 +340,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -318,7 +351,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "physical"
@@ -331,11 +364,10 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "channelling",
-        "physical",
         "melee"
       ]
     },
@@ -345,9 +377,8 @@
       "color": "green",
       "type": "skill",
       "tags": [
-        "critical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -360,9 +391,8 @@
       "color": "green",
       "type": "skill",
       "tags": [
-        "critical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "physical",
@@ -376,11 +406,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
-        "duration",
-        "melee"
+        "duration"
       ]
     },
     {
@@ -391,7 +421,7 @@
       "tags": [
         "fire",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "projectile",
@@ -405,7 +435,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -419,7 +449,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "chaos",
         "area",
@@ -434,7 +464,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "minion",
         "duration",
@@ -451,9 +481,22 @@
       "tags": [
         "low_max_level",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "stance"
+      ]
+    },
+    {
+      "id": "blood_offering",
+      "name": "Blood Offering",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "grants_active_skill",
+        "spell",
+        "duration",
+        "minion"
       ]
     },
     {
@@ -463,7 +506,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "physical"
@@ -476,7 +519,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "movement",
         "spell",
         "area",
@@ -492,7 +535,7 @@
       "tags": [
         "minion",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -504,7 +547,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -521,7 +564,7 @@
       "tags": [
         "brand",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -532,10 +575,25 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "fire",
+        "bow"
+      ]
+    },
+    {
+      "id": "call_the_pyre",
+      "name": "Call the Pyre",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "fire",
+        "area",
+        "attack",
+        "melee",
         "bow"
       ]
     },
@@ -546,7 +604,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -562,7 +620,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "movement",
@@ -576,13 +634,13 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "movement",
         "area",
         "channelling",
         "attack",
-        "lightning",
-        "melee"
+        "melee",
+        "lightning"
       ]
     },
     {
@@ -593,7 +651,7 @@
       "tags": [
         "aura",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -605,10 +663,9 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "physical",
         "melee"
       ]
     },
@@ -618,9 +675,8 @@
       "color": "green",
       "type": "skill",
       "tags": [
-        "critical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "chaos"
@@ -633,7 +689,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold",
@@ -647,7 +703,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -663,7 +719,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "fire",
         "area",
@@ -680,13 +736,13 @@
       "tags": [
         "fire",
         "strength",
-        "active_skill",
+        "grants_active_skill",
+        "melee",
         "attack",
         "area",
         "movement",
         "duration",
-        "slam",
-        "melee"
+        "slam"
       ]
     },
     {
@@ -696,7 +752,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -711,7 +767,7 @@
       "tags": [
         "trap",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -723,8 +779,7 @@
       "type": "skill",
       "tags": [
         "minion",
-        "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -736,7 +791,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "physical"
@@ -749,7 +804,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning"
@@ -762,7 +817,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "duration",
@@ -777,12 +832,13 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
         "duration",
-        "projectile"
+        "projectile",
+        "orb"
       ]
     },
     {
@@ -792,11 +848,12 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
+        "slam",
         "area",
-        "retaliation",
-        "melee"
+        "retaliation"
       ]
     },
     {
@@ -806,13 +863,27 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
+        "melee",
         "movement",
-        "channelling",
-        "physical",
-        "melee"
+        "channelling"
+      ]
+    },
+    {
+      "id": "dance_in_the_white",
+      "name": "Dance in the White",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "grants_active_skill",
+        "spell",
+        "projectile",
+        "duration",
+        "area",
+        "cold"
       ]
     },
     {
@@ -823,7 +894,7 @@
       "tags": [
         "minion",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaining",
@@ -838,7 +909,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "movement",
         "travel",
@@ -853,7 +924,7 @@
       "tags": [
         "totem",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -865,12 +936,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "spell",
         "duration",
         "aura",
-        "physical",
         "banner"
       ]
     },
@@ -881,7 +951,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -895,7 +965,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -912,7 +982,7 @@
       "tags": [
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "link"
@@ -926,7 +996,7 @@
       "tags": [
         "aura",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "physical"
@@ -939,10 +1009,22 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire"
+      ]
+    },
+    {
+      "id": "detonate_mines",
+      "name": "Detonate Mines",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "low_max_level",
+        "mine",
+        "grants_active_skill",
+        "spell"
       ]
     },
     {
@@ -953,7 +1035,7 @@
       "tags": [
         "totem",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -964,7 +1046,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -981,9 +1063,24 @@
       "tags": [
         "aura",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
+      ]
+    },
+    {
+      "id": "divine_blast",
+      "name": "Divine Blast",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "area",
+        "attack",
+        "physical",
+        "duration",
+        "fire"
       ]
     },
     {
@@ -994,7 +1091,7 @@
       "tags": [
         "lightning",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "channelling",
@@ -1008,7 +1105,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning",
@@ -1023,7 +1120,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "minion",
         "duration",
@@ -1038,7 +1135,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -1052,12 +1149,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "spell",
         "duration",
         "aura",
-        "physical",
         "banner"
       ]
     },
@@ -1069,7 +1165,7 @@
       "tags": [
         "critical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike"
@@ -1082,12 +1178,12 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
+        "melee",
         "duration",
-        "slam",
-        "melee"
+        "slam"
       ]
     },
     {
@@ -1097,12 +1193,12 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
+        "melee",
         "slam",
-        "duration",
-        "melee"
+        "duration"
       ]
     },
     {
@@ -1112,17 +1208,15 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
-        "projectile",
         "melee",
         "strike",
         "fire",
         "cold",
         "lightning",
         "area",
-        "random_element",
-        "bow"
+        "random_element"
       ]
     },
     {
@@ -1132,7 +1226,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1148,7 +1242,7 @@
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration"
       ]
@@ -1160,7 +1254,20 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
+        "spell",
+        "lightning"
+      ]
+    },
+    {
+      "id": "enervating_grasp",
+      "name": "Enervating Grasp",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "grants_active_skill",
+        "area",
         "spell",
         "lightning"
       ]
@@ -1172,7 +1279,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1187,7 +1294,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -1201,7 +1308,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "aura",
@@ -1215,7 +1322,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "duration",
@@ -1230,11 +1337,10 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
-        "physical",
-        "duration"
+        "physical"
       ]
     },
     {
@@ -1244,12 +1350,12 @@
       "type": "skill",
       "tags": [
         "strength",
-        "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
         "retaliation",
-        "melee"
+        "physical"
       ]
     },
     {
@@ -1259,7 +1365,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -1275,7 +1381,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "fire",
@@ -1292,7 +1398,7 @@
       "tags": [
         "trap",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -1306,7 +1412,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "chaining",
         "physical",
@@ -1320,10 +1426,24 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "cold"
+      ]
+    },
+    {
+      "id": "falling_crystals",
+      "name": "Falling Crystals",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "grants_active_skill",
+        "area",
+        "projectile",
+        "cold",
+        "spell"
       ]
     },
     {
@@ -1334,7 +1454,7 @@
       "tags": [
         "trap",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "area",
@@ -1348,7 +1468,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "projectile",
         "spell",
         "area",
@@ -1362,7 +1482,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1376,7 +1496,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "movement",
         "duration",
@@ -1392,7 +1512,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "link",
@@ -1406,7 +1526,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -1420,7 +1540,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1434,7 +1554,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -1449,7 +1569,7 @@
       "tags": [
         "trap",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "area",
@@ -1463,7 +1583,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1473,17 +1593,34 @@
       ]
     },
     {
+      "id": "flammable_shot",
+      "name": "Flammable Shot",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "grants_active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "duration",
+        "fire",
+        "bow"
+      ]
+    },
+    {
       "id": "flesh_and_stone",
       "name": "Flesh and Stone",
       "color": "red",
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "aura",
         "area",
-        "stance"
+        "stance",
+        "physical"
       ]
     },
     {
@@ -1494,7 +1631,7 @@
       "tags": [
         "minion",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -1506,7 +1643,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -1521,7 +1658,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaos",
@@ -1535,7 +1672,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "cold"
@@ -1548,11 +1685,9 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
-        "melee",
-        "strike",
         "bow"
       ]
     },
@@ -1563,7 +1698,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "melee",
@@ -1578,7 +1713,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1594,7 +1729,7 @@
       "tags": [
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1608,7 +1743,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "cold"
@@ -1621,7 +1756,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1637,7 +1772,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "movement",
         "duration",
@@ -1654,10 +1789,25 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "cold"
+      ]
+    },
+    {
+      "id": "frozen_legion",
+      "name": "Frozen Legion",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "spell",
+        "cold",
+        "attack",
+        "melee",
+        "area"
       ]
     },
     {
@@ -1668,7 +1818,7 @@
       "tags": [
         "lightning",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -1682,7 +1832,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1692,14 +1842,14 @@
       ]
     },
     {
-      "id": "general_s_cry",
+      "id": "generals_cry",
       "name": "General's Cry",
       "color": "red",
       "type": "skill",
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration"
       ]
@@ -1711,7 +1861,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold",
@@ -1725,7 +1875,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -1739,14 +1889,27 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
         "cold",
         "physical",
-        "retaliation",
-        "melee"
+        "retaliation"
+      ]
+    },
+    {
+      "id": "glowing_silhouette",
+      "name": "Glowing Silhouette",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "grants_active_skill",
+        "spell",
+        "lightning",
+        "duration",
+        "area"
       ]
     },
     {
@@ -1757,7 +1920,7 @@
       "tags": [
         "aura",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -1769,11 +1932,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "slam",
-        "melee"
+        "melee",
+        "slam"
       ]
     },
     {
@@ -1784,7 +1947,7 @@
       "tags": [
         "aura",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -1797,10 +1960,26 @@
       "tags": [
         "aura",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold"
+      ]
+    },
+    {
+      "id": "heart_of_flame",
+      "name": "Heart of Flame",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "spell",
+        "area",
+        "projectile",
+        "fire",
+        "duration",
+        "guard"
       ]
     },
     {
@@ -1810,7 +1989,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike"
@@ -1823,7 +2002,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "herald",
         "minion",
@@ -1838,7 +2017,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -1853,7 +2032,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold",
@@ -1867,7 +2046,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "herald",
         "minion",
@@ -1882,7 +2061,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1897,11 +2076,27 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaos",
         "hex"
+      ]
+    },
+    {
+      "id": "his_burning_message",
+      "name": "His Burning Message",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "duration",
+        "area",
+        "projectile",
+        "attack",
+        "fire",
+        "bow"
       ]
     },
     {
@@ -1912,12 +2107,58 @@
       "tags": [
         "totem",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "fire",
         "channelling",
-        "physical"
+        "physical",
+        "area"
+      ]
+    },
+    {
+      "id": "holy_hammers",
+      "name": "Holy Hammers",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "attack",
+        "slam",
+        "melee",
+        "area",
+        "lightning"
+      ]
+    },
+    {
+      "id": "holy_strike",
+      "name": "Holy Strike",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "minion",
+        "attack",
+        "melee",
+        "strike",
+        "lightning",
+        "duration"
+      ]
+    },
+    {
+      "id": "holy_sweep",
+      "name": "Holy Sweep",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "attack",
+        "area",
+        "melee",
+        "lightning"
       ]
     },
     {
@@ -1927,7 +2168,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -1944,12 +2185,12 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
+        "melee",
         "cold",
-        "slam",
-        "melee"
+        "slam"
       ]
     },
     {
@@ -1959,7 +2200,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold",
@@ -1973,7 +2214,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -1989,7 +2230,7 @@
       "tags": [
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "cold"
@@ -2003,7 +2244,7 @@
       "tags": [
         "trap",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold"
@@ -2018,7 +2259,7 @@
         "mine",
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "cold",
@@ -2033,7 +2274,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "guard"
@@ -2046,7 +2287,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "fire",
         "channelling",
@@ -2060,7 +2301,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "melee",
@@ -2077,13 +2318,13 @@
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration",
         "fire",
         "attack",
-        "trigger",
-        "melee"
+        "melee",
+        "trigger"
       ]
     },
     {
@@ -2094,7 +2335,7 @@
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration",
         "physical"
@@ -2108,7 +2349,7 @@
       "tags": [
         "trigger",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "link"
@@ -2121,7 +2362,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area"
@@ -2134,7 +2375,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile"
       ]
@@ -2146,7 +2387,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "duration",
@@ -2156,11 +2397,11 @@
     {
       "id": "kinetic_rain",
       "name": "Kinetic Rain",
-      "color": "green",
+      "color": "blue",
       "type": "skill",
       "tags": [
-        "dexterity",
-        "active_skill",
+        "intelligence",
+        "grants_active_skill",
         "attack",
         "area",
         "projectile",
@@ -2175,11 +2416,11 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "physical",
-        "melee"
+        "melee",
+        "physical"
       ]
     },
     {
@@ -2189,7 +2430,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "physical"
@@ -2202,13 +2443,13 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
+        "melee",
         "movement",
         "travel",
-        "slam",
-        "melee"
+        "slam"
       ]
     },
     {
@@ -2218,7 +2459,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "projectile",
@@ -2233,7 +2474,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning"
@@ -2248,7 +2489,7 @@
         "trap",
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "area",
@@ -2262,7 +2503,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "melee",
@@ -2276,8 +2517,9 @@
       "color": "blue",
       "type": "skill",
       "tags": [
+        "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning",
@@ -2293,7 +2535,7 @@
         "trap",
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "lightning"
@@ -2306,7 +2548,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -2323,7 +2565,7 @@
       "tags": [
         "aura",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -2335,7 +2577,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning",
@@ -2349,7 +2591,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "minion",
         "duration",
@@ -2365,7 +2607,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -2381,7 +2623,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -2398,11 +2640,23 @@
       "tags": [
         "lightning",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaining",
         "orb"
+      ]
+    },
+    {
+      "id": "overcharged_sinews",
+      "name": "Overcharged Sinews",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "grants_active_skill",
+        "spell",
+        "lightning"
       ]
     },
     {
@@ -2412,7 +2666,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "physical",
@@ -2427,13 +2681,12 @@
       "color": "red",
       "type": "skill",
       "tags": [
-        "physical",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "slam",
-        "melee"
+        "melee",
+        "slam"
       ]
     },
     {
@@ -2443,7 +2696,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -2459,7 +2712,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -2470,7 +2723,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "movement",
@@ -2485,20 +2738,21 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "chaos",
         "area"
       ]
     },
     {
-      "id": "poacher_s_mark",
+      "id": "poachers_mark",
       "name": "Poacher's Mark",
       "color": "green",
       "type": "skill",
       "tags": [
+        "physical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "curse",
         "mark"
@@ -2511,7 +2765,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "chaos",
@@ -2526,7 +2780,7 @@
       "tags": [
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile"
       ]
@@ -2540,9 +2794,23 @@
         "aura",
         "critical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
+      ]
+    },
+    {
+      "id": "preserving_stillness",
+      "name": "Preserving Stillness",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "grants_active_skill",
+        "duration",
+        "fire",
+        "cold",
+        "lightning"
       ]
     },
     {
@@ -2552,7 +2820,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "aura",
@@ -2566,7 +2834,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "link"
@@ -2579,12 +2847,10 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "duration",
-        "melee",
-        "strike",
         "physical",
         "bow"
       ]
@@ -2596,12 +2862,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
         "curse",
-        "physical",
         "hex"
       ]
     },
@@ -2613,7 +2878,7 @@
       "tags": [
         "fire",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -2628,7 +2893,7 @@
       "tags": [
         "aura",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -2641,7 +2906,7 @@
       "tags": [
         "aura",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire"
@@ -2655,7 +2920,7 @@
       "tags": [
         "aura",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold"
@@ -2669,7 +2934,7 @@
       "tags": [
         "aura",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning"
@@ -2683,7 +2948,7 @@
       "tags": [
         "mine",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "fire",
@@ -2699,11 +2964,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
-        "duration",
-        "melee"
+        "duration"
       ]
     },
     {
@@ -2713,7 +2978,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "projectile",
@@ -2727,7 +2992,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "minion"
       ]
@@ -2739,7 +3004,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "minion"
       ]
@@ -2752,7 +3017,7 @@
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration"
       ]
@@ -2764,7 +3029,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "physical",
         "area",
@@ -2778,24 +3043,9 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "melee"
-      ]
-    },
-    {
-      "id": "reckoning",
-      "name": "Reckoning",
-      "color": "red",
-      "type": "skill",
-      "tags": [
-        "trigger",
-        "strength",
-        "active_skill",
-        "attack",
-        "area",
-        "physical",
         "melee"
       ]
     },
@@ -2808,23 +3058,24 @@
         "totem",
         "aura",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
     },
     {
-      "id": "rending_steel",
-      "name": "Rending Steel",
+      "id": "return_to_dust",
+      "name": "Return to Dust",
       "color": "red",
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
-        "attack",
+        "grants_active_skill",
+        "melee",
         "area",
         "physical",
-        "melee"
+        "attack",
+        "bow"
       ]
     },
     {
@@ -2834,25 +3085,10 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire"
-      ]
-    },
-    {
-      "id": "riposte",
-      "name": "Riposte",
-      "color": "green",
-      "type": "skill",
-      "tags": [
-        "trigger",
-        "dexterity",
-        "active_skill",
-        "attack",
-        "melee",
-        "strike",
-        "physical"
       ]
     },
     {
@@ -2862,7 +3098,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -2877,7 +3113,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "fire",
         "duration",
@@ -2891,7 +3127,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "channelling",
@@ -2906,7 +3142,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "totem",
         "fire"
@@ -2920,7 +3156,7 @@
       "tags": [
         "warcry",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "duration"
       ]
@@ -2933,11 +3169,26 @@
       "tags": [
         "trap",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "area",
         "physical"
+      ]
+    },
+    {
+      "id": "seize_the_flesh",
+      "name": "Seize the Flesh",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "attack",
+        "area",
+        "physical",
+        "melee",
+        "bow"
       ]
     },
     {
@@ -2947,7 +3198,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -2961,13 +3212,13 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
         "movement",
         "travel",
-        "physical",
-        "melee"
+        "physical"
       ]
     },
     {
@@ -2977,11 +3228,27 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
+        "physical"
+      ]
+    },
+    {
+      "id": "shield_of_light",
+      "name": "Shield of Light",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "attack",
+        "melee",
+        "area",
+        "lightning",
         "physical",
-        "melee"
+        "retaliation"
       ]
     },
     {
@@ -2991,7 +3258,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning",
@@ -3006,7 +3273,7 @@
       "tags": [
         "totem",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "physical",
@@ -3020,11 +3287,10 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "totem",
-        "physical",
         "bow"
       ]
     },
@@ -3035,7 +3301,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "totem",
@@ -3049,7 +3315,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3065,7 +3331,7 @@
       "tags": [
         "trap",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "area",
@@ -3080,11 +3346,11 @@
       "tags": [
         "lightning",
         "strength",
-        "active_skill",
+        "grants_active_skill",
+        "melee",
         "attack",
         "area",
         "duration",
-        "melee",
         "strike",
         "aura"
       ]
@@ -3097,7 +3363,7 @@
       "tags": [
         "mine",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3107,13 +3373,28 @@
       ]
     },
     {
-      "id": "sniper_s_mark",
+      "id": "snipe",
+      "name": "Snipe",
+      "color": "green",
+      "type": "skill",
+      "tags": [
+        "dexterity",
+        "grants_active_skill",
+        "attack",
+        "projectile",
+        "channelling",
+        "physical",
+        "bow"
+      ]
+    },
+    {
+      "id": "snipers_mark",
       "name": "Sniper's Mark",
       "color": "green",
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "curse",
         "mark"
@@ -3122,11 +3403,11 @@
     {
       "id": "somatic_shell",
       "name": "Somatic Shell",
-      "color": "green",
+      "color": "blue",
       "type": "skill",
       "tags": [
-        "dexterity",
-        "active_skill",
+        "intelligence",
+        "grants_active_skill",
         "duration",
         "physical",
         "attack",
@@ -3141,7 +3422,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "link"
@@ -3155,7 +3436,7 @@
       "tags": [
         "chaos",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3169,7 +3450,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "duration",
@@ -3183,7 +3464,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile"
       ]
@@ -3195,7 +3476,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "physical"
@@ -3208,7 +3489,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile"
       ]
@@ -3221,7 +3502,7 @@
       "tags": [
         "trigger",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -3233,7 +3514,7 @@
       "tags": [
         "minion",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -3245,10 +3526,9 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
-        "physical",
         "bow"
       ]
     },
@@ -3259,7 +3539,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "area",
@@ -3273,7 +3553,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -3290,7 +3570,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "guard"
@@ -3304,7 +3584,7 @@
       "tags": [
         "lightning",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaining",
@@ -3320,7 +3600,7 @@
       "tags": [
         "area",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "lightning",
         "channelling",
@@ -3335,7 +3615,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3349,7 +3629,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "lightning",
@@ -3364,7 +3644,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "channelling",
@@ -3381,7 +3661,7 @@
       "tags": [
         "mine",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning",
@@ -3396,7 +3676,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "physical",
         "minion",
         "spell",
@@ -3410,7 +3690,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "chaos",
         "minion",
         "spell",
@@ -3424,7 +3704,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "fire",
         "minion",
         "spell",
@@ -3438,7 +3718,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "minion",
         "spell"
       ]
@@ -3451,7 +3731,7 @@
       "tags": [
         "critical",
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "cold",
         "minion",
         "spell",
@@ -3465,7 +3745,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "lightning",
         "minion",
         "spell",
@@ -3479,7 +3759,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "minion",
         "duration",
@@ -3493,7 +3773,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "physical",
         "minion",
         "spell"
@@ -3506,7 +3786,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "minion",
         "duration"
@@ -3521,7 +3801,7 @@
         "trap",
         "mine",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "minion",
         "cold",
@@ -3537,7 +3817,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "minion",
         "spell",
         "golem",
@@ -3551,25 +3831,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "slam",
-        "melee"
-      ]
-    },
-    {
-      "id": "sweep",
-      "name": "Sweep",
-      "color": "red",
-      "type": "skill",
-      "tags": [
-        "strength",
-        "active_skill",
-        "attack",
-        "area",
-        "physical",
-        "melee"
+        "melee",
+        "slam"
       ]
     },
     {
@@ -3579,12 +3845,11 @@
       "type": "skill",
       "tags": [
         "strength",
-        "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "area",
-        "retaliation",
-        "melee"
+        "retaliation"
       ]
     },
     {
@@ -3595,11 +3860,11 @@
       "tags": [
         "fire",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
-        "slam",
-        "melee"
+        "melee",
+        "slam"
       ]
     },
     {
@@ -3609,7 +3874,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "lightning",
         "chaining"
@@ -3622,7 +3887,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3637,7 +3902,42 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
+        "spell"
+      ]
+    },
+    {
+      "id": "tender_embrace",
+      "name": "Tender Embrace",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "duration",
+        "spell"
+      ]
+    },
+    {
+      "id": "the_great_avalanche",
+      "name": "The Great Avalanche",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "grants_active_skill",
+        "minion",
+        "spell"
+      ]
+    },
+    {
+      "id": "the_grey_wind_howls",
+      "name": "The Grey Wind Howls",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
         "spell"
       ]
     },
@@ -3648,7 +3948,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "duration",
@@ -3665,7 +3965,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "physical",
@@ -3680,7 +3980,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
         "bow"
@@ -3693,7 +3993,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "area",
         "chaos",
@@ -3709,7 +4009,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "projectile",
         "area",
@@ -3723,25 +4023,10 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration",
         "link"
-      ]
-    },
-    {
-      "id": "vengeance",
-      "name": "Vengeance",
-      "color": "red",
-      "type": "skill",
-      "tags": [
-        "trigger",
-        "strength",
-        "active_skill",
-        "attack",
-        "area",
-        "physical",
-        "melee"
       ]
     },
     {
@@ -3750,9 +4035,9 @@
       "color": "red",
       "type": "skill",
       "tags": [
-        "strength",
-        "active_skill",
         "warcry",
+        "strength",
+        "grants_active_skill",
         "area",
         "duration",
         "retaliation"
@@ -3765,10 +4050,11 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "projectile",
-        "chaos"
+        "chaos",
+        "duration"
       ]
     },
     {
@@ -3779,9 +4065,22 @@
       "tags": [
         "attack",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "melee",
         "strike"
+      ]
+    },
+    {
+      "id": "violent_desire",
+      "name": "Violent Desire",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "strength",
+        "grants_active_skill",
+        "duration",
+        "physical",
+        "spell"
       ]
     },
     {
@@ -3791,7 +4090,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "duration",
         "melee",
@@ -3807,7 +4106,7 @@
       "tags": [
         "aura",
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -3819,7 +4118,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3835,9 +4134,25 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
+        "fire"
+      ]
+    },
+    {
+      "id": "volcanic_fissure",
+      "name": "Volcanic Fissure",
+      "color": "red",
+      "type": "skill",
+      "tags": [
+        "melee",
+        "strength",
+        "grants_active_skill",
+        "attack",
+        "projectile",
+        "area",
+        "slam",
         "fire"
       ]
     },
@@ -3848,7 +4163,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaos",
@@ -3864,7 +4179,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold",
@@ -3879,7 +4194,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -3895,7 +4210,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -3907,7 +4222,7 @@
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "area",
         "spell",
         "duration",
@@ -3917,13 +4232,13 @@
       ]
     },
     {
-      "id": "warlord_s_mark",
+      "id": "warlords_mark",
       "name": "Warlord's Mark",
       "color": "red",
       "type": "skill",
       "tags": [
         "strength",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "curse",
         "mark"
@@ -3935,13 +4250,13 @@
       "color": "blue",
       "type": "skill",
       "tags": [
-        "fire",
-        "lightning",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
+        "fire",
+        "lightning",
         "physical"
       ]
     },
@@ -3952,11 +4267,11 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
+        "melee",
         "movement",
-        "travel",
-        "melee"
+        "travel"
       ]
     },
     {
@@ -3966,7 +4281,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "attack",
         "melee",
         "strike",
@@ -3987,7 +4302,7 @@
       "tags": [
         "cold",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "channelling",
         "area",
@@ -4003,7 +4318,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "cold",
@@ -4018,7 +4333,7 @@
       "type": "skill",
       "tags": [
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "duration",
@@ -4033,7 +4348,7 @@
       "type": "skill",
       "tags": [
         "dexterity",
-        "active_skill",
+        "grants_active_skill",
         "travel",
         "area",
         "chaos",
@@ -4051,10 +4366,24 @@
       "tags": [
         "aura",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "lightning"
+      ]
+    },
+    {
+      "id": "wreathed_in_light",
+      "name": "Wreathed in Light",
+      "color": "blue",
+      "type": "skill",
+      "tags": [
+        "intelligence",
+        "grants_active_skill",
+        "spell",
+        "area",
+        "lightning",
+        "duration"
       ]
     },
     {
@@ -4066,7 +4395,7 @@
         "aura",
         "critical",
         "intelligence",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area"
       ]
@@ -4263,6 +4592,18 @@
         "intelligence",
         "support",
         "mine"
+      ]
+    },
+    {
+      "id": "blessed_call_support",
+      "name": "Blessed Call Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "strength",
+        "support",
+        "warcry",
+        "duration"
       ]
     },
     {
@@ -4564,9 +4905,9 @@
       "color": "red",
       "type": "support",
       "tags": [
+        "fire",
         "strength",
         "support",
-        "fire",
         "melee",
         "attack"
       ]
@@ -4581,6 +4922,20 @@
         "critical",
         "intelligence",
         "support"
+      ]
+    },
+    {
+      "id": "corrupting_cry_support",
+      "name": "Corrupting Cry Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "area",
+        "physical",
+        "strength",
+        "support",
+        "warcry",
+        "duration"
       ]
     },
     {
@@ -4616,6 +4971,19 @@
       ]
     },
     {
+      "id": "cursed_ground_support",
+      "name": "Cursed Ground Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "area",
+        "duration",
+        "intelligence",
+        "support",
+        "hex"
+      ]
+    },
+    {
       "id": "damage_on_full_life_support",
       "name": "Damage on Full Life Support",
       "color": "red",
@@ -4643,6 +5011,16 @@
       "type": "support",
       "tags": [
         "chaos",
+        "intelligence",
+        "support"
+      ]
+    },
+    {
+      "id": "devour_support",
+      "name": "Devour Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
         "intelligence",
         "support"
       ]
@@ -4743,18 +5121,6 @@
       ]
     },
     {
-      "id": "empower_support",
-      "name": "Empower Support",
-      "color": "red",
-      "type": "support",
-      "tags": [
-        "low_max_level",
-        "exceptional",
-        "strength",
-        "support"
-      ]
-    },
-    {
       "id": "endurance_charge_on_melee_stun_support",
       "name": "Endurance Charge on Melee Stun Support",
       "color": "red",
@@ -4777,30 +5143,6 @@
       ]
     },
     {
-      "id": "enhance_support",
-      "name": "Enhance Support",
-      "color": "green",
-      "type": "support",
-      "tags": [
-        "low_max_level",
-        "exceptional",
-        "dexterity",
-        "support"
-      ]
-    },
-    {
-      "id": "enlighten_support",
-      "name": "Enlighten Support",
-      "color": "blue",
-      "type": "support",
-      "tags": [
-        "low_max_level",
-        "exceptional",
-        "intelligence",
-        "support"
-      ]
-    },
-    {
       "id": "eternal_blessing_support",
       "name": "Eternal Blessing Support",
       "color": "red",
@@ -4813,15 +5155,42 @@
       ]
     },
     {
+      "id": "excommunicate_support",
+      "name": "Excommunicate Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "lightning",
+        "fire",
+        "physical",
+        "strength",
+        "support",
+        "melee",
+        "attack",
+        "duration"
+      ]
+    },
+    {
+      "id": "exemplar_support",
+      "name": "Exemplar Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "critical",
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
       "id": "expert_retaliation_support",
       "name": "Expert Retaliation Support",
       "color": "red",
       "type": "support",
       "tags": [
+        "retaliation",
         "strength",
-        "dexterity",
-        "support",
-        "retaliation"
+        "support"
       ]
     },
     {
@@ -4903,6 +5272,7 @@
         "strength",
         "support",
         "totem",
+        "grants_active_skill",
         "spell",
         "area",
         "fire",
@@ -4920,6 +5290,18 @@
         "dexterity",
         "support",
         "totem"
+      ]
+    },
+    {
+      "id": "focused_channelling_support",
+      "name": "Focused Channelling Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "channelling",
+        "spell",
+        "intelligence",
+        "support"
       ]
     },
     {
@@ -4943,6 +5325,31 @@
         "strength",
         "support",
         "melee"
+      ]
+    },
+    {
+      "id": "fresh_meat_support",
+      "name": "Fresh Meat Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "critical",
+        "intelligence",
+        "support",
+        "minion"
+      ]
+    },
+    {
+      "id": "frigid_bond_support",
+      "name": "Frigid Bond Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "cold",
+        "intelligence",
+        "support",
+        "link",
+        "duration"
       ]
     },
     {
@@ -4981,14 +5388,39 @@
     {
       "id": "guardians_blessing_support",
       "name": "Guardian's Blessing Support",
-      "color": "green",
+      "color": "red",
       "type": "support",
       "tags": [
-        "dexterity",
+        "strength",
         "support",
         "aura",
         "blessing",
         "minion"
+      ]
+    },
+    {
+      "id": "hallow_support",
+      "name": "Hallow Support",
+      "color": "red",
+      "type": "support",
+      "tags": [
+        "physical",
+        "fire",
+        "strength",
+        "support",
+        "melee",
+        "attack"
+      ]
+    },
+    {
+      "id": "hex_bloom_support",
+      "name": "Hex Bloom Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "hex"
       ]
     },
     {
@@ -5082,7 +5514,7 @@
         "intelligence",
         "support",
         "hex",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "area",
         "chaos",
@@ -5143,8 +5575,7 @@
       "tags": [
         "intelligence",
         "support",
-        "channelling",
-        "duration"
+        "channelling"
       ]
     },
     {
@@ -5216,6 +5647,21 @@
       ]
     },
     {
+      "id": "kinetic_instability_support",
+      "name": "Kinetic Instability Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "intelligence",
+        "support",
+        "grants_active_skill",
+        "area",
+        "trigger",
+        "attack",
+        "duration"
+      ]
+    },
+    {
       "id": "knockback_support",
       "name": "Knockback Support",
       "color": "red",
@@ -5234,17 +5680,6 @@
         "strength",
         "support",
         "duration"
-      ]
-    },
-    {
-      "id": "lesser_multiple_projectiles_support",
-      "name": "Lesser Multiple Projectiles Support",
-      "color": "green",
-      "type": "support",
-      "tags": [
-        "dexterity",
-        "support",
-        "projectile"
       ]
     },
     {
@@ -5296,13 +5731,28 @@
       "color": "blue",
       "type": "support",
       "tags": [
+        "lightning",
         "intelligence",
         "support",
-        "lightning",
+        "grants_active_skill",
         "spell",
         "minion",
         "duration",
         "trigger"
+      ]
+    },
+    {
+      "id": "locus_mine_support",
+      "name": "Locus Mine Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "bow",
+        "attack",
+        "dexterity",
+        "support",
+        "projectile",
+        "mine"
       ]
     },
     {
@@ -5325,6 +5775,18 @@
       "tags": [
         "dexterity",
         "support"
+      ]
+    },
+    {
+      "id": "manaforged_arrows_support",
+      "name": "Manaforged Arrows Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "bow",
+        "dexterity",
+        "support",
+        "trigger"
       ]
     },
     {
@@ -5436,26 +5898,14 @@
       ]
     },
     {
-      "id": "manaforged_arrows_support",
-      "name": "Manaforged Arrows Support",
-      "color": "green",
-      "type": "support",
-      "tags": [
-        "bow",
-        "support",
-        "trigger",
-        "dexterity"
-      ]
-    },
-    {
       "id": "momentum_support",
       "name": "Momentum Support",
       "color": "green",
       "type": "support",
       "tags": [
+        "attack",
         "dexterity",
         "support",
-        "attack",
         "duration"
       ]
     },
@@ -5468,6 +5918,17 @@
         "strength",
         "support",
         "duration"
+      ]
+    },
+    {
+      "id": "multiple_projectiles_support",
+      "name": "Multiple Projectiles Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support",
+        "projectile"
       ]
     },
     {
@@ -5517,16 +5978,6 @@
       ]
     },
     {
-      "id": "onslaught_support",
-      "name": "Onslaught Support",
-      "color": "green",
-      "type": "support",
-      "tags": [
-        "dexterity",
-        "support"
-      ]
-    },
-    {
       "id": "overcharge_support",
       "name": "Overcharge Support",
       "color": "blue",
@@ -5543,6 +5994,7 @@
       "color": "red",
       "type": "support",
       "tags": [
+        "warcry",
         "strength",
         "support",
         "melee",
@@ -5616,7 +6068,7 @@
         "intelligence",
         "support",
         "minion",
-        "active_skill",
+        "grants_active_skill",
         "spell",
         "duration"
       ]
@@ -5629,10 +6081,14 @@
       "tags": [
         "intelligence",
         "support",
-        "elemental",
-        "prismatic",
+        "grants_active_skill",
         "spell",
-        "attack"
+        "area",
+        "fire",
+        "cold",
+        "lightning",
+        "random_element",
+        "trigger"
       ]
     },
     {
@@ -5661,8 +6117,8 @@
       ]
     },
     {
-      "id": "return_projectiles_support",
-      "name": "Return Projectiles Support",
+      "id": "returning_projectiles_support",
+      "name": "Returning Projectiles Support",
       "color": "green",
       "type": "support",
       "tags": [
@@ -5677,12 +6133,11 @@
       "color": "green",
       "type": "support",
       "tags": [
-        "dexterity",
-        "strength",
-        "support",
         "attack",
         "physical",
-        "critical"
+        "critical",
+        "dexterity",
+        "support"
       ]
     },
     {
@@ -5697,6 +6152,43 @@
         "melee",
         "attack",
         "strike"
+      ]
+    },
+    {
+      "id": "sacred_wisps_support",
+      "name": "Sacred Wisps Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "attack",
+        "intelligence",
+        "support",
+        "grants_active_skill",
+        "trigger",
+        "duration",
+        "spell"
+      ]
+    },
+    {
+      "id": "sacrifice_support",
+      "name": "Sacrifice Support",
+      "color": "blue",
+      "type": "support",
+      "tags": [
+        "chaos",
+        "intelligence",
+        "support",
+        "spell"
+      ]
+    },
+    {
+      "id": "sadism_support",
+      "name": "Sadism Support",
+      "color": "green",
+      "type": "support",
+      "tags": [
+        "dexterity",
+        "support"
       ]
     },
     {
@@ -5719,7 +6211,7 @@
         "support",
         "melee",
         "attack",
-        "active_skill",
+        "grants_active_skill",
         "area"
       ]
     },
@@ -5770,14 +6262,14 @@
       ]
     },
     {
-      "id": "split_projectiles_support",
-      "name": "Split Projectiles Support",
-      "color": "green",
+      "id": "spellblade_support",
+      "name": "Spellblade Support",
+      "color": "blue",
       "type": "support",
       "tags": [
-        "dexterity",
+        "intelligence",
         "support",
-        "projectile"
+        "spell"
       ]
     },
     {
@@ -5864,9 +6356,9 @@
       "color": "red",
       "type": "support",
       "tags": [
+        "physical",
         "strength",
         "support",
-        "physical",
         "melee",
         "attack",
         "strike",
@@ -5956,9 +6448,9 @@
       "color": "red",
       "type": "support",
       "tags": [
+        "attack",
         "strength",
-        "support",
-        "attack"
+        "support"
       ]
     },
     {
@@ -5980,6 +6472,7 @@
       "tags": [
         "dexterity",
         "support",
+        "grants_active_skill",
         "attack",
         "projectile",
         "trigger",
