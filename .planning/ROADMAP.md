@@ -55,10 +55,10 @@ Plans:
   1. A Templar build starts with Holy Strike and Hallow Support as beach gems, and these appear in the correct starting stop
   2. All gem names in gem-rewards.ts and classes.ts exist in the updated gems.json (validated by a cross-check script with zero mismatches)
   3. Running the PoB backfill for a 3.28 Templar build places new gems at the earliest quest/vendor stop where they become available, not at Act 6 Lilly Roth
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — Data updates + validation: rename/remove/add gem entries in gem-rewards.ts, update Templar beach gems in classes.ts, cross-check validation script
 
 ## Progress
 
@@ -68,5 +68,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Pipeline and Collision Pool | 2/2 | Complete | 2026-03-20 |
-| 2. Migration Layer | 0/2 | Not started | - |
+| 2. Migration Layer | 2/2 | Complete | 2026-03-20 |
 | 3. Quest and Vendor Rewards | 0/1 | Not started | - |

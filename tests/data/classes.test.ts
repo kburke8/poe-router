@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { POE_CLASSES, getAscendancies, getBeachGems } from '@/data/classes';
+import gemsData from '../../src/data/gems.json';
 
 describe('getAscendancies', () => {
   it('returns Marauder ascendancies', () => {
@@ -33,6 +34,11 @@ describe('getBeachGems', () => {
   it('returns null for unknown class', () => {
     expect(getBeachGems('UnknownClass')).toBeNull();
   });
+
+  it('returns Templar beach gems (3.28 updated)', () => {
+    const gems = getBeachGems('Templar');
+    expect(gems).toEqual({ skillGem: 'Holy Strike', supportGem: 'Hallow Support' });
+  });
 });
 
 describe('data integrity', () => {
@@ -50,6 +56,14 @@ describe('data integrity', () => {
   it('all classes have at least one ascendancy', () => {
     for (const cls of POE_CLASSES) {
       expect(cls.ascendancies.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('all beach gem names exist in gems.json', () => {
+    const allNames = new Set([...gemsData.skills.map((g: { name: string }) => g.name), ...gemsData.supports.map((g: { name: string }) => g.name)]);
+    for (const cls of POE_CLASSES) {
+      expect(allNames.has(cls.beachGems.skillGem), `${cls.name} skillGem "${cls.beachGems.skillGem}" not in gems.json`).toBe(true);
+      expect(allNames.has(cls.beachGems.supportGem), `${cls.name} supportGem "${cls.beachGems.supportGem}" not in gems.json`).toBe(true);
     }
   });
 });
