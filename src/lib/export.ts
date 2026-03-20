@@ -3,6 +3,7 @@
 import type { RegexPreset } from '@/types/regex';
 import type { BuildPlan } from '@/types/build';
 import type { RunRecord } from '@/types/history';
+import type { Gem, Item } from '@/types/gem';
 
 interface ExportData {
   version: 1;
@@ -10,6 +11,8 @@ interface ExportData {
   regexPresets?: RegexPreset[];
   builds?: BuildPlan[];
   runs?: RunRecord[];
+  customGems?: Gem[];
+  customItems?: Item[];
 }
 
 export type { ExportData };
