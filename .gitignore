@@ -43,6 +43,9 @@ next-env.d.ts
 # claude code
 .claude/
 
+# planning docs (local-only)
+.planning/
+
 # playwright mcp
 .playwright-mcp/
 
