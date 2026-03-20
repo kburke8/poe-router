@@ -7,20 +7,32 @@
  * PoE search matches against the ENTIRE item text (name, class, mods,
  * rarity suffix, requirements, etc.), so patterns must avoid matching
  * common game text fragments.
+ *
+ * Collision pool sources (from RePoE):
+ * - Gem names: all released gem names (including Vaal/transfigured variants)
+ * - Gem descriptions: in-game tooltip text for all active/support skills
+ * - Base item names: all equipment base types (weapons, armor, jewelry, flasks)
+ * - Manual POE_ITEM_TEXT_SAMPLES: hand-curated collision-causing text fragments
+ *
+ * Regenerate RePoE data with: npx tsx scripts/fetch-repoe-data.ts
  */
 
 import gemDescriptions from '@/data/gem-descriptions.json';
 import baseItemNames from '@/data/base-item-names.json';
+import gemNamesData from '@/data/gem-names.json';
 
 /**
- * Collision pool data from RePoE (Repository of Path of Exile):
- * - Gem descriptions: in-game tooltip text for all active/support skills
- * - Base item names: all equipment base types (weapons, armor, jewelry, flasks)
+ * Collision pool data from RePoE (Repository of Path of Exile).
+ * Each data file uses a metadata envelope: { _metadata: {...}, ...data }.
+ * Array-type files wrap entries in an 'entries' key.
  *
  * Regenerate with: npx tsx scripts/fetch-repoe-data.ts
  */
-const GEM_DESCRIPTION_TEXTS: string[] = Object.values(gemDescriptions);
-const BASE_ITEM_NAMES: string[] = baseItemNames;
+const GEM_DESCRIPTION_TEXTS: string[] = Object.entries(gemDescriptions)
+  .filter(([key]) => key !== '_metadata')
+  .map(([, val]) => val as string);
+const BASE_ITEM_NAMES: string[] = (baseItemNames as any).entries;
+const GEM_NAMES_POOL: string[] = (gemNamesData as any).entries;
 
 /**
  * Non-gem text that appears in PoE item tooltips (mod lines, item classes,
@@ -550,7 +562,10 @@ export function abbreviate(name: string, allNames: string[]): string {
   const filteredBaseItems = BASE_ITEM_NAMES.filter(
     (s) => !s.toLowerCase().includes(lower),
   );
-  const fullPool = [...allNames, ...filteredSamples, ...filteredGemDescs, ...filteredBaseItems];
+  const filteredGemNames = GEM_NAMES_POOL.filter(
+    (s) => !s.toLowerCase().includes(lower),
+  );
+  const fullPool = [...allNames, ...filteredSamples, ...filteredGemDescs, ...filteredBaseItems, ...filteredGemNames];
 
   const words = lower.split(/\s+/);
   const isMultiWord = words.length >= 2;
@@ -717,7 +732,10 @@ function extendAbbreviation(
   const filteredBaseItems = BASE_ITEM_NAMES.filter(
     (s) => !s.toLowerCase().includes(lower),
   );
-  const fullPool = [...allNames, ...filteredSamples, ...filteredGemDescs, ...filteredBaseItems];
+  const filteredGemNames = GEM_NAMES_POOL.filter(
+    (s) => !s.toLowerCase().includes(lower),
+  );
+  const fullPool = [...allNames, ...filteredSamples, ...filteredGemDescs, ...filteredBaseItems, ...filteredGemNames];
 
   // Try longer substrings starting from current pattern length + 1
   const startLen = currentPattern.length + 1;
