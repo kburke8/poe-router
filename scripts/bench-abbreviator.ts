@@ -1,6 +1,6 @@
 /**
  * Benchmark the abbreviator with the expanded collision pool.
- * Compares patterns with and without RePoE data.
+ * Includes gem-names.json pool, 10-gem subset timing, and false positive validation.
  *
  * Usage: npx tsx scripts/bench-abbreviator.ts
  */
@@ -8,19 +8,26 @@
 import gemsData from '../src/data/gems.json';
 import gemDescriptions from '../src/data/gem-descriptions.json';
 import baseItemNames from '../src/data/base-item-names.json';
+import gemNamesData from '../src/data/gem-names.json';
 
-const GEM_DESCRIPTION_TEXTS: string[] = Object.values(gemDescriptions);
-const BASE_ITEM_NAMES: string[] = baseItemNames as string[];
+const GEM_DESCRIPTION_TEXTS: string[] = Object.entries(gemDescriptions)
+  .filter(([key]) => key !== '_metadata')
+  .map(([, val]) => val as string);
+const BASE_ITEM_NAMES: string[] = (baseItemNames as any).entries;
+const GEM_NAMES_POOL: string[] = (gemNamesData as any).entries;
 
 const ALL_GEM_NAMES = [
   ...gemsData.skills.map((g: { name: string }) => g.name),
   ...gemsData.supports.map((g: { name: string }) => g.name),
 ];
 
+const FULL_EXTRA_POOL = [...GEM_DESCRIPTION_TEXTS, ...BASE_ITEM_NAMES, ...GEM_NAMES_POOL];
+
 console.log('Collision pool sizes:');
 console.log(`  Gem descriptions: ${GEM_DESCRIPTION_TEXTS.length}`);
 console.log(`  Base item names: ${BASE_ITEM_NAMES.length}`);
-console.log(`  Total extra: ${GEM_DESCRIPTION_TEXTS.length + BASE_ITEM_NAMES.length}`);
+console.log(`  Gem names pool: ${GEM_NAMES_POOL.length}`);
+console.log(`  Total extra: ${GEM_DESCRIPTION_TEXTS.length + BASE_ITEM_NAMES.length + GEM_NAMES_POOL.length}`);
 console.log(`  Gem/item names: ${ALL_GEM_NAMES.length}`);
 
 function patternToRegexStr(pattern: string): string {
@@ -109,22 +116,77 @@ function abbreviate(name: string, allNames: string[], extraPool: string[]): stri
   return lower.replace(/ /g, '.');
 }
 
-// Run benchmark: ALL gems with the full pool
+// --- 10-gem subset benchmark (COLL-03 performance requirement: under 500ms) ---
+const subset10 = ALL_GEM_NAMES.slice(0, 10);
+console.log(`\n10-gem benchmark (${subset10.map(n => n).join(', ')})...`);
+const start10 = performance.now();
+for (const name of subset10) {
+  abbreviate(name, ALL_GEM_NAMES, FULL_EXTRA_POOL);
+}
+const elapsed10 = performance.now() - start10;
+console.log(`10-gem benchmark: ${elapsed10.toFixed(1)}ms (requirement: under 500ms)`);
+
+// --- Full benchmark: ALL gems with the full pool ---
 console.log(`\nBenchmarking all ${ALL_GEM_NAMES.length} gems with RePoE collision pool...`);
 const start = performance.now();
 
 const results: Array<{ name: string; pattern: string }> = [];
 for (const name of ALL_GEM_NAMES) {
-  const pattern = abbreviate(name, ALL_GEM_NAMES, [...GEM_DESCRIPTION_TEXTS, ...BASE_ITEM_NAMES]);
+  const pattern = abbreviate(name, ALL_GEM_NAMES, FULL_EXTRA_POOL);
   results.push({ name, pattern });
 }
 
 const elapsed = performance.now() - start;
 console.log(`Done in ${(elapsed / 1000).toFixed(1)}s (${(elapsed / ALL_GEM_NAMES.length).toFixed(1)}ms per gem)\n`);
 
+// --- False positive check ---
+// Check each pattern against the FULL collision pool (not just gem names).
+// Inter-gem-name collisions (e.g., "arc" matching "Arcane Cloak") are expected
+// and resolved by computeAbbreviations() at batch time. Here we check for
+// unintended matches against the extra pool (descriptions, base items, gem names pool).
+let falsePositiveCount = 0;
+const falsePositives: Array<{ name: string; pattern: string; matched: string }> = [];
+for (const { name, pattern } of results) {
+  const lower = name.toLowerCase();
+  // Check against extra pool entries that don't contain the target name
+  const relevantPool = FULL_EXTRA_POOL.filter(s => !s.toLowerCase().includes(lower));
+  for (const poolEntry of relevantPool) {
+    if (patternMatches(pattern, poolEntry)) {
+      falsePositiveCount++;
+      falsePositives.push({ name, pattern, matched: poolEntry });
+    }
+  }
+}
+console.log(`False positives (extra pool): ${falsePositiveCount}`);
+if (falsePositives.length > 0) {
+  console.log('  Collisions with pool entries:');
+  for (const { name, pattern, matched } of falsePositives.slice(0, 20)) {
+    console.log(`    "${pattern}" for "${name}" also matches "${matched}"`);
+  }
+}
+
+// Also report inter-gem-name collisions (informational, resolved by computeAbbreviations)
+let interGemCollisions = 0;
+const interGemDetails: Array<{ name: string; pattern: string; matched: string }> = [];
+for (const { name, pattern } of results) {
+  for (const otherName of ALL_GEM_NAMES) {
+    if (otherName === name) continue;
+    if (patternMatches(pattern, otherName)) {
+      interGemCollisions++;
+      interGemDetails.push({ name, pattern, matched: otherName });
+    }
+  }
+}
+console.log(`Inter-gem collisions (resolved by computeAbbreviations): ${interGemCollisions}`);
+if (interGemDetails.length > 0) {
+  for (const { name, pattern, matched } of interGemDetails.slice(0, 10)) {
+    console.log(`    "${pattern}" for "${name}" also matches "${matched}"`);
+  }
+}
+
 // Show patterns that are longer than 6 chars (might indicate the expanded pool is too strict)
 const longPatterns = results.filter(r => r.pattern.length > 6);
-console.log(`Patterns > 6 chars: ${longPatterns.length} of ${results.length}`);
+console.log(`\nPatterns > 6 chars: ${longPatterns.length} of ${results.length}`);
 for (const { name, pattern } of longPatterns.slice(0, 20)) {
   console.log(`  ${name.padEnd(40)} -> ${pattern}`);
 }
