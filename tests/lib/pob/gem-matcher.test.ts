@@ -84,4 +84,43 @@ describe('matchPobGem', () => {
     const result = matchPobGem({ nameSpec: 'Fireball', enabled: true, gemId: 'gem1', skillId: 'skill1' });
     expect(result.status).toBe('matched');
   });
+
+  describe('rename map fallback', () => {
+    it('resolves old skill gem name via rename map', () => {
+      const result = matchPobGem({ nameSpec: 'Sweep', enabled: true });
+      expect(result.status).toBe('matched');
+      if (result.status === 'matched') {
+        expect(result.gem.name).toBe('Holy Sweep');
+      }
+    });
+
+    it('resolves old support gem name via rename map (with Support suffix)', () => {
+      const result = matchPobGem({ nameSpec: 'Return Projectiles Support', enabled: true });
+      expect(result.status).toBe('matched');
+      if (result.status === 'matched') {
+        expect(result.gem.name).toBe('Returning Projectiles Support');
+      }
+    });
+
+    it('resolves old support gem name when PoB omits Support suffix', () => {
+      const result = matchPobGem({ nameSpec: 'Lesser Multiple Projectiles', enabled: true });
+      expect(result.status).toBe('matched');
+      if (result.status === 'matched') {
+        expect(result.gem.name).toBe('Multiple Projectiles Support');
+      }
+    });
+
+    it('still returns not_found for truly unknown gems after rename check', () => {
+      const result = matchPobGem({ nameSpec: 'CompletelyFakeGem12345', enabled: true });
+      expect(result.status).toBe('not_found');
+    });
+
+    it('new gem names work directly without rename fallback', () => {
+      const result = matchPobGem({ nameSpec: 'Holy Sweep', enabled: true });
+      expect(result.status).toBe('matched');
+      if (result.status === 'matched') {
+        expect(result.gem.name).toBe('Holy Sweep');
+      }
+    });
+  });
 });
