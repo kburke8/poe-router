@@ -101,7 +101,7 @@ const MERCY_MISSION: QuestGemTable = {
     Ranger: ['Chance to Poison Support', 'Mirage Archer Support', 'Pierce Support', 'Volley Support'],
     Duelist: ['Ancestral Call Support', 'Chance to Poison Support', 'Mirage Archer Support', 'Momentum Support', 'Pierce Support', 'Ruthless Support', 'Volley Support'],
     Marauder: ['Ancestral Call Support', 'Chance to Bleed Support', 'Momentum Support'],
-    Templar: ['Ancestral Call Support', 'Arcane Surge Support', 'Chance to Bleed Support', 'Infused Channelling Support', 'Ruthless Support', 'Spell Cascade Support'],
+    Templar: ['Ancestral Call Support', 'Arcane Surge Support', 'Chance to Bleed Support', 'Elemental Proliferation Support', 'Infused Channelling Support', 'Ruthless Support', 'Spell Cascade Support'],
     Scion: ['Ancestral Call Support', 'Arcane Surge Support', 'Chance to Bleed Support', 'Chance to Poison Support', 'Elemental Proliferation Support', 'Pierce Support', 'Ruthless Support', 'Spell Cascade Support', 'Summon Phantasm Support', 'Volley Support'],
   },
   vendorRewards: {
