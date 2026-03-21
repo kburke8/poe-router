@@ -229,8 +229,7 @@ export function BuildEditor({ buildId, inventoryOnly }: BuildEditorProps) {
               <div className="space-y-1">
                 {actStopPlans.map(({ townStop, stopPlan }) => {
                   const resolved = resolveLinkGroupsAtStop(build.linkGroups, townStop.id);
-                  const inventory = getInventoryAtStop(build, townStop.id);
-                  const inventoryGemNames = [...inventory];
+                  const inventoryGemNames = getInventoryAtStop(build, townStop.id);
 
                   // Find custom stops anchored after this town stop
                   const customStopsAfter = build.stops.filter(
@@ -271,8 +270,7 @@ export function BuildEditor({ buildId, inventoryOnly }: BuildEditorProps) {
 
                         return customStopsAfter.map((cs) => {
                         const csResolved = resolveLinkGroupsAtStop(build.linkGroups, cs.stopId);
-                        const csInventory = getInventoryAtStop(build, cs.stopId);
-                        const csInventoryGemNames = [...csInventory];
+                        const csInventoryGemNames = getInventoryAtStop(build, cs.stopId);
                         return (
                           <StopSection
                             key={cs.stopId}

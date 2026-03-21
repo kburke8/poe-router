@@ -115,11 +115,9 @@ export function StopSection({
 
   // Compute gems used in each link group for cross-group filtering
   const gemsByLinkGroup = useMemo(() => {
-    const map = new Map<string, Set<string>>();
+    const map = new Map<string, string[]>();
     for (const resolved of resolvedLinkGroups) {
-      const names = new Set(
-        resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean),
-      );
+      const names = resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean);
       map.set(resolved.buildLinkGroup.id, names);
     }
     return map;
@@ -134,15 +132,28 @@ export function StopSection({
     return all;
   }, [gemsByLinkGroup]);
 
-  // Filter inventory per link group: exclude gems used in OTHER groups
+  // Filter inventory per link group: count-aware so duplicate gems work.
+  // If you have 2x "Momentum Support" and one is in group A, group B still sees it.
   const getFilteredInventory = (linkGroupId: string) => {
-    const otherUsed = new Set<string>();
+    // Count how many of each gem are used in OTHER groups
+    const otherUsedCounts = new Map<string, number>();
     for (const [lgId, names] of gemsByLinkGroup) {
       if (lgId !== linkGroupId) {
-        for (const n of names) otherUsed.add(n);
+        for (const n of names) otherUsedCounts.set(n, (otherUsedCounts.get(n) ?? 0) + 1);
       }
     }
-    return inventoryGemNames.filter((name) => !otherUsed.has(name));
+    // Subtract other-group usage from inventory counts
+    const remaining = new Map<string, number>();
+    for (const name of inventoryGemNames) {
+      remaining.set(name, (remaining.get(name) ?? 0) + 1);
+    }
+    for (const [name, used] of otherUsedCounts) {
+      const have = remaining.get(name) ?? 0;
+      if (have <= used) remaining.delete(name);
+      else remaining.set(name, have - used);
+    }
+    // Expand back to array (deduplicated — one entry per available gem name)
+    return [...remaining.keys()];
   };
 
   return (

@@ -66,7 +66,7 @@ export function StopStep({
   );
 
   const inventoryGemNames = useMemo(
-    () => [...getInventoryAtStop(build, townStop.id)],
+    () => getInventoryAtStop(build, townStop.id),
     [build, townStop.id],
   );
 
@@ -80,11 +80,9 @@ export function StopStep({
 
   // Cross-link-group filtering
   const gemsByLinkGroup = useMemo(() => {
-    const map = new Map<string, Set<string>>();
+    const map = new Map<string, string[]>();
     for (const resolved of resolvedLinkGroups) {
-      const names = new Set(
-        resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean),
-      );
+      const names = resolved.activePhase.gems.map((g) => g.gemName).filter(Boolean);
       map.set(resolved.buildLinkGroup.id, names);
     }
     return map;
@@ -98,14 +96,24 @@ export function StopStep({
     return all;
   }, [gemsByLinkGroup]);
 
+  // Count-aware filtering: duplicate gems can be used across multiple groups
   const getFilteredInventory = (linkGroupId: string) => {
-    const otherUsed = new Set<string>();
+    const otherUsedCounts = new Map<string, number>();
     for (const [lgId, names] of gemsByLinkGroup) {
       if (lgId !== linkGroupId) {
-        for (const n of names) otherUsed.add(n);
+        for (const n of names) otherUsedCounts.set(n, (otherUsedCounts.get(n) ?? 0) + 1);
       }
     }
-    return inventoryGemNames.filter((name) => !otherUsed.has(name));
+    const remaining = new Map<string, number>();
+    for (const name of inventoryGemNames) {
+      remaining.set(name, (remaining.get(name) ?? 0) + 1);
+    }
+    for (const [name, used] of otherUsedCounts) {
+      const have = remaining.get(name) ?? 0;
+      if (have <= used) remaining.delete(name);
+      else remaining.set(name, have - used);
+    }
+    return [...remaining.keys()];
   };
 
   return (
@@ -308,7 +316,7 @@ function CustomStopSubSection({
   );
 
   const csInventoryGemNames = useMemo(
-    () => [...getInventoryAtStop(build, customStop.stopId)],
+    () => getInventoryAtStop(build, customStop.stopId),
     [build, customStop.stopId],
   );
 

@@ -10,8 +10,8 @@ describe('getInventoryAtStop', () => {
       stops: TOWN_STOPS.map((s) => makeStopPlan(s.id)),
     });
     const inv = getInventoryAtStop(build, 'a1_after_hillock');
-    expect(inv.has('Fireball')).toBe(true);
-    expect(inv.has('Arcane Surge Support')).toBe(true);
+    expect(inv).toContain('Fireball');
+    expect(inv).toContain('Arcane Surge Support');
   });
 
   it('accumulates gem pickups from earlier stops', () => {
@@ -24,8 +24,8 @@ describe('getInventoryAtStop', () => {
       ],
     });
     const inv = getInventoryAtStop(build, 'a1_after_brutus');
-    expect(inv.has('Frostbolt')).toBe(true);
-    expect(inv.has('Freezing Pulse')).toBe(true);
+    expect(inv).toContain('Frostbolt');
+    expect(inv).toContain('Freezing Pulse');
   });
 
   it('includes target stop own pickups', () => {
@@ -36,7 +36,7 @@ describe('getInventoryAtStop', () => {
       ],
     });
     const inv = getInventoryAtStop(build, 'a1_after_hillock');
-    expect(inv.has('Frostbolt')).toBe(true);
+    expect(inv).toContain('Frostbolt');
   });
 
   it('excludes later stop pickups', () => {
@@ -48,7 +48,7 @@ describe('getInventoryAtStop', () => {
       ],
     });
     const inv = getInventoryAtStop(build, 'a1_after_hillock');
-    expect(inv.has('Frostbolt')).toBe(false);
+    expect(inv).not.toContain('Frostbolt');
   });
 
   it('skips disabled stops', () => {
@@ -60,7 +60,7 @@ describe('getInventoryAtStop', () => {
       ],
     });
     const inv = getInventoryAtStop(build, 'a1_after_brutus');
-    expect(inv.has('Frostbolt')).toBe(false);
+    expect(inv).not.toContain('Frostbolt');
   });
 
   it('includes mule beach gems when muleClassName set', () => {
@@ -71,10 +71,10 @@ describe('getInventoryAtStop', () => {
     });
     const inv = getInventoryAtStop(build, 'a1_after_hillock');
     // Witch beach gems
-    expect(inv.has('Fireball')).toBe(true);
+    expect(inv).toContain('Fireball');
     // Marauder mule beach gems
-    expect(inv.has('Heavy Strike')).toBe(true);
-    expect(inv.has('Ruthless Support')).toBe(true);
+    expect(inv).toContain('Heavy Strike');
+    expect(inv).toContain('Ruthless Support');
   });
 
   it('includes mule pickups', () => {
@@ -84,6 +84,41 @@ describe('getInventoryAtStop', () => {
       stops: [makeStopPlan('a1_after_hillock')],
     });
     const inv = getInventoryAtStop(build, 'a1_after_hillock');
-    expect(inv.has('Cleave')).toBe(true);
+    expect(inv).toContain('Cleave');
+  });
+
+  it('preserves duplicate gems (quest reward + vendor purchase)', () => {
+    const build = makeMinimalBuild({
+      className: 'Witch',
+      stops: [
+        makeStopPlan('a1_after_hillock', {
+          gemPickups: [
+            makePickup('Momentum Support', 'green', 'quest_reward'),
+            makePickup('Momentum Support', 'green', 'vendor'),
+          ],
+        }),
+      ],
+    });
+    const inv = getInventoryAtStop(build, 'a1_after_hillock');
+    const count = inv.filter((n) => n === 'Momentum Support').length;
+    expect(count).toBe(2);
+  });
+
+  it('dropping one copy of a duplicate keeps the other', () => {
+    const build = makeMinimalBuild({
+      className: 'Witch',
+      stops: [
+        makeStopPlan('a1_after_hillock', {
+          gemPickups: [
+            makePickup('Momentum Support', 'green', 'quest_reward'),
+            makePickup('Momentum Support', 'green', 'vendor'),
+          ],
+          droppedGems: ['Momentum Support'],
+        }),
+      ],
+    });
+    const inv = getInventoryAtStop(build, 'a1_after_hillock');
+    const count = inv.filter((n) => n === 'Momentum Support').length;
+    expect(count).toBe(1);
   });
 });
