@@ -48,7 +48,7 @@ const ENEMY_AT_THE_GATE: QuestGemTable = {
     Ranger: ['Burning Arrow', 'Caustic Arrow', 'Cleave', 'Cobra Lash', 'Double Strike', 'Dual Strike', 'Explosive Trap', 'Frost Blades', 'Galvanic Arrow', 'Ice Shot', 'Kinetic Bolt', 'Momentum Support', 'Perforate', 'Spectral Throw', 'Split Arrow', 'Splitting Steel', 'Viper Strike'],
     Duelist: ['Burning Arrow', 'Caustic Arrow', 'Chance to Bleed Support', 'Cleave', 'Double Strike', 'Dual Strike', 'Frost Blades', 'Galvanic Arrow', 'Glacial Hammer', 'Ground Slam', 'Heavy Strike', 'Ice Shot', 'Molten Strike', 'Perforate', 'Shield Crush', 'Spectral Throw', 'Split Arrow', 'Splitting Steel', 'Viper Strike'],
     Marauder: ['Cleave', 'Double Strike', 'Dual Strike', 'Ethereal Knives', 'Fireball', 'Glacial Hammer', 'Ground Slam', 'Heavy Strike', 'Molten Strike', 'Perforate', 'Ruthless Support', 'Shield Crush', 'Smite', 'Spectral Throw'],
-    Templar: ['Blight', 'Elemental Proliferation Support', 'Fireball', 'Freezing Pulse', 'Frostbolt', 'Glacial Hammer', 'Ground Slam', 'Hallow Support', 'Heavy Strike', 'Holy Strike', 'Lightning Tendrils', 'Molten Strike', 'Prismatic Burst Support', 'Purifying Flame', 'Raise Zombie', 'Rolling Magma', 'Shield Crush', 'Smite', 'Spark', 'Spectral Throw', 'Stormblast Mine'],
+    Templar: ['Blight', 'Fireball', 'Freezing Pulse', 'Frostbolt', 'Glacial Hammer', 'Ground Slam', 'Hallow Support', 'Heavy Strike', 'Holy Strike', 'Lightning Tendrils', 'Molten Strike', 'Prismatic Burst Support', 'Purifying Flame', 'Raise Zombie', 'Rolling Magma', 'Shield Crush', 'Smite', 'Spark', 'Spectral Throw', 'Stormblast Mine'],
     Scion: ['Blight', 'Burning Arrow', 'Caustic Arrow', 'Cleave', 'Cobra Lash', 'Double Strike', 'Dual Strike', 'Explosive Trap', 'Fireball', 'Frost Blades', 'Frostbolt', 'Galvanic Arrow', 'Heavy Strike', 'Holy Strike', 'Ice Shot', 'Kinetic Bolt', 'Lightning Tendrils', 'Molten Strike', 'Momentum Support', 'Perforate', 'Prismatic Burst Support', 'Purifying Flame', 'Raise Zombie', 'Rolling Magma', 'Shield Crush', 'Smite', 'Spark', 'Spectral Throw', 'Split Arrow', 'Splitting Steel', 'Stormblast Mine', 'Viper Strike'],
   },
 };
@@ -110,7 +110,7 @@ const MERCY_MISSION: QuestGemTable = {
     Ranger: ['Ancestral Call Support', 'Chance to Bleed Support', 'Chance to Poison Support', 'Mirage Archer Support', 'Momentum Support', 'Pierce Support', 'Swift Assembly Support', 'Volley Support'],
     Duelist: ['Ancestral Call Support', 'Mirage Archer Support', 'Momentum Support', 'Pierce Support', 'Ruthless Support', 'Swift Assembly Support', 'Volley Support'],
     Marauder: ['Ancestral Call Support', 'Chance to Bleed Support', 'Hallow Support', 'Momentum Support', 'Volley Support'],
-    Templar: ['Ancestral Call Support', 'Arcane Surge Support', 'Chance to Bleed Support', 'Infused Channelling Support', 'Ruthless Support', 'Spell Cascade Support', 'Summon Phantasm Support'],
+    Templar: ['Ancestral Call Support', 'Arcane Surge Support', 'Chance to Bleed Support', 'Elemental Proliferation Support', 'Infused Channelling Support', 'Ruthless Support', 'Spell Cascade Support', 'Summon Phantasm Support'],
     Scion: ['Ancestral Call Support', 'Arcane Surge Support', 'Chance to Bleed Support', 'Chance to Poison Support', 'Elemental Proliferation Support', 'Hallow Support', 'Infused Channelling Support', 'Mirage Archer Support', 'Momentum Support', 'Pierce Support', 'Ruthless Support', 'Spell Cascade Support', 'Summon Phantasm Support', 'Swift Assembly Support', 'Volley Support'],
   },
 };
