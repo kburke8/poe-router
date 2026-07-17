@@ -36,6 +36,8 @@ interface BuildState {
   // Gem pickup mutations
   addGemPickup: (buildId: string, stopId: string, pickup: GemPickup) => Promise<void>;
   removeGemPickup: (buildId: string, stopId: string, pickupId: string) => Promise<void>;
+  /** Set a pickup's acquisition mode: quest reward, vendor buy, or skipped (kept but inert). */
+  setGemPickupMode: (buildId: string, stopId: string, pickupId: string, mode: 'quest_reward' | 'vendor' | 'skip') => Promise<void>;
 
   // Build-level link group mutations
   addLinkGroup: (buildId: string, fromStopId: string) => Promise<void>;
@@ -267,6 +269,23 @@ export const useBuildStore = create<BuildState>()(
         const result = findBuildAndStop(state.builds, buildId, stopId);
         if (!result) return;
         result.stop.gemPickups = result.stop.gemPickups.filter((p) => p.id !== pickupId);
+        result.build.updatedAt = new Date().toISOString();
+      });
+      debouncedSave(() => get().builds.find((b) => b.id === buildId));
+    },
+
+    async setGemPickupMode(buildId, stopId, pickupId, mode) {
+      set((state) => {
+        const result = findBuildAndStop(state.builds, buildId, stopId);
+        if (!result) return;
+        const pickup = result.stop.gemPickups.find((p) => p.id === pickupId);
+        if (!pickup) return;
+        if (mode === 'skip') {
+          pickup.skipped = true;
+        } else {
+          pickup.source = mode;
+          delete pickup.skipped;
+        }
         result.build.updatedAt = new Date().toISOString();
       });
       debouncedSave(() => get().builds.find((b) => b.id === buildId));

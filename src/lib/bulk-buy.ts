@@ -26,7 +26,7 @@ export function getBulkBuyGemsByStop(build: BuildPlan): Map<string, string[]> {
     if (!stop.enabled) continue;
     if (!getBulkBuyVendor(stop.stopId)) continue;
     const vendorGems = stop.gemPickups
-      .filter((p) => p.source === 'vendor')
+      .filter((p) => p.source === 'vendor' && !p.skipped)
       .map((p) => p.gemName);
     if (vendorGems.length > 0) {
       result.set(stop.stopId, vendorGems);
@@ -58,7 +58,7 @@ export function getExclusiveBulkBuyGemNames(build: BuildPlan): Set<string> {
     if (!stop.enabled) continue;
     if (getBulkBuyVendor(stop.stopId)) continue;
     for (const p of stop.gemPickups) {
-      if (p.source === 'vendor') nonBulkVendorNames.add(p.gemName);
+      if (p.source === 'vendor' && !p.skipped) nonBulkVendorNames.add(p.gemName);
     }
   }
 

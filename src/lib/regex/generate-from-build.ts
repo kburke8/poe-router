@@ -409,7 +409,7 @@ export async function generateBuildRegex(
     ...new Set(
       build.stops
         .flatMap((s) => s.gemPickups)
-        .filter((p) => p.source === 'vendor')
+        .filter((p) => p.source === 'vendor' && !p.skipped)
         .map((p) => p.gemName)
     ),
   ].filter((name) => !bulkBuyExclusive.has(name));
@@ -515,7 +515,7 @@ export async function generateBuildRegex(
 export function hasBuildRegexContent(build: BuildPlan): boolean {
   const hasVendorGems = build.stops
     .flatMap((s) => s.gemPickups)
-    .some((p) => p.source === 'vendor');
+    .some((p) => p.source === 'vendor' && !p.skipped);
 
   const hasLinkGroups = build.linkGroups.length > 0;
 

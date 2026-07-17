@@ -1,17 +1,24 @@
 @import "tailwindcss";
 @import '../styles/driver-overrides.css';
 
+/* Palette from the "PoE Router Redesign" claude.ai/design project:
+   deep navy base, warm gold accent, muted RGB socket colours. */
 @theme {
-  --color-poe-bg: #1a1a2e;
-  --color-poe-card: #16213e;
-  --color-poe-input: #1f2937;
-  --color-poe-text: #e2e8f0;
-  --color-poe-muted: #94a3b8;
-  --color-poe-gold: #c7a44a;
-  --color-poe-red: #c53030;
-  --color-poe-green: #2f855a;
-  --color-poe-blue: #3182ce;
-  --color-poe-border: #2d3748;
+  --color-poe-bg: #0b111c;
+  --color-poe-card: #0e1420;
+  --color-poe-row: #0f1826;
+  --color-poe-rail: #0c1119;
+  --color-poe-input: #0b111c;
+  --color-poe-text: #d7dce6;
+  --color-poe-bright: #eef1f6;
+  --color-poe-muted: #8792a6;
+  --color-poe-faint: #5a6478;
+  --color-poe-gold: #e6c26a;
+  --color-poe-gold-ink: #12151e;
+  --color-poe-red: #d1584b;
+  --color-poe-green: #4fa877;
+  --color-poe-blue: #5b8fd6;
+  --color-poe-border: #26304a;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

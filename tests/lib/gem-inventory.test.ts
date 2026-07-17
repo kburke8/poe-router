@@ -39,6 +39,24 @@ describe('getInventoryAtStop', () => {
     expect(inv).toContain('Frostbolt');
   });
 
+  it('excludes skipped pickups from inventory', () => {
+    const build = makeMinimalBuild({
+      className: 'Witch',
+      stops: [
+        makeStopPlan('a1_after_hillock', {
+          gemPickups: [
+            { ...makePickup('Frostbolt', 'blue'), skipped: true },
+            makePickup('Freezing Pulse', 'blue'),
+          ],
+        }),
+        makeStopPlan('a1_after_brutus'),
+      ],
+    });
+    const inv = getInventoryAtStop(build, 'a1_after_brutus');
+    expect(inv).not.toContain('Frostbolt');
+    expect(inv).toContain('Freezing Pulse');
+  });
+
   it('excludes later stop pickups', () => {
     const build = makeMinimalBuild({
       className: 'Witch',

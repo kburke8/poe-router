@@ -60,6 +60,7 @@ export function getInventoryAtStop(build: BuildPlan, stopId: string): string[] {
     if (order > effectiveOrder) continue;
 
     for (const pickup of stop.gemPickups) {
+      if (pickup.skipped) continue;
       addGem(pickup.gemName);
     }
 

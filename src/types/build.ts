@@ -25,6 +25,12 @@ export interface GemPickup {
   gemColor: 'red' | 'green' | 'blue';
   source: 'quest_reward' | 'vendor';
   rewardSetId?: string;
+  /**
+   * Skipped pickups stay visible in the route (greyed out) but are excluded
+   * from inventory, regex generation, and cost math. Optional and additive —
+   * no migration needed (same pattern as droppedGems).
+   */
+  skipped?: boolean;
 }
 
 export interface StopPlan {
