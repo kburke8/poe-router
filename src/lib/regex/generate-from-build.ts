@@ -30,18 +30,90 @@ export interface LinkPattern {
  * with "-" only between LINKED sockets (unlinked groups are space-separated),
  * so `.-.-.` matches any three-or-more linked sockets regardless of colour.
  *
- * As of 3.29, gems socket into any colour and sockets default to White, so
+ * From 3.29, gems socket into any colour and sockets default to White, so
  * per-build colour-permutation patterns (e.g. "b-b-g|b-g-b|g-b-b") are
  * obsolete — link COUNT is all that matters for leveling gear.
  */
 export const THREE_LINK_PATTERN = '.-.-.';
 
 /**
- * Generate link search patterns for a build: a single colour-agnostic
- * 3-link+ entry, always included.
+ * 3.29 (Curse of the Allflame) league launch: 2026-07-24 1:00 PM PDT.
+ * Before this moment, runs happen on 3.28 where socket colours still
+ * matter, so colour-permutation link patterns are generated. From launch
+ * onward, the universal colour-agnostic pattern is used instead.
  */
-export function generateLinkPatterns(): LinkPattern[] {
-  return [{ pattern: THREE_LINK_PATTERN, sourceName: '3-Link+', linkSize: 3 }];
+export const POE_329_LAUNCH = new Date('2026-07-24T20:00:00Z');
+
+/**
+ * Generate all unique permutations of an array (handles duplicate elements).
+ * For [b,b,g] returns [[b,b,g],[b,g,b],[g,b,b]].
+ */
+function uniquePermutations(arr: string[]): string[][] {
+  if (arr.length <= 1) return [[...arr]];
+  const result: string[][] = [];
+  const seen = new Set<string>();
+  for (let i = 0; i < arr.length; i++) {
+    if (seen.has(arr[i])) continue;
+    seen.add(arr[i]);
+    const rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+    for (const perm of uniquePermutations(rest)) {
+      result.push([arr[i], ...perm]);
+    }
+  }
+  return result;
+}
+
+/**
+ * Pre-3.29 behaviour: exact socket colour search patterns from build link
+ * groups. Handles 2-links and 3-links across all phases; all unique colour
+ * permutations of a group are joined with `|` into one pattern.
+ *
+ * Examples:
+ * - BBG (3L) → "b-b-g|b-g-b|g-b-b"
+ * - BG  (2L) → "b-g|g-b"
+ *
+ * All patterns are lowercase. 1-link and 4+ link phases are skipped.
+ */
+export function generateColorLinkPatterns(linkGroups: BuildLinkGroup[]): LinkPattern[] {
+  const seen = new Set<string>(); // dedup by pattern
+  const results: LinkPattern[] = [];
+
+  for (const lg of linkGroups) {
+    if (lg.phases.length === 0) continue;
+
+    // Check all phases so earlier link sizes (e.g. 3L before a group grows to 4L)
+    // still produce patterns.
+    for (const phase of lg.phases) {
+      const gemCount = phase.gems.length;
+
+      // Skip 1-links and 4+ links
+      if (gemCount < 2 || gemCount > 3) continue;
+
+      const colors = phase.gems.map((g) => g.socketColor.toLowerCase()).sort();
+      const sourceName = lg.label || `${gemCount}L`;
+
+      const perms = uniquePermutations(colors);
+      const pattern = perms.map((p) => p.join('-')).join('|');
+
+      if (seen.has(pattern)) continue;
+      seen.add(pattern);
+
+      results.push({ pattern, sourceName, linkSize: gemCount });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Generate link search patterns for a build. Colour-based permutations
+ * while 3.28 is live; the single universal 3-link+ entry from 3.29 launch.
+ */
+export function generateLinkPatterns(linkGroups: BuildLinkGroup[], now: Date = new Date()): LinkPattern[] {
+  if (now >= POE_329_LAUNCH) {
+    return [{ pattern: THREE_LINK_PATTERN, sourceName: '3-Link+', linkSize: 3 }];
+  }
+  return generateColorLinkPatterns(linkGroups);
 }
 
 // === Gambas auto-generation ===
@@ -358,8 +430,8 @@ export async function generateBuildRegex(
     ),
   ].filter((name) => !bulkBuyExclusive.has(name));
 
-  // Universal colour-agnostic 3-link+ pattern
-  const linkPatterns = generateLinkPatterns();
+  // Colour permutations pre-3.29; universal 3-link+ pattern from launch
+  const linkPatterns = generateLinkPatterns(build.linkGroups);
 
   // Compute gambas entries
   const gambasEntries = generateGambasEntries(build);
