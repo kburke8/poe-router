@@ -1,4 +1,5 @@
 import type { RegexCategory, RegexEntry } from '@/types/regex';
+import { THREE_LINK_PATTERN, POE_329_LAUNCH } from './patch-constants';
 
 /**
  * Remove alternatives that are already matched by a shorter alternative.
@@ -201,11 +202,19 @@ function setsEqual(a: Set<string>, b: Set<string>): boolean {
  * - Final output: "!excl1|excl2 incl1|incl2|incl3"
  * - If no exclusions: just "incl1|incl2|incl3"
  * - If no inclusions: just "!excl1|excl2"
+ *
+ * From the 3.29 patch (POE_329_LAUNCH), stored colour-permutation link
+ * entries (the generated ones carrying linkSize) are replaced at combine
+ * time with the single universal 3-link+ pattern — presets generated before
+ * launch flip automatically everywhere the regex is displayed, without
+ * regeneration. Custom link entries (no linkSize) pass through unchanged.
  */
-export function combineCategories(categories: RegexCategory[]): string {
+export function combineCategories(categories: RegexCategory[], now: Date = new Date()): string {
   const exclusions: string[] = [];
   const inclusions: string[] = [];
   const gambasEntries: RegexEntry[] = [];
+  const colorLinksObsolete = now >= POE_329_LAUNCH;
+  let universalLinkAdded = false;
 
   for (const category of categories) {
     for (const entry of category.entries) {
@@ -215,6 +224,12 @@ export function combineCategories(categories: RegexCategory[]): string {
         exclusions.push(entry.pattern);
       } else if (category.id === 'item_gambas') {
         gambasEntries.push(entry);
+      } else if (category.id === 'links' && entry.linkSize && colorLinksObsolete) {
+        // Post-3.29: colour patterns are dead weight — one universal entry
+        if (!universalLinkAdded) {
+          inclusions.push(THREE_LINK_PATTERN);
+          universalLinkAdded = true;
+        }
       } else {
         inclusions.push(entry.pattern);
       }

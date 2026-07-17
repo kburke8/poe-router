@@ -25,24 +25,8 @@ export interface LinkPattern {
   linkSize: number;
 }
 
-/**
- * Universal 3-link+ pattern. Sockets display as e.g. "W-W-W" in item text,
- * with "-" only between LINKED sockets (unlinked groups are space-separated),
- * so `.-.-.` matches any three-or-more linked sockets regardless of colour.
- *
- * From 3.29, gems socket into any colour and sockets default to White, so
- * per-build colour-permutation patterns (e.g. "b-b-g|b-g-b|g-b-b") are
- * obsolete — link COUNT is all that matters for leveling gear.
- */
-export const THREE_LINK_PATTERN = '.-.-.';
-
-/**
- * 3.29 (Curse of the Allflame) league launch: 2026-07-24 1:00 PM PDT.
- * Before this moment, runs happen on 3.28 where socket colours still
- * matter, so colour-permutation link patterns are generated. From launch
- * onward, the universal colour-agnostic pattern is used instead.
- */
-export const POE_329_LAUNCH = new Date('2026-07-24T20:00:00Z');
+export { THREE_LINK_PATTERN, POE_329_LAUNCH } from './patch-constants';
+import { THREE_LINK_PATTERN, POE_329_LAUNCH } from './patch-constants';
 
 /**
  * Generate all unique permutations of an array (handles duplicate elements).

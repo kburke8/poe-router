@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { combineCategories, condenseGambasPatterns, getCharCount } from '@/lib/regex/combiner';
+import { THREE_LINK_PATTERN, POE_329_LAUNCH } from '@/lib/regex/patch-constants';
 import type { RegexCategory, RegexEntry } from '@/types/regex';
 
 function makeEntry(pattern: string, opts?: Partial<RegexEntry>): RegexEntry {
@@ -66,6 +67,41 @@ describe('combineCategories', () => {
     ])];
     const result = combineCategories(cats);
     expect(result).toBe('b-b');
+  });
+});
+
+describe('combineCategories 3.29 link flip', () => {
+  const BEFORE_LAUNCH = new Date(POE_329_LAUNCH.getTime() - 1);
+
+  const linkCats = () => [makeCategory('links', [
+    makeEntry('b-b-g|b-g-b|g-b-b', { linkSize: 3 }),
+    makeEntry('b-g|g-b', { linkSize: 2 }),
+    makeEntry('r-r-r-r', { isCustom: true }), // custom entry, no linkSize
+  ])];
+
+  it('keeps stored colour patterns before launch', () => {
+    // 3L colour perms are subsumed by the 2L pattern; custom passes through
+    expect(combineCategories(linkCats(), BEFORE_LAUNCH)).toBe('b-g|g-b|r-r-r-r');
+  });
+
+  it('replaces generated link entries with one universal pattern from launch', () => {
+    const result = combineCategories(linkCats(), POE_329_LAUNCH);
+    expect(result).toBe(`${THREE_LINK_PATTERN}|r-r-r-r`);
+  });
+
+  it('does not inject the universal pattern when link entries are disabled', () => {
+    const cats = [makeCategory('links', [
+      makeEntry('b-g|g-b', { linkSize: 2, enabled: false }),
+    ])];
+    expect(combineCategories(cats, POE_329_LAUNCH)).toBe('');
+  });
+
+  it('does not duplicate the pattern for presets generated post-launch', () => {
+    const cats = [
+      makeCategory('links', [makeEntry(THREE_LINK_PATTERN, { linkSize: 3 })]),
+      makeCategory('gems', [makeEntry('fire')]),
+    ];
+    expect(combineCategories(cats, POE_329_LAUNCH)).toBe(`${THREE_LINK_PATTERN}|fire`);
   });
 });
 
