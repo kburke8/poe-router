@@ -1,47 +1,47 @@
-/* Driver.js custom styles for PoE theme */
+/* Driver.js custom styles for PoE theme (redesign palette via theme vars) */
 .poe-tour-popover {
-  background: #1a1a2e !important;
-  border: 1px solid #c7a44a !important;
-  color: #e0e0e0 !important;
+  background: var(--color-poe-card) !important;
+  border: 1px solid var(--color-poe-gold) !important;
+  color: var(--color-poe-text) !important;
 }
 
 .poe-tour-popover .driver-popover-title {
-  color: #c7a44a !important;
+  color: var(--color-poe-gold) !important;
   font-weight: 600 !important;
 }
 
 .poe-tour-popover .driver-popover-description {
-  color: #b8b8b8 !important;
+  color: var(--color-poe-muted) !important;
 }
 
 .poe-tour-popover .driver-popover-close-btn {
-  color: #b8b8b8 !important;
+  color: var(--color-poe-muted) !important;
 }
 
 .poe-tour-popover .driver-popover-close-btn:hover {
-  color: #e0e0e0 !important;
+  color: var(--color-poe-text) !important;
 }
 
 .poe-tour-popover .driver-popover-arrow {
-  background: #1a1a2e !important;
-  border-color: #c7a44a !important;
+  background: var(--color-poe-card) !important;
+  border-color: var(--color-poe-gold) !important;
 }
 
 .poe-tour-popover .driver-popover-navigation-btns button {
-  background: #16213e !important;
-  border: 1px solid #c7a44a !important;
-  color: #e0e0e0 !important;
+  background: var(--color-poe-row) !important;
+  border: 1px solid var(--color-poe-gold) !important;
+  color: var(--color-poe-text) !important;
 }
 
 .poe-tour-popover .driver-popover-navigation-btns button:hover {
-  background: #c7a44a !important;
-  color: #1a1a2e !important;
+  background: var(--color-poe-gold) !important;
+  color: var(--color-poe-gold-ink) !important;
 }
 
 .driver-popover-progress-text {
-  color: #b8b8b8 !important;
+  color: var(--color-poe-muted) !important;
 }
 
 .driver-active-element {
-  box-shadow: 0 0 0 2px #c7a44a !important;
+  box-shadow: 0 0 0 2px var(--color-poe-gold) !important;
 }

@@ -17,6 +17,7 @@ export function BuildsTour({ hasBuilds }: BuildsTourProps) {
   useEffect(() => {
     // Only run after localStorage is loaded and if not seen before
     if (!isReady || hasSeenTour(TOUR_ID)) return;
+      let cleanup: (() => void) | undefined;
       const timer = setTimeout(() => {
         const steps = hasBuilds ? [
           {
@@ -98,6 +99,8 @@ export function BuildsTour({ hasBuilds }: BuildsTourProps) {
           smoothScroll: true,
           overlayColor: 'rgba(0, 0, 0, 0.85)',
           popoverClass: 'poe-tour-popover',
+          // Fires on every exit path — completing, X, Esc, overlay click, and
+          // the unmount cleanup below — so an early exit sticks like a finish.
           onDestroyed: () => {
             markTourCompleted(TOUR_ID);
           },
@@ -105,9 +108,17 @@ export function BuildsTour({ hasBuilds }: BuildsTourProps) {
         });
 
         driverObj.drive();
+        // Navigating away mid-tour unmounts without driver.js ever firing
+        // onDestroyed — destroy it ourselves so the exit is recorded.
+        cleanup = () => {
+          if (driverObj.isActive()) driverObj.destroy();
+        };
       }, 600);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        cleanup?.();
+      };
   }, [isReady, hasSeenTour, markTourCompleted, hasBuilds]);
 
   return null;

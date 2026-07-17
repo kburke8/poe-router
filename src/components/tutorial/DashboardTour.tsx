@@ -13,6 +13,7 @@ export function DashboardTour() {
   useEffect(() => {
     // Only run after localStorage is loaded and if not seen before
     if (!isReady || hasSeenTour(TOUR_ID)) return;
+      let cleanup: (() => void) | undefined;
       const timer = setTimeout(() => {
         const driverObj = driver({
           showProgress: true,
@@ -23,6 +24,8 @@ export function DashboardTour() {
           allowClose: true,
           stagePadding: 4,
           allowKeyboardControl: true,
+          // Fires on every exit path — completing, X, Esc, overlay click, and
+          // the unmount cleanup below — so an early exit sticks like a finish.
           onDestroyed: () => {
             markTourCompleted(TOUR_ID);
           },
@@ -79,9 +82,17 @@ export function DashboardTour() {
         });
 
         driverObj.drive();
+        // Navigating away mid-tour unmounts without driver.js ever firing
+        // onDestroyed — destroy it ourselves so the exit is recorded.
+        cleanup = () => {
+          if (driverObj.isActive()) driverObj.destroy();
+        };
       }, 800);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        cleanup?.();
+      };
   }, [isReady, hasSeenTour, markTourCompleted]);
 
   return null;
