@@ -1,5 +1,18 @@
 export type SocketColor = 'R' | 'G' | 'B' | 'W';
 
+/**
+ * Unified data version for BuildPlan records. One monotonically increasing
+ * integer covering both shape changes and game-data (gem rename) migrations:
+ *   undefined = V1 (act-based)
+ *   2 = V2 (stop-based, per-stop link groups)
+ *   3 = V3 (build-level link groups with phases)
+ *   4 = 3.28 gem renames applied
+ *   5 = 3.29 gem renames applied
+ * The migration chain lives in src/lib/migration.ts. Records with a version
+ * HIGHER than this (written by a newer app) must be left untouched.
+ */
+export const CURRENT_BUILD_VERSION = 5;
+
 export interface GemSlot {
   gemName: string;
   socketColor: SocketColor;
@@ -69,7 +82,7 @@ export interface BuildPlan {
   mulePickups?: MulePickup[];
   createdAt: string;
   updatedAt: string;
-  version: 3;
+  version: number;
 }
 
 // === V2 Types (for migration reference) ===
@@ -183,6 +196,6 @@ export function createEmptyBuild(id: string): BuildPlan {
     gearGoals: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    version: 3,
+    version: CURRENT_BUILD_VERSION,
   };
 }

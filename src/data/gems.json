@@ -887,8 +887,8 @@
       ]
     },
     {
-      "id": "dark_pact",
-      "name": "Dark Pact",
+      "id": "dark_bargain",
+      "name": "Dark Bargain",
       "color": "blue",
       "type": "skill",
       "tags": [

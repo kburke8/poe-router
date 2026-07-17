@@ -47,6 +47,16 @@ Plans:
 - [ ] 02-01-PLAN.md — Core migration manager: gem rename functions for builds/presets, backup orchestration, app startup wiring
 - [ ] 02-02-PLAN.md — PoB gem-matcher rename fallback: old gem names resolve via rename map during PoB import
 
+### Phase 2.1: Unified Build Versioning (INSERTED)
+**Goal**: Builds carry a per-record version and migrate forward through a unified chain without ever bricking
+**Depends on**: Phase 2
+**Success Criteria** (what must be TRUE):
+  1. BuildPlan.version is a single monotonically increasing integer covering shape (V1-V3) and game-data steps (4 = 3.28 renames, 5 = 3.29 renames); MIGRATIONS registry in src/lib/migration.ts
+  2. Migration runs at app startup AND on JSON import, so old exports imported later still upgrade; PoB import resolves names through all patches' rename maps
+  3. Unknown gem names survive migration and are flagged in the UI (amber badge), never deleted; records with a version newer than the app pass through untouched
+  4. Pre-migration snapshots are stored in a Dexie backups table (last 5 kept) and restorable from the dashboard
+**Status**: Complete 2026-07-17
+
 ### Phase 3: Quest and Vendor Rewards
 **Goal**: The build planner places new and renamed gems at their correct earliest-available campaign stops for all classes
 **Depends on**: Phase 1 (needs finalized gem names), Phase 2 (renamed gems must resolve correctly in reward lookups)
@@ -69,4 +79,5 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Data Pipeline and Collision Pool | 2/2 | Complete | 2026-03-20 |
 | 2. Migration Layer | 2/2 | Complete | 2026-03-20 |
-| 3. Quest and Vendor Rewards | 0/1 | Not started | - |
+| 2.1 Unified Build Versioning (INSERTED) | 1/1 | Complete | 2026-07-17 |
+| 3. Quest and Vendor Rewards | 0/1 | Not started (now targets 3.29: Faster Attacks/Casting all classes, Mana-Infused Staff; plus 3.28 audit) | - |

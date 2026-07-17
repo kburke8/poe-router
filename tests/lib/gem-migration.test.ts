@@ -3,10 +3,12 @@ import {
   resolveGemName,
   migrateBuildGemNames,
   migratePresetGemNames,
-  checkIfMigrationNeeded,
 } from '@/lib/gem-migration';
+import renameMap328 from '@/data/gem-rename-map.json';
 import type { BuildPlan } from '@/types/build';
 import type { RegexPreset } from '@/types/regex';
+
+const map328 = renameMap328 as Record<string, string>;
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -166,53 +168,35 @@ function createTestPreset(): RegexPreset {
   };
 }
 
-function createCleanPreset(): RegexPreset {
-  return {
-    id: 'preset-clean',
-    name: 'Clean Preset',
-    categories: [
-      {
-        id: 'gems',
-        label: 'Gems',
-        entries: [
-          {
-            id: 'entry-c1',
-            pattern: 'fire',
-            sourceName: 'Fireball',
-            isExclusion: false,
-            enabled: true,
-            isCustom: false,
-          },
-        ],
-      },
-    ],
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z',
-  };
-}
-
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
 describe('resolveGemName', () => {
   it('maps old gem name to new name', () => {
-    expect(resolveGemName('Sweep')).toBe('Holy Sweep');
+    expect(resolveGemName('Sweep', map328)).toBe('Holy Sweep');
   });
 
   it('passes through unknown gem names unchanged', () => {
-    expect(resolveGemName('Fireball')).toBe('Fireball');
+    expect(resolveGemName('Fireball', map328)).toBe('Fireball');
   });
 
   it('is idempotent on already-renamed gem names', () => {
-    expect(resolveGemName('Holy Sweep')).toBe('Holy Sweep');
+    expect(resolveGemName('Holy Sweep', map328)).toBe('Holy Sweep');
+  });
+
+  it('passes through gibberish and empty strings (total function)', () => {
+    expect(resolveGemName('Totally Fake Gem That Never Existed', map328)).toBe(
+      'Totally Fake Gem That Never Existed',
+    );
+    expect(resolveGemName('', map328)).toBe('');
   });
 });
 
 describe('migrateBuildGemNames', () => {
   it('renames GemPickup.gemName (Site 1)', () => {
     const build = createTestBuild();
-    const migrated = migrateBuildGemNames(build);
+    const migrated = migrateBuildGemNames(build, map328);
 
     expect(migrated.stops[0].gemPickups[0].gemName).toBe('Holy Sweep');
     expect(migrated.stops[0].gemPickups[1].gemName).toBe(
@@ -224,14 +208,14 @@ describe('migrateBuildGemNames', () => {
 
   it('renames StopPlan.droppedGems entries (Site 2)', () => {
     const build = createTestBuild();
-    const migrated = migrateBuildGemNames(build);
+    const migrated = migrateBuildGemNames(build, map328);
 
     expect(migrated.stops[1].droppedGems).toEqual(['Holy Sweep']);
   });
 
   it('renames GemSlot.gemName in linkGroups.phases.gems (Site 3)', () => {
     const build = createTestBuild();
-    const migrated = migrateBuildGemNames(build);
+    const migrated = migrateBuildGemNames(build, map328);
 
     expect(migrated.linkGroups[0].phases[0].gems[0].gemName).toBe(
       'Holy Sweep',
@@ -242,73 +226,57 @@ describe('migrateBuildGemNames', () => {
 
   it('renames MulePickup.gemName (Site 4)', () => {
     const build = createTestBuild();
-    const migrated = migrateBuildGemNames(build);
+    const migrated = migrateBuildGemNames(build, map328);
 
     expect(migrated.mulePickups![0].gemName).toBe('Holy Sweep');
   });
 
   it('renames GemSlot.alternatives[].gemName recursively (Site 5)', () => {
     const build = createTestBuild();
-    const migrated = migrateBuildGemNames(build);
+    const migrated = migrateBuildGemNames(build, map328);
 
     expect(
       migrated.linkGroups[0].phases[0].gems[0].alternatives![0].gemName,
     ).toBe('Returning Projectiles Support');
   });
 
-  it('updates updatedAt timestamp', () => {
-    const build = createTestBuild();
-    const migrated = migrateBuildGemNames(build);
-
-    expect(migrated.updatedAt).not.toBe('2025-01-01T00:00:00.000Z');
-    // Should be a valid ISO string
-    expect(() => new Date(migrated.updatedAt)).not.toThrow();
-  });
-
   it('returns identical result when called twice (idempotent)', () => {
     const build = createTestBuild();
-    const first = migrateBuildGemNames(build);
-    const second = migrateBuildGemNames(first);
+    const first = migrateBuildGemNames(build, map328);
+    const second = migrateBuildGemNames(first, map328);
 
-    // Compare gem names, not updatedAt (timestamp changes)
-    expect(second.stops[0].gemPickups[0].gemName).toBe(
-      first.stops[0].gemPickups[0].gemName,
-    );
-    expect(second.stops[1].droppedGems).toEqual(first.stops[1].droppedGems);
-    expect(second.linkGroups[0].phases[0].gems[0].gemName).toBe(
-      first.linkGroups[0].phases[0].gems[0].gemName,
-    );
-    expect(second.mulePickups![0].gemName).toBe(
-      first.mulePickups![0].gemName,
-    );
-    expect(
-      second.linkGroups[0].phases[0].gems[0].alternatives![0].gemName,
-    ).toBe(
-      first.linkGroups[0].phases[0].gems[0].alternatives![0].gemName,
-    );
+    expect(second).toEqual(first);
   });
 
   it('does not mutate the input build', () => {
     const build = createTestBuild();
     const originalName = build.stops[0].gemPickups[0].gemName;
-    migrateBuildGemNames(build);
+    migrateBuildGemNames(build, map328);
 
     expect(build.stops[0].gemPickups[0].gemName).toBe(originalName);
   });
 
   it('no-ops on a build with no old gem names', () => {
     const build = createCleanBuild();
-    const migrated = migrateBuildGemNames(build);
+    const migrated = migrateBuildGemNames(build, map328);
 
     expect(migrated.stops[0].gemPickups[0].gemName).toBe('Fireball');
     expect(migrated.linkGroups[0].phases[0].gems[0].gemName).toBe('Fireball');
+  });
+
+  it('handles a build with empty stops and link groups', () => {
+    const build = { ...createCleanBuild(), stops: [], linkGroups: [] };
+    const migrated = migrateBuildGemNames(build, map328);
+
+    expect(migrated.stops).toEqual([]);
+    expect(migrated.linkGroups).toEqual([]);
   });
 });
 
 describe('migratePresetGemNames', () => {
   it('renames RegexEntry.sourceName', () => {
     const preset = createTestPreset();
-    const migrated = migratePresetGemNames(preset);
+    const migrated = migratePresetGemNames(preset, map328);
 
     expect(migrated.categories[0].entries[0].sourceName).toBe('Holy Sweep');
     // Unchanged
@@ -317,47 +285,18 @@ describe('migratePresetGemNames', () => {
 
   it('does NOT modify RegexEntry.pattern fields', () => {
     const preset = createTestPreset();
-    const migrated = migratePresetGemNames(preset);
+    const migrated = migratePresetGemNames(preset, map328);
 
     expect(migrated.categories[0].entries[0].pattern).toBe('swe');
     expect(migrated.categories[0].entries[1].pattern).toBe('fire');
   });
 
-  it('updates updatedAt timestamp', () => {
+  it('skips entries without a sourceName', () => {
     const preset = createTestPreset();
-    const migrated = migratePresetGemNames(preset);
+    delete preset.categories[0].entries[0].sourceName;
+    const migrated = migratePresetGemNames(preset, map328);
 
-    expect(migrated.updatedAt).not.toBe('2025-01-01T00:00:00.000Z');
-  });
-
-  it('no-ops on preset with no old gem names', () => {
-    const preset = createCleanPreset();
-    const migrated = migratePresetGemNames(preset);
-
-    expect(migrated.categories[0].entries[0].sourceName).toBe('Fireball');
-  });
-});
-
-describe('checkIfMigrationNeeded', () => {
-  it('returns true when builds contain old gem names', () => {
-    const builds = [createTestBuild()];
-    const presets: RegexPreset[] = [];
-    expect(checkIfMigrationNeeded(builds, presets)).toBe(true);
-  });
-
-  it('returns true when presets contain old gem names', () => {
-    const builds: BuildPlan[] = [];
-    const presets = [createTestPreset()];
-    expect(checkIfMigrationNeeded(builds, presets)).toBe(true);
-  });
-
-  it('returns false when no old gem names exist', () => {
-    const builds = [createCleanBuild()];
-    const presets = [createCleanPreset()];
-    expect(checkIfMigrationNeeded(builds, presets)).toBe(false);
-  });
-
-  it('returns false for empty data', () => {
-    expect(checkIfMigrationNeeded([], [])).toBe(false);
+    expect(migrated.categories[0].entries[0].sourceName).toBeUndefined();
+    expect(migrated.categories[0].entries[0].pattern).toBe('swe');
   });
 });

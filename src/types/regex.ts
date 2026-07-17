@@ -26,6 +26,8 @@ export interface RegexPreset {
   strictLinks?: boolean;
   createdAt: string;
   updatedAt: string;
+  /** Same unified chain as BuildPlan.version (only rename steps apply). Absent = pre-versioning. */
+  version?: number;
 }
 
 export const DEFAULT_CATEGORIES: RegexCategory[] = [

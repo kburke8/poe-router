@@ -5,6 +5,9 @@ import { X, Undo2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import gemsData from '@/data/gems.json';
 import type { Gem } from '@/types/gem';
+import { isKnownGemName } from '@/lib/known-gems';
+
+const ORPHAN_TITLE = 'Not in the current gem database — may have been renamed or removed in a patch';
 
 const allGems: Gem[] = [
   ...(gemsData.skills as Gem[]),
@@ -55,9 +58,12 @@ export function InventoryPanel({
         {unslotted.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {unslotted.map((name) => (
-              <span key={name} className="inline-flex items-center gap-0.5">
-                <Badge variant={GEM_COLOR_VARIANT[findGemColor(name)] ?? 'default'} className="pr-1">
-                  <span className="mr-1">{name}</span>
+              <span key={name} className="inline-flex items-center gap-0.5" title={isKnownGemName(name) ? undefined : ORPHAN_TITLE}>
+                <Badge
+                  variant={GEM_COLOR_VARIANT[findGemColor(name)] ?? 'default'}
+                  className={isKnownGemName(name) ? 'pr-1' : 'pr-1 ring-1 ring-amber-500/70'}
+                >
+                  <span className="mr-1">{isKnownGemName(name) ? name : `${name} ⚠`}</span>
                   <button
                     type="button"
                     onClick={() => onDrop(name)}
@@ -79,10 +85,10 @@ export function InventoryPanel({
               <Badge
                 key={name}
                 variant={GEM_COLOR_VARIANT[findGemColor(name)] ?? 'default'}
-                className="opacity-50"
-                title="In use (link group)"
+                className={isKnownGemName(name) ? 'opacity-50' : 'opacity-50 ring-1 ring-amber-500/70'}
+                title={isKnownGemName(name) ? 'In use (link group)' : ORPHAN_TITLE}
               >
-                {name}
+                {isKnownGemName(name) ? name : `${name} ⚠`}
               </Badge>
             ))}
           </div>

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { exportToJson, parseImportFile } from '@/lib/export';
+import { CURRENT_BUILD_VERSION } from '@/types/build';
 
 describe('exportToJson', () => {
   it('produces valid JSON', () => {
@@ -63,16 +64,41 @@ describe('parseImportFile', () => {
 });
 
 describe('round-trip', () => {
-  it('export then parse preserves data', () => {
+  it('export then parse preserves a current-version build exactly', () => {
+    const build = {
+      id: 'test',
+      name: 'Test Build',
+      className: 'Witch',
+      ascendancy: 'Necromancer',
+      stops: [],
+      linkGroups: [],
+      gearGoals: [],
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-01-01T00:00:00.000Z',
+      version: CURRENT_BUILD_VERSION,
+    };
     const original = {
       version: 1 as const,
       exportedAt: '2024-01-01T00:00:00.000Z',
-      builds: [{ id: 'test', name: 'Test Build' }],
+      builds: [build],
     };
     const json = exportToJson(original);
     const parsed = parseImportFile(json);
     expect(parsed.version).toBe(original.version);
     expect(parsed.exportedAt).toBe(original.exportedAt);
     expect((parsed as { builds: unknown[] }).builds).toEqual(original.builds);
+  });
+
+  it('normalizes a malformed stub build instead of crashing', () => {
+    const original = {
+      version: 1 as const,
+      exportedAt: '2024-01-01T00:00:00.000Z',
+      builds: [{ id: 'test', name: 'Test Build' }],
+    };
+    const parsed = parseImportFile(exportToJson(original));
+    const build = (parsed as { builds: { id: string; version: number; stops: unknown[] }[] }).builds[0];
+    expect(build.id).toBe('test');
+    expect(build.version).toBe(CURRENT_BUILD_VERSION);
+    expect(build.stops).toEqual([]);
   });
 });

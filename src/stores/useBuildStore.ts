@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { db } from '@/db/database';
-import { runGemMigrationIfNeeded } from '@/lib/gem-migration';
+import { runDataMigrationIfNeeded } from '@/lib/data-migration';
 import type { BuildPlan, StopPlan, GemPickup, GearGoal, LinkGroupPhase, GemSlot, MulePickup } from '@/types/build';
 import { createEmptyBuild, createEmptyStopPlan, createEmptyBuildLinkGroup, createEmptyPhase } from '@/types/build';
 import { TOWN_STOPS } from '@/data/town-stops';
@@ -117,8 +117,8 @@ export const useBuildStore = create<BuildState>()(
         state.isLoading = true;
       });
       try {
-        // Run gem rename migration if needed (checks localStorage flag, no-ops if done)
-        await runGemMigrationIfNeeded();
+        // Run the data migration chain if needed (checks localStorage flag, no-ops if done)
+        await runDataMigrationIfNeeded();
 
         const builds = (await db.builds.toArray()) as BuildPlan[];
         set((state) => {

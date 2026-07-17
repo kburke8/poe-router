@@ -5,6 +5,7 @@ import Fuse from 'fuse.js';
 import type { SocketColor } from '@/types/build';
 import type { Gem, GemColor } from '@/types/gem';
 import gemsData from '@/data/gems.json';
+import { isKnownGemName } from '@/lib/known-gems';
 
 interface GemSlotComboboxProps {
   value: string;
@@ -152,6 +153,7 @@ export function GemSlotCombobox({
 
   const displayValue = isOpen ? query : value;
   const hasSomeResults = filteredResults.priority.length > 0 || filteredResults.other.length > 0;
+  const isOrphan = !isOpen && !isKnownGemName(value);
 
   return (
     <div ref={containerRef} className="relative flex-1">
@@ -164,7 +166,8 @@ export function GemSlotCombobox({
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className={`w-full rounded-md border border-poe-border bg-poe-input px-3 py-1 text-sm focus:border-poe-gold focus:outline-none focus:ring-1 focus:ring-poe-gold/50 ${isOpen ? 'text-poe-text' : socketTextColor[socketColor]}`}
+        title={isOrphan ? `"${value}" is not in the current gem database — it may have been renamed or removed in a patch. Pick a replacement or keep it as-is.` : undefined}
+        className={`w-full rounded-md border bg-poe-input px-3 py-1 text-sm focus:border-poe-gold focus:outline-none focus:ring-1 focus:ring-poe-gold/50 ${isOrphan ? 'border-amber-500/70' : 'border-poe-border'} ${isOpen ? 'text-poe-text' : socketTextColor[socketColor]}`}
       />
       {isOpen && (
         <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-56 overflow-y-auto rounded-md border border-poe-border bg-poe-card shadow-lg">

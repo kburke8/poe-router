@@ -8,7 +8,7 @@ describe('getAscendancies', () => {
   });
 
   it('returns Scion ascendancy', () => {
-    expect(getAscendancies('Scion')).toEqual(['Ascendant']);
+    expect(getAscendancies('Scion')).toEqual(['Ascendant', 'Reliquarian', 'Luminary']);
   });
 
   it('returns Witch ascendancies', () => {

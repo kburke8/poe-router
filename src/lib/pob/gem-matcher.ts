@@ -1,9 +1,7 @@
 import gemsData from '@/data/gems.json';
-import renameMap from '@/data/gem-rename-map.json';
+import { resolveGemNameAllPatches } from '@/lib/migration';
 import type { Gem } from '@/types/gem';
 import type { PobGem } from './parse';
-
-const gemRenameMap = renameMap as Record<string, string>;
 
 export type MatchResult =
   | { status: 'matched'; gem: Gem }
@@ -64,16 +62,17 @@ export function matchPobGem(pobGem: PobGem): MatchResult {
     }
   }
 
-  // Check rename map for old->new name mapping (pre-3.28 gem names)
-  const renamedDirect = gemRenameMap[nameSpec];
-  if (renamedDirect) {
+  // Resolve historical names through every patch's rename map (chained
+  // renames included), so any old PoB export still matches.
+  const renamedDirect = resolveGemNameAllPatches(nameSpec);
+  if (renamedDirect !== nameSpec) {
     const match = findByName(renamedDirect);
     if (match) return { status: 'matched', gem: match };
   }
 
   // Also try with " Support" suffix on the rename lookup
-  const renamedWithSupport = gemRenameMap[nameSpec + ' Support'];
-  if (renamedWithSupport) {
+  const renamedWithSupport = resolveGemNameAllPatches(nameSpec + ' Support');
+  if (renamedWithSupport !== nameSpec + ' Support') {
     const match = findByName(renamedWithSupport);
     if (match) return { status: 'matched', gem: match };
   }

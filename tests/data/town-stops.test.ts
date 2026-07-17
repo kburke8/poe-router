@@ -39,8 +39,8 @@ describe('getStopsForAct', () => {
     expect(getStopsForAct(1)).toHaveLength(5);
   });
 
-  it('returns 4 stops for Act 2', () => {
-    expect(getStopsForAct(2)).toHaveLength(4);
+  it('returns 5 stops for Act 2', () => {
+    expect(getStopsForAct(2)).toHaveLength(5);
   });
 
   it('returns stops for Act 3', () => {

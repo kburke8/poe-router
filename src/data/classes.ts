@@ -16,7 +16,7 @@ export const POE_CLASSES: ClassInfo[] = [
   { name: 'Duelist', ascendancies: ['Slayer', 'Gladiator', 'Champion'], beachGems: { skillGem: 'Double Strike', supportGem: 'Chance to Bleed Support' } },
   { name: 'Templar', ascendancies: ['Inquisitor', 'Hierophant', 'Guardian'], beachGems: { skillGem: 'Holy Strike', supportGem: 'Hallow Support' } },
   { name: 'Shadow', ascendancies: ['Assassin', 'Trickster', 'Saboteur'], beachGems: { skillGem: 'Viper Strike', supportGem: 'Chance to Poison Support' } },
-  { name: 'Scion', ascendancies: ['Ascendant'], beachGems: { skillGem: 'Spectral Throw', supportGem: 'Prismatic Burst Support' } },
+  { name: 'Scion', ascendancies: ['Ascendant', 'Reliquarian', 'Luminary'], beachGems: { skillGem: 'Spectral Throw', supportGem: 'Prismatic Burst Support' } },
 ];
 
 export function getAscendancies(className: string): string[] {

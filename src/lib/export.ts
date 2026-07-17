@@ -2,8 +2,10 @@
 
 import type { RegexPreset } from '@/types/regex';
 import type { BuildPlan } from '@/types/build';
+import { CURRENT_BUILD_VERSION } from '@/types/build';
 import type { RunRecord } from '@/types/history';
 import type { Gem, Item } from '@/types/gem';
+import { migrateBuildToCurrent, migratePresetToCurrent } from '@/lib/migration';
 
 interface ExportData {
   version: 1;
@@ -44,6 +46,10 @@ export function downloadJson(data: ExportData, filename?: string): void {
 
 /**
  * Parse a JSON string into ExportData, with basic validation.
+ *
+ * Builds and presets from any historical version are migrated to the current
+ * version on the way in. Records written by a NEWER app version are rejected
+ * with a clear message rather than being half-understood.
  */
 export function parseImportFile(jsonString: string): ExportData {
   const data = JSON.parse(jsonString);
@@ -60,6 +66,23 @@ export function parseImportFile(jsonString: string): ExportData {
 
   if (typeof data.exportedAt !== 'string') {
     throw new Error('Invalid import file: missing exportedAt field');
+  }
+
+  if (Array.isArray(data.builds)) {
+    const tooNew = data.builds.filter(
+      (b: BuildPlan) => typeof b.version === 'number' && b.version > CURRENT_BUILD_VERSION,
+    );
+    if (tooNew.length > 0) {
+      const names = tooNew.map((b: BuildPlan) => `"${b.name}"`).join(', ');
+      throw new Error(
+        `This file was created by a newer version of the app (${names}). Update the app to import it.`,
+      );
+    }
+    data.builds = data.builds.map(migrateBuildToCurrent);
+  }
+
+  if (Array.isArray(data.regexPresets)) {
+    data.regexPresets = data.regexPresets.map(migratePresetToCurrent);
   }
 
   return data as ExportData;

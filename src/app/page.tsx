@@ -12,6 +12,9 @@ import { downloadJson, readFileAsJson, type ExportData } from '@/lib/export';
 import { combineCategories } from '@/lib/regex/combiner';
 import { db } from '@/db/database';
 import { DashboardTour } from '@/components/tutorial/DashboardTour';
+import { listBackups, restoreBackup } from '@/lib/data-migration';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function DashboardPage() {
   const { presets, loadPresets } = useRegexStore();
@@ -52,17 +55,8 @@ export default function DashboardPage() {
         }
       }
       if (data.builds) {
+        // parseImportFile has already migrated every build to the current version
         for (const build of data.builds) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const b = build as any;
-          if (!b.linkGroups) b.linkGroups = [];
-          if (b.version !== 3) b.version = 3;
-          // Strip per-stop linkGroups from V2 builds
-          if (Array.isArray(b.stops)) {
-            for (const stop of b.stops) {
-              delete stop.linkGroups;
-            }
-          }
           await db.builds.put(build);
         }
       }
@@ -198,8 +192,57 @@ export default function DashboardPage() {
             Export your builds, regex presets, and run history as JSON, or import a previously exported file.
           </p>
         </Card>
+        <BackupsCard />
       </section>
       </div>
     </>
+  );
+}
+
+/** Automatic pre-migration backups with a one-click restore. */
+function BackupsCard() {
+  const { loadPresets } = useRegexStore();
+  const { loadBuilds } = useBuildStore();
+  const [backups, setBackups] = useState<Awaited<ReturnType<typeof listBackups>> | null>(null);
+
+  useEffect(() => {
+    listBackups().then(setBackups).catch(() => setBackups([]));
+  }, []);
+
+  const handleRestore = async (id: string, createdAt: string) => {
+    if (!confirm(`Restore the backup from ${new Date(createdAt).toLocaleString()}? Builds and presets with the same ids will be overwritten.`)) {
+      return;
+    }
+    try {
+      await restoreBackup(id);
+      loadPresets();
+      loadBuilds();
+      toast.success('Backup restored');
+    } catch (err) {
+      toast.error('Restore failed: ' + (err instanceof Error ? err.message : 'unknown error'));
+    }
+  };
+
+  if (!backups || backups.length === 0) return null;
+
+  return (
+    <Card>
+      <h3 className="text-sm font-semibold text-poe-text">Backups</h3>
+      <p className="mt-1 text-xs text-poe-muted">
+        Snapshots taken automatically before data migrations (e.g. gem renames for a new patch).
+      </p>
+      <ul className="mt-3 space-y-2">
+        {backups.map((b) => (
+          <li key={b.id} className="flex items-center justify-between gap-3 text-sm">
+            <span className="min-w-0 truncate text-poe-muted">
+              {new Date(b.createdAt).toLocaleString()} — {b.reason}
+            </span>
+            <Button variant="secondary" onClick={() => handleRestore(b.id, b.createdAt)}>
+              Restore
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </Card>
   );
 }
