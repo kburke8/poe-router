@@ -7,165 +7,96 @@ import { useTutorial } from './TutorialProvider';
 
 const TOUR_ID = 'build-editor-tour';
 
-interface BuildEditorTourProps {
-  mode: 'wizard' | 'advanced';
-}
-
-export function BuildEditorTour({ mode }: BuildEditorTourProps) {
+export function BuildEditorTour() {
   const { hasSeenTour, markTourCompleted, isReady } = useTutorial();
 
   useEffect(() => {
     // Only run after localStorage is loaded and if not seen before
     if (!isReady || hasSeenTour(TOUR_ID)) return;
-
+    let cleanup: (() => void) | undefined;
     const timer = setTimeout(() => {
-        const wizardSteps = [
+      const driverObj = driver({
+        showProgress: true,
+        animate: true,
+        smoothScroll: true,
+        overlayColor: 'rgba(0, 0, 0, 0.85)',
+        popoverClass: 'poe-tour-popover',
+        allowClose: true,
+        // Fires on every exit path — completing, X, Esc, overlay click, and
+        // the unmount cleanup below — so an early exit sticks like a finish.
+        onDestroyed: () => {
+          markTourCompleted(TOUR_ID);
+        },
+        steps: [
           {
             popover: {
-              title: 'Build Wizard',
-              description: 'Welcome to the Build Wizard! This guided mode walks you through each town stop in order.',
-              side: 'bottom' as const,
+              title: 'Route Canvas',
+              description: 'Your whole route lives on this one page — every act and town stop, editable in place. No steps to click through.',
+              side: 'bottom',
             },
           },
           {
-            element: '[data-wizard-progress]',
+            element: '[data-tour="route-rail"]',
             popover: {
-              title: 'Progress Tracker',
-              description: 'See your current position in the campaign. Each dot represents a town stop.',
-              side: 'bottom' as const,
+              title: 'Route Rail',
+              description: 'Jump to any act with one click. Your build summary lives at the bottom.',
+              side: 'right',
             },
           },
           {
-            element: '[data-stop-header]',
-            popover: {
-              title: 'Current Stop',
-              description: 'This shows which town you\'re planning for. Each stop has gem pickups and gear goals.',
-              side: 'bottom' as const,
-            },
-          },
-          {
-            element: '[data-gem-pickups]',
-            popover: {
-              title: 'Gem Pickups',
-              description: 'Add gems from quest rewards or vendors. The system knows what\'s available for your class.',
-              side: 'left' as const,
-            },
-          },
-          {
-            element: '[data-inventory-panel]',
-            popover: {
-              title: 'Inventory Panel',
-              description: 'See all gems you\'ve collected. Drop unwanted gems to free inventory space.',
-              side: 'left' as const,
-            },
-          },
-          {
-            element: '[data-link-groups]',
-            popover: {
-              title: 'Link Groups',
-              description: 'Configure your gem setups here. Each phase shows how your links evolve through the campaign.',
-              side: 'top' as const,
-            },
-          },
-          {
-            element: '[data-mode-toggle]',
-            popover: {
-              title: 'Mode Toggle',
-              description: 'Switch to Advanced mode for full control over all stops at once.',
-              side: 'bottom' as const,
-            },
-          },
-          {
-            element: 'button:contains("Next"), button:contains("Previous")',
-            popover: {
-              title: 'Navigation',
-              description: 'Use these buttons to move between stops, or click the progress dots to jump directly.',
-              side: 'top' as const,
-            },
-          },
-        ];
-
-        const advancedSteps = [
-          {
-            popover: {
-              title: 'Advanced Mode',
-              description: 'In Advanced mode, you can see and edit all town stops at once.',
-              side: 'bottom' as const,
-            },
-          },
-          {
-            element: '[data-build-header]',
-            popover: {
-              title: 'Build Settings',
-              description: 'Configure your build name, class, and ascendancy here.',
-              side: 'bottom' as const,
-            },
-          },
-          {
-            element: '[data-stop-section]',
+            element: '[data-tour="stop-row"]',
             popover: {
               title: 'Town Stops',
-              description: 'Each section represents a town stop. Enable/disable stops and configure gem pickups.',
-              side: 'right' as const,
+              description: 'Each row is a town stop showing what happens there. Click a row to expand it and edit gem pickups, link groups, inventory, and notes in place.',
+              side: 'bottom',
             },
           },
           {
-            element: 'button:contains("Add Gem")',
+            element: '[data-tour="build-settings"]',
             popover: {
-              title: 'Adding Gems',
-              description: 'Click to add gems from quest rewards or vendors. Only available gems are shown.',
-              side: 'left' as const,
+              title: 'Build Settings',
+              description: 'Name, class, ascendancy, and regex generation live here. Mule and gear goals sit just below.',
+              side: 'bottom',
             },
           },
           {
-            element: '[data-link-groups-panel]',
+            element: '[data-tour="reimport-pob"]',
             popover: {
-              title: 'Global Link Groups',
-              description: 'Define your gem setups that persist across all stops.',
-              side: 'left' as const,
+              title: 'Import from PoB',
+              description: 'Paste a Path of Building link to generate the whole route automatically — then just review the few stops that need a call. Everything autosaves.',
+              side: 'bottom',
             },
           },
-          {
-            element: '[data-mode-toggle]',
-            popover: {
-              title: 'Switch to Wizard',
-              description: 'Prefer a guided experience? Switch to Wizard mode for step-by-step planning.',
-              side: 'bottom' as const,
-            },
-          },
-        ];
+        ],
+      });
 
-        const steps = mode === 'wizard' ? wizardSteps : advancedSteps;
+      // Only drive if the canvas actually rendered
+      const checkElement = '[data-tour="route-rail"]';
+      const start = () => {
+        driverObj.drive();
+        // Navigating away mid-tour unmounts without driver.js ever firing
+        // onDestroyed — destroy it ourselves so the exit is recorded.
+        cleanup = () => {
+          if (driverObj.isActive()) driverObj.destroy();
+        };
+      };
+      if (document.querySelector(checkElement)) {
+        start();
+      } else {
+        // Wait a bit more for React to render
+        setTimeout(() => {
+          if (document.querySelector(checkElement)) {
+            start();
+          }
+        }, 500);
+      }
+    }, 1000);
 
-        const driverObj = driver({
-          showProgress: true,
-          animate: true,
-          smoothScroll: true,
-          overlayColor: 'rgba(0, 0, 0, 0.85)',
-          popoverClass: 'poe-tour-popover',
-          allowClose: true,
-          onDestroyed: () => {
-            markTourCompleted(TOUR_ID);
-          },
-          steps,
-        });
-
-        // Only drive if we have the expected elements
-        const checkElement = mode === 'wizard' ? '[data-wizard-progress]' : '[data-build-header]';
-        if (document.querySelector(checkElement)) {
-          driverObj.drive();
-        } else {
-          // Wait a bit more for React to render
-          setTimeout(() => {
-            if (document.querySelector(checkElement)) {
-              driverObj.drive();
-            }
-          }, 500);
-        }
-      }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [isReady, hasSeenTour, markTourCompleted, mode]);
+    return () => {
+      clearTimeout(timer);
+      cleanup?.();
+    };
+  }, [isReady, hasSeenTour, markTourCompleted]);
 
   return null;
 }

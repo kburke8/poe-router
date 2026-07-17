@@ -1,51 +1,116 @@
 'use client';
 
-import { Trash2 } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
+import { useState } from 'react';
+import clsx from 'clsx';
+import { Pencil, X, Check } from 'lucide-react';
 import type { RegexEntry } from '@/types/regex';
 
 interface RegexEntryRowProps {
   entry: RegexEntry;
+  /** Accent colour when the chip is toggled on. */
+  accent?: 'gold' | 'red';
   onToggle: () => void;
   onUpdatePattern: (pattern: string) => void;
   onDelete: () => void;
 }
 
-export function RegexEntryRow({ entry, onToggle, onUpdatePattern, onDelete }: RegexEntryRowProps) {
-  return (
-    <div className="flex items-center gap-2 py-1">
-      <input
-        type="checkbox"
-        checked={entry.enabled}
-        onChange={onToggle}
-        className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-poe-gold"
-        aria-label={`Toggle ${entry.sourceName ?? entry.pattern}`}
-      />
+/**
+ * A single regex entry rendered as a toggleable pill chip.
+ * Click the label to toggle enabled; hover reveals edit (pattern) and delete.
+ */
+export function RegexEntryRow({
+  entry,
+  accent = 'gold',
+  onToggle,
+  onUpdatePattern,
+  onDelete,
+}: RegexEntryRowProps) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(entry.pattern);
 
-      {entry.sourceName && (
-        <span
-          className="shrink-0 truncate text-xs text-poe-muted"
-          style={{ maxWidth: '8rem' }}
-          title={entry.sourceName}
+  const label = entry.sourceName ?? entry.pattern;
+
+  function commitEdit() {
+    if (draft.trim()) onUpdatePattern(draft.trim());
+    setEditing(false);
+  }
+
+  function cancelEdit() {
+    setDraft(entry.pattern);
+    setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-poe-gold/50 bg-poe-input py-1 pl-3 pr-1.5">
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') commitEdit();
+            if (e.key === 'Escape') cancelEdit();
+          }}
+          className="w-36 bg-transparent font-mono text-xs text-poe-text focus:outline-none"
+          aria-label={`Edit pattern for ${label}`}
+          autoFocus
+        />
+        <button
+          onClick={commitEdit}
+          className="rounded-full p-0.5 text-poe-green hover:bg-poe-green/20"
+          aria-label="Save pattern"
         >
-          {entry.sourceName}
-        </span>
+          <Check className="h-3 w-3" />
+        </button>
+        <button
+          onClick={cancelEdit}
+          className="rounded-full p-0.5 text-poe-red hover:bg-poe-red/20"
+          aria-label="Cancel edit"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={clsx(
+        'group inline-flex items-center rounded-full border py-1 pl-3 pr-1.5 text-xs font-semibold transition-colors',
+        entry.enabled
+          ? accent === 'red'
+            ? 'border-poe-red/70 bg-poe-red/15 text-poe-red'
+            : 'border-poe-gold/70 bg-[rgba(230,194,106,.16)] text-poe-gold'
+          : 'border-transparent bg-white/[0.04] text-poe-text hover:bg-white/[0.07]',
       )}
-
-      <Input
-        value={entry.pattern}
-        onChange={(e) => onUpdatePattern(e.target.value)}
-        className="h-7 flex-1 px-2 py-0.5 font-mono text-xs"
-        aria-label="Regex pattern"
-      />
-
+    >
       <button
-        onClick={onDelete}
-        className="shrink-0 rounded p-1 text-poe-muted transition-colors hover:bg-poe-red/20 hover:text-poe-red"
-        aria-label="Delete entry"
+        onClick={onToggle}
+        title={entry.pattern}
+        className="max-w-[14rem] truncate"
+        aria-pressed={entry.enabled}
+        aria-label={`Toggle ${label}`}
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        {label}
       </button>
-    </div>
+      <span className="ml-1 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <button
+          onClick={() => {
+            setDraft(entry.pattern);
+            setEditing(true);
+          }}
+          className="rounded-full p-0.5 text-poe-muted hover:bg-white/10 hover:text-poe-bright"
+          aria-label={`Edit pattern for ${label}`}
+        >
+          <Pencil className="h-3 w-3" />
+        </button>
+        <button
+          onClick={onDelete}
+          className="rounded-full p-0.5 text-poe-muted hover:bg-poe-red/20 hover:text-poe-red"
+          aria-label={`Delete ${label}`}
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </span>
+    </span>
   );
 }

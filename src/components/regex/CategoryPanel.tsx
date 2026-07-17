@@ -1,11 +1,8 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback } from 'react';
-import * as Collapsible from '@radix-ui/react-collapsible';
-import { ChevronRight, Plus, Package, Trash2 } from 'lucide-react';
+import { useState, useMemo, useRef, useCallback, type ReactNode } from 'react';
+import { Plus, Package, Trash2, X } from 'lucide-react';
 import Fuse from 'fuse.js';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { RegexEntryRow } from './RegexEntryRow';
 import { ItemSearchPicker } from './ItemSearchPicker';
 import { abbreviate } from '@/lib/regex/abbreviator';
@@ -22,6 +19,8 @@ interface CategoryPanelProps {
   onToggleEntry: (entryId: string) => void;
   onClearAll: () => void;
   evaluatedRegex?: string;
+  /** Extra controls rendered on the section label row (e.g. strict-links toggle). */
+  headerExtra?: ReactNode;
 }
 
 function collectAllNames(): string[] {
@@ -53,9 +52,11 @@ const GEM_COLOR_CLASSES: Record<string, string> = {
 function InlineGemInput({
   onSelect,
   allNames,
+  onClose,
 }: {
   onSelect: (gem: GemType, pattern: string) => void;
   allNames: string[];
+  onClose: () => void;
 }) {
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -100,6 +101,7 @@ function InlineGemInput({
         }
         e.preventDefault();
       }
+      if (e.key === 'Escape') onClose();
       return;
     }
 
@@ -120,8 +122,8 @@ function InlineGemInput({
   }
 
   return (
-    <div className="relative mt-2">
-      <Input
+    <span className="relative inline-flex items-center gap-1 rounded-full border border-poe-gold/50 bg-poe-input py-1 pl-3 pr-1.5">
+      <input
         ref={inputRef}
         value={query}
         onChange={(e) => {
@@ -137,12 +139,20 @@ function InlineGemInput({
           setTimeout(() => setShowSuggestions(false), 150);
         }}
         onKeyDown={handleKeyDown}
-        placeholder="Type gem name and press Enter..."
-        className="h-8 text-xs"
+        placeholder="Gem name, Enter to add..."
+        className="w-44 bg-transparent text-xs text-poe-text placeholder:text-poe-muted focus:outline-none"
+        autoFocus
       />
+      <button
+        onClick={onClose}
+        className="rounded-full p-0.5 text-poe-muted hover:bg-white/10 hover:text-poe-bright"
+        aria-label="Close gem input"
+      >
+        <X className="h-3 w-3" />
+      </button>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-1 max-h-56 overflow-y-auto rounded-md border border-poe-border bg-poe-card shadow-lg">
+        <div className="absolute left-0 top-full z-30 mt-1 max-h-56 w-64 overflow-y-auto rounded-md border border-poe-border bg-poe-card shadow-lg">
           {suggestions.map((gem, i) => (
             <button
               key={gem.id}
@@ -151,9 +161,7 @@ function InlineGemInput({
                 handleSelect(gem);
               }}
               className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors ${
-                i === selectedIndex
-                  ? 'bg-poe-border/60'
-                  : 'hover:bg-poe-border/30'
+                i === selectedIndex ? 'bg-poe-border/60' : 'hover:bg-poe-border/30'
               }`}
             >
               <span className={GEM_COLOR_CLASSES[gem.color] ?? 'text-poe-text'}>
@@ -166,9 +174,12 @@ function InlineGemInput({
           ))}
         </div>
       )}
-    </div>
+    </span>
   );
 }
+
+const GHOST_CHIP_CLASSES =
+  'inline-flex items-center gap-1 rounded-full border border-dashed border-poe-border bg-transparent px-3 py-1 text-xs font-medium text-poe-muted transition-colors hover:border-poe-gold/60 hover:text-poe-gold';
 
 export function CategoryPanel({
   category,
@@ -178,11 +189,12 @@ export function CategoryPanel({
   onToggleEntry,
   onClearAll,
   evaluatedRegex,
+  headerExtra,
 }: CategoryPanelProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const [itemPickerOpen, setItemPickerOpen] = useState(false);
   const [customInput, setCustomInput] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showGemInput, setShowGemInput] = useState(false);
 
   const allNames = useMemo(() => collectAllNames(), []);
 
@@ -224,33 +236,28 @@ export function CategoryPanel({
   }
 
   return (
-    <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
-      <div className="flex items-center rounded-t-lg border border-poe-border bg-poe-card">
-        <Collapsible.Trigger className="flex flex-1 items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-poe-border/30">
-          <ChevronRight
-            className={`h-4 w-4 text-poe-muted transition-transform ${isOpen ? 'rotate-90' : ''}`}
-          />
-          <span className="text-sm font-semibold text-poe-gold">{category.label}</span>
-          <span className="ml-auto rounded-full bg-poe-border/60 px-2 py-0.5 text-[10px] text-poe-muted">
-            {category.entries.length}
-          </span>
-        </Collapsible.Trigger>
+    <section>
+      <div className="mb-2 flex items-center gap-2">
+        <h3 className="font-mono text-[10px] font-bold uppercase tracking-widest text-poe-faint">
+          {category.label}
+        </h3>
+        <span className="font-mono text-[9px] text-poe-faint">
+          {category.entries.length}
+        </span>
+        {headerExtra}
+        <span className="flex-1" />
         {category.entries.length > 0 && (
           <button
             onClick={onClearAll}
-            className="mr-2 rounded p-1.5 text-poe-muted transition-colors hover:bg-poe-red/20 hover:text-poe-red"
+            className="rounded p-1 text-poe-faint transition-colors hover:bg-poe-red/20 hover:text-poe-red"
             title="Delete all entries"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-3 w-3" />
           </button>
         )}
       </div>
 
-      <Collapsible.Content className="rounded-b-lg border border-t-0 border-poe-border bg-poe-card px-4 pb-3 pt-1">
-        {category.entries.length === 0 && !isGemCategory && (
-          <p className="py-2 text-center text-xs text-poe-muted">No entries yet</p>
-        )}
-
+      <div className="flex flex-wrap items-center gap-1.5">
         {category.entries.map((entry) => (
           <RegexEntryRow
             key={entry.id}
@@ -261,67 +268,88 @@ export function CategoryPanel({
           />
         ))}
 
-        {isGemCategory && (
-          <InlineGemInput onSelect={handleGemSelect} allNames={allNames} />
-        )}
-
-        {evaluatedRegex && (
-          <div className="mt-2 rounded border border-poe-border/50 bg-poe-bg/50 px-3 py-1.5">
-            <span className="text-[10px] font-medium text-poe-muted">Evaluated: </span>
-            <code className="text-[11px] text-poe-gold/80 break-all">{evaluatedRegex}</code>
-          </div>
-        )}
-
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {showItemButton && (
-            <Button variant="secondary" size="sm" onClick={() => setItemPickerOpen(true)}>
-              <Package className="mr-1 h-3 w-3" />
-              Add Item
-            </Button>
-          )}
-
-          {!isGemCategory && (
-            <>
-              {!showCustomInput ? (
-                <Button variant="ghost" size="sm" onClick={() => setShowCustomInput(true)}>
-                  <Plus className="mr-1 h-3 w-3" />
-                  Add Custom
-                </Button>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <Input
-                    value={customInput}
-                    onChange={(e) => setCustomInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleAddCustom();
-                      if (e.key === 'Escape') {
-                        setShowCustomInput(false);
-                        setCustomInput('');
-                      }
-                    }}
-                    placeholder="regex pattern..."
-                    className="h-7 w-40 px-2 py-0.5 font-mono text-xs"
-                    autoFocus
-                  />
-                  <Button variant="primary" size="sm" onClick={handleAddCustom}>
-                    Add
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        {isGemCategory &&
+          (showGemInput ? (
+            <InlineGemInput
+              onSelect={handleGemSelect}
+              allNames={allNames}
+              onClose={() => setShowGemInput(false)}
+            />
+          ) : (
+            <button className={GHOST_CHIP_CLASSES} onClick={() => setShowGemInput(true)}>
+              <Plus className="h-3 w-3" />
+              add gem
+            </button>
+          ))}
 
         {showItemButton && (
-          <ItemSearchPicker
-            open={itemPickerOpen}
-            onOpenChange={setItemPickerOpen}
-            onSelect={handleItemSelect}
-            allNames={allNames}
-            initialCategory={category.id === 'item_gambas' ? 'gambas' : undefined}
-          />
+          <button className={GHOST_CHIP_CLASSES} onClick={() => setItemPickerOpen(true)}>
+            <Package className="h-3 w-3" />
+            add item
+          </button>
         )}
-      </Collapsible.Content>
-    </Collapsible.Root>
+
+        {!isGemCategory &&
+          (showCustomInput ? (
+            <span className="inline-flex items-center gap-1 rounded-full border border-poe-gold/50 bg-poe-input py-1 pl-3 pr-1.5">
+              <input
+                value={customInput}
+                onChange={(e) => setCustomInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleAddCustom();
+                  if (e.key === 'Escape') {
+                    setShowCustomInput(false);
+                    setCustomInput('');
+                  }
+                }}
+                placeholder="regex pattern..."
+                className="w-36 bg-transparent font-mono text-xs text-poe-text placeholder:text-poe-muted focus:outline-none"
+                autoFocus
+              />
+              <button
+                onClick={handleAddCustom}
+                className="rounded-full p-0.5 text-poe-green hover:bg-poe-green/20"
+                aria-label="Add custom pattern"
+              >
+                <Plus className="h-3 w-3" />
+              </button>
+              <button
+                onClick={() => {
+                  setShowCustomInput(false);
+                  setCustomInput('');
+                }}
+                className="rounded-full p-0.5 text-poe-muted hover:bg-white/10 hover:text-poe-bright"
+                aria-label="Close custom pattern input"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          ) : (
+            <button className={GHOST_CHIP_CLASSES} onClick={() => setShowCustomInput(true)}>
+              <Plus className="h-3 w-3" />
+              custom
+            </button>
+          ))}
+      </div>
+
+      {evaluatedRegex && (
+        <div className="mt-2 rounded-md border border-poe-border/50 bg-poe-bg/50 px-3 py-1.5">
+          <span className="mr-1 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">
+            evaluated
+          </span>
+          <code className="break-all font-mono text-[11px] text-poe-gold/80">{evaluatedRegex}</code>
+        </div>
+      )}
+
+      {showItemButton && (
+        <ItemSearchPicker
+          open={itemPickerOpen}
+          onOpenChange={setItemPickerOpen}
+          onSelect={handleItemSelect}
+          allNames={allNames}
+          initialCategory={category.id === 'item_gambas' ? 'gambas' : undefined}
+        />
+      )}
+    </section>
   );
 }

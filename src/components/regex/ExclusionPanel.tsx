@@ -1,11 +1,9 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import * as Collapsible from '@radix-ui/react-collapsible';
-import { ChevronRight, Plus, ShieldBan, Trash2 } from 'lucide-react';
+import clsx from 'clsx';
+import { Plus, ShieldBan, Trash2, X } from 'lucide-react';
 import Fuse from 'fuse.js';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { RegexEntryRow } from './RegexEntryRow';
 import { abbreviate } from '@/lib/regex/abbreviator';
 import type { RegexCategory, RegexEntry } from '@/types/regex';
@@ -86,12 +84,17 @@ const GEM_COLOR_CLASSES: Record<string, string> = {
   blue: 'text-poe-blue',
 };
 
+const GHOST_CHIP_CLASSES =
+  'inline-flex items-center gap-1 rounded-full border border-dashed border-poe-border bg-transparent px-3 py-1 text-xs font-medium text-poe-muted transition-colors hover:border-poe-red/60 hover:text-poe-red';
+
 function InlineGemExcludeInput({
   onSelect,
   allNames,
+  onClose,
 }: {
   onSelect: (gem: GemType, pattern: string) => void;
   allNames: string[];
+  onClose: () => void;
 }) {
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -126,6 +129,7 @@ function InlineGemExcludeInput({
         if (match) handleSelect(match);
         e.preventDefault();
       }
+      if (e.key === 'Escape') onClose();
       return;
     }
     if (e.key === 'ArrowDown') {
@@ -143,26 +147,39 @@ function InlineGemExcludeInput({
   }
 
   return (
-    <div className="relative">
-      <Input
+    <span className="relative inline-flex items-center gap-1 rounded-full border border-poe-red/50 bg-poe-input py-1 pl-3 pr-1.5">
+      <input
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
           setShowSuggestions(e.target.value.trim().length > 0);
           setSelectedIndex(0);
         }}
-        onFocus={() => { if (query.trim()) setShowSuggestions(true); }}
+        onFocus={() => {
+          if (query.trim()) setShowSuggestions(true);
+        }}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
         onKeyDown={handleKeyDown}
-        placeholder="Type gem to exclude..."
-        className="h-7 text-xs"
+        placeholder="Gem to exclude..."
+        className="w-40 bg-transparent text-xs text-poe-text placeholder:text-poe-muted focus:outline-none"
+        autoFocus
       />
+      <button
+        onClick={onClose}
+        className="rounded-full p-0.5 text-poe-muted hover:bg-white/10 hover:text-poe-bright"
+        aria-label="Close gem exclusion input"
+      >
+        <X className="h-3 w-3" />
+      </button>
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-1 max-h-48 overflow-y-auto rounded-md border border-poe-border bg-poe-card shadow-lg">
+        <div className="absolute left-0 top-full z-30 mt-1 max-h-48 w-64 overflow-y-auto rounded-md border border-poe-border bg-poe-card shadow-lg">
           {suggestions.map((gem, i) => (
             <button
               key={gem.id}
-              onMouseDown={(e) => { e.preventDefault(); handleSelect(gem); }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                handleSelect(gem);
+              }}
               className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors ${
                 i === selectedIndex ? 'bg-poe-border/60' : 'hover:bg-poe-border/30'
               }`}
@@ -173,7 +190,7 @@ function InlineGemExcludeInput({
           ))}
         </div>
       )}
-    </div>
+    </span>
   );
 }
 
@@ -185,9 +202,9 @@ export function ExclusionPanel({
   onToggleEntry,
   onClearAll,
 }: ExclusionPanelProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const [customInput, setCustomInput] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showGemInput, setShowGemInput] = useState(false);
 
   const allNames = useMemo(() => collectAllNames(), []);
 
@@ -263,9 +280,6 @@ export function ExclusionPanel({
     (e) => e.sourceId && e.sourceId !== CLASS_BLOCK_SOURCE && !e.isCustom,
   );
   const customEntries = category.entries.filter((e) => e.isCustom);
-  const otherEntries = category.entries.filter(
-    (e) => e.sourceId === CLASS_BLOCK_SOURCE,
-  );
 
   function handleGemExclude(gem: GemType, pattern: string) {
     onAddEntry({
@@ -291,34 +305,29 @@ export function ExclusionPanel({
   }
 
   return (
-    <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
-      <div className="flex items-center rounded-t-lg border border-poe-red/40 bg-poe-card">
-        <Collapsible.Trigger className="flex flex-1 items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-poe-red/10">
-          <ChevronRight
-            className={`h-4 w-4 text-poe-red transition-transform ${isOpen ? 'rotate-90' : ''}`}
-          />
-          <ShieldBan className="h-4 w-4 text-poe-red" />
-          <span className="text-sm font-semibold text-poe-red">{category.label}</span>
-          <span className="ml-auto rounded-full bg-poe-red/20 px-2 py-0.5 text-[10px] text-poe-red">
-            {category.entries.length}
-          </span>
-        </Collapsible.Trigger>
+    <section>
+      <div className="mb-2 flex items-center gap-2">
+        <ShieldBan className="h-3.5 w-3.5 text-poe-red" />
+        <h3 className="font-mono text-[10px] font-bold uppercase tracking-widest text-poe-red/90">
+          Don&apos;t Ever Show
+        </h3>
+        <span className="font-mono text-[9px] text-poe-faint">{category.entries.length}</span>
+        <span className="flex-1" />
         {category.entries.length > 0 && (
           <button
             onClick={onClearAll}
-            className="mr-2 rounded p-1.5 text-poe-muted transition-colors hover:bg-poe-red/20 hover:text-poe-red"
+            className="rounded p-1 text-poe-faint transition-colors hover:bg-poe-red/20 hover:text-poe-red"
             title="Delete all exclusions"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-3 w-3" />
           </button>
         )}
       </div>
 
-      <Collapsible.Content className="rounded-b-lg border border-t-0 border-poe-red/40 bg-poe-card px-4 pb-3 pt-2 space-y-4">
-
+      <div className="space-y-4">
         {/* Item Classes sub-section */}
         <div>
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-poe-muted">
+          <h4 className="mb-2 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">
             Block Item Classes
           </h4>
           <div className="flex flex-wrap gap-1.5">
@@ -328,11 +337,12 @@ export function ExclusionPanel({
                 <button
                   key={cls.id}
                   onClick={() => handleClassToggle(cls.id)}
-                  className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                  className={clsx(
+                    'rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
                     isSelected
-                      ? 'bg-poe-red/30 text-poe-red border border-poe-red/60'
-                      : 'bg-poe-border/30 text-poe-muted border border-poe-border hover:bg-poe-border/50 hover:text-poe-text'
-                  }`}
+                      ? 'border-poe-red/70 bg-poe-red/15 text-poe-red'
+                      : 'border-transparent bg-white/[0.04] text-poe-text hover:bg-white/[0.07]',
+                  )}
                 >
                   {cls.label}
                 </button>
@@ -340,8 +350,11 @@ export function ExclusionPanel({
             })}
           </div>
           {classBlockEntry && (
-            <div className="mt-2">
-              <code className="block rounded bg-poe-bg px-2 py-1 font-mono text-[11px] text-poe-red/80">
+            <div className="mt-2 rounded-md border border-poe-border/50 bg-poe-bg/50 px-3 py-1.5">
+              <span className="mr-1 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">
+                pattern
+              </span>
+              <code className="break-all font-mono text-[11px] text-poe-red/80">
                 {classBlockEntry.pattern}
               </code>
             </div>
@@ -350,69 +363,94 @@ export function ExclusionPanel({
 
         {/* Gems sub-section */}
         <div>
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-poe-muted">
+          <h4 className="mb-2 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">
             Block Gems
           </h4>
-          {gemEntries.map((entry) => (
-            <RegexEntryRow
-              key={entry.id}
-              entry={entry}
-              onToggle={() => onToggleEntry(entry.id)}
-              onUpdatePattern={(pattern) => onUpdateEntry(entry.id, { pattern })}
-              onDelete={() => onRemoveEntry(entry.id)}
-            />
-          ))}
-          <InlineGemExcludeInput onSelect={handleGemExclude} allNames={allNames} />
+          <div className="flex flex-wrap items-center gap-1.5">
+            {gemEntries.map((entry) => (
+              <RegexEntryRow
+                key={entry.id}
+                entry={entry}
+                accent="red"
+                onToggle={() => onToggleEntry(entry.id)}
+                onUpdatePattern={(pattern) => onUpdateEntry(entry.id, { pattern })}
+                onDelete={() => onRemoveEntry(entry.id)}
+              />
+            ))}
+            {showGemInput ? (
+              <InlineGemExcludeInput
+                onSelect={handleGemExclude}
+                allNames={allNames}
+                onClose={() => setShowGemInput(false)}
+              />
+            ) : (
+              <button className={GHOST_CHIP_CLASSES} onClick={() => setShowGemInput(true)}>
+                <Plus className="h-3 w-3" />
+                block gem
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Other / Custom sub-section */}
         <div>
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-poe-muted">
+          <h4 className="mb-2 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">
             Other Exclusions
           </h4>
-          {customEntries.map((entry) => (
-            <RegexEntryRow
-              key={entry.id}
-              entry={entry}
-              onToggle={() => onToggleEntry(entry.id)}
-              onUpdatePattern={(pattern) => onUpdateEntry(entry.id, { pattern })}
-              onDelete={() => onRemoveEntry(entry.id)}
-            />
-          ))}
-
-          {/* Hidden: render class block entries so they aren't lost */}
-          {otherEntries.map((entry) => (
-            <input key={entry.id} type="hidden" />
-          ))}
-
-          {!showCustomInput ? (
-            <Button variant="ghost" size="sm" onClick={() => setShowCustomInput(true)} className="mt-1">
-              <Plus className="mr-1 h-3 w-3" />
-              Add Custom Pattern
-            </Button>
-          ) : (
-            <div className="mt-1 flex items-center gap-1">
-              <Input
-                value={customInput}
-                onChange={(e) => setCustomInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleAddCustom();
-                  if (e.key === 'Escape') {
+          <div className="flex flex-wrap items-center gap-1.5">
+            {customEntries.map((entry) => (
+              <RegexEntryRow
+                key={entry.id}
+                entry={entry}
+                accent="red"
+                onToggle={() => onToggleEntry(entry.id)}
+                onUpdatePattern={(pattern) => onUpdateEntry(entry.id, { pattern })}
+                onDelete={() => onRemoveEntry(entry.id)}
+              />
+            ))}
+            {showCustomInput ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-poe-red/50 bg-poe-input py-1 pl-3 pr-1.5">
+                <input
+                  value={customInput}
+                  onChange={(e) => setCustomInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddCustom();
+                    if (e.key === 'Escape') {
+                      setShowCustomInput(false);
+                      setCustomInput('');
+                    }
+                  }}
+                  placeholder="exclusion pattern..."
+                  className="w-36 bg-transparent font-mono text-xs text-poe-text placeholder:text-poe-muted focus:outline-none"
+                  autoFocus
+                />
+                <button
+                  onClick={handleAddCustom}
+                  className="rounded-full p-0.5 text-poe-green hover:bg-poe-green/20"
+                  aria-label="Add exclusion pattern"
+                >
+                  <Plus className="h-3 w-3" />
+                </button>
+                <button
+                  onClick={() => {
                     setShowCustomInput(false);
                     setCustomInput('');
-                  }
-                }}
-                placeholder="exclusion pattern..."
-                className="h-7 w-48 px-2 py-0.5 font-mono text-xs"
-                autoFocus
-              />
-              <Button variant="danger" size="sm" onClick={handleAddCustom}>
-                Add
-              </Button>
-            </div>
-          )}
+                  }}
+                  className="rounded-full p-0.5 text-poe-muted hover:bg-white/10 hover:text-poe-bright"
+                  aria-label="Close exclusion input"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ) : (
+              <button className={GHOST_CHIP_CLASSES} onClick={() => setShowCustomInput(true)}>
+                <Plus className="h-3 w-3" />
+                custom pattern
+              </button>
+            )}
+          </div>
         </div>
-      </Collapsible.Content>
-    </Collapsible.Root>
+      </div>
+    </section>
   );
 }

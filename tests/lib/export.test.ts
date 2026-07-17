@@ -90,11 +90,12 @@ describe('round-trip', () => {
   });
 
   it('normalizes a malformed stub build instead of crashing', () => {
+    // Deliberately incomplete build record — the import path must tolerate it
     const original = {
       version: 1 as const,
       exportedAt: '2024-01-01T00:00:00.000Z',
       builds: [{ id: 'test', name: 'Test Build' }],
-    };
+    } as unknown as Parameters<typeof exportToJson>[0];
     const parsed = parseImportFile(exportToJson(original));
     const build = (parsed as { builds: { id: string; version: number; stops: unknown[] }[] }).builds[0];
     expect(build.id).toBe('test');

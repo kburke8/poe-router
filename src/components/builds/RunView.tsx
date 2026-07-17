@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ChevronRight, ChevronDown, Share2 } from 'lucide-react';
+import { Copy, Check, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { CopyButton } from '@/components/ui/CopyButton';
 import { CurrencyBadge } from '@/components/ui/CurrencyBadge';
 import { SocketColorIndicator } from '@/components/ui/SocketColorIndicator';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { getStopById, getStopsForAct, getActNumbers, getQuestById } from '@/data/town-stops';
 import { getRewardPickersAtStop, getExcludedQuests } from '@/lib/gem-availability';
 import { getBeachGems } from '@/data/classes';
@@ -19,7 +19,8 @@ import { useBuildStore } from '@/stores/useBuildStore';
 import { combineCategories } from '@/lib/regex/combiner';
 import { encodeBuild } from '@/lib/share';
 import { getBulkBuyVendor, getBulkBuyGemsByStop, getExclusiveBulkBuyGemNames, computeBulkBuyRegex } from '@/lib/bulk-buy';
-import type { BuildPlan, StopPlan, GemPickup, BuildLinkGroup } from '@/types/build';
+import { cn } from '@/lib/utils';
+import type { BuildPlan, StopPlan, GemPickup, BuildLinkGroup, SocketColor } from '@/types/build';
 import type { RegexCategory } from '@/types/regex';
 import type { ResolvedLinkGroup } from '@/lib/link-group-resolver';
 
@@ -28,13 +29,13 @@ interface RunViewProps {
 }
 
 /**
- * Detail levels — slide right to strip detail as you learn the build.
- * 0 = Full:      gems, notes, all per-stop links, end-of-act expanded
- * 1 = Compact:   gems only, no notes, no per-stop links, end-of-act socket summary
- * 2 = Links:     end-of-act link summaries only (no stops)
+ * Detail levels — same route data at three densities:
+ * - glance:   per-act link-group cards + single-gem chips (end-of-act state)
+ * - standard: per-stop one-liners (rewards / buys / link size)
+ * - learning: full per-quest breakdown with reward sets, costs, and link setups
  */
-const DETAIL_LABELS = ['Full', 'Compact', 'Links'] as const;
-type DetailLevel = 0 | 1 | 2;
+type DetailLevel = 'glance' | 'standard' | 'learning';
+const DETAIL_LEVELS: DetailLevel[] = ['glance', 'standard', 'learning'];
 
 const gemColorToVariant = {
   red: 'red',
@@ -42,17 +43,40 @@ const gemColorToVariant = {
   blue: 'blue',
 } as const;
 
-export function RunView({ build }: RunViewProps) {
-  const [detail, setDetail] = useState<DetailLevel>(1);
-  const [fontScale, setFontScale] = useState(100);
-  const [charName, setCharName] = useState('');
-  const actNumbers = getActNumbers();
+const COST_ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
 
-  // Persist character name per build in localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem(`poe-charname-${build.id}`);
-    if (stored) setCharName(stored);
-  }, [build.id]);
+interface InterleavedStop {
+  stopPlan: StopPlan;
+  label: string;
+  isCustom: boolean;
+  showQuestRewards: boolean;
+  effectiveDisabledIds: Set<string>;
+}
+
+export function RunView({ build }: RunViewProps) {
+  const actNumbers = getActNumbers();
+  const maxAct = actNumbers[actNumbers.length - 1] ?? 10;
+  const actRefs = useRef<Map<number, HTMLElement>>(new Map());
+
+  // Per-build persisted state (RunView only mounts client-side, after IndexedDB load)
+  const [detail, setDetail] = useState<DetailLevel>(() => {
+    if (typeof window === 'undefined') return 'standard';
+    const stored = localStorage.getItem(`poe-detail-${build.id}`);
+    return stored && (DETAIL_LEVELS as string[]).includes(stored)
+      ? (stored as DetailLevel)
+      : 'standard';
+  });
+  const [currentAct, setCurrentAct] = useState(() => {
+    // 0 = not started ("—")
+    if (typeof window === 'undefined') return 0;
+    const n = parseInt(localStorage.getItem(`poe-current-act-${build.id}`) ?? '', 10);
+    return Number.isNaN(n) ? 0 : Math.max(0, Math.min(maxAct, n));
+  });
+  const [charName, setCharName] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    return localStorage.getItem(`poe-charname-${build.id}`) ?? '';
+  });
+  const [fontScale, setFontScale] = useState(100);
 
   const handleCharNameChange = (value: string) => {
     setCharName(value);
@@ -62,6 +86,23 @@ export function RunView({ build }: RunViewProps) {
       localStorage.removeItem(`poe-charname-${build.id}`);
     }
   };
+
+  const handleDetailChange = (level: DetailLevel) => {
+    setDetail(level);
+    localStorage.setItem(`poe-detail-${build.id}`, level);
+  };
+
+  const handleActChange = (next: number) => {
+    const clamped = Math.max(0, Math.min(maxAct, next));
+    setCurrentAct(clamped);
+    localStorage.setItem(`poe-current-act-${build.id}`, String(clamped));
+    if (clamped > 0) {
+      requestAnimationFrame(() => {
+        actRefs.current.get(clamped)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  };
+
   const toggleBulkBuyRegex = useBuildStore((s) => s.toggleBulkBuyRegex);
 
   // Load linked regex preset
@@ -122,29 +163,32 @@ export function RunView({ build }: RunViewProps) {
     });
   };
 
-  // Derive visibility flags from detail level
-  const showGems = detail <= 1;
-  const showNotes = detail === 0;
-  const showInherited = detail === 0;
-  const showLinks = detail === 0;
-  const expandEndOfAct = detail === 0 || detail === 2;
-  const showStops = detail <= 1;
+  // Full-run vendor budget (skipped pickups excluded from cost math)
+  const totalBudget = useMemo(() => {
+    if (!build.className) return [];
+    const allVendorPickups = build.stops
+      .filter((s) => s.enabled)
+      .flatMap((s) => s.gemPickups.filter((p) => p.source === 'vendor' && !p.skipped));
+    if (allVendorPickups.length === 0) return [];
+    return summarizeVendorCosts(allVendorPickups, build.className)
+      .sort((a, b) => COST_ORDER.indexOf(a.shortName) - COST_ORDER.indexOf(b.shortName));
+  }, [build]);
 
   // Only enabled stops that have content at this detail level
-  const enabledStops = build.stops.filter((s) => {
+  const enabledStops = useMemo(() => build.stops.filter((s) => {
     if (!s.enabled) return false;
     const hasGems = s.gemPickups.length > 0;
-    const hasNotes = s.notes.trim().length > 0;
-    if (detail === 0) {
+    if (detail === 'learning') {
+      const hasNotes = s.notes.trim().length > 0;
       const resolved = resolveLinkGroupsAtStop(build.linkGroups, s.stopId);
       const hasLinks = resolved.some((r) => r.activePhase.gems.some((g) => g.gemName));
       return hasGems || hasLinks || hasNotes;
     }
-    // Compact: only stops with gem pickups
+    // Standard / Glance: only stops with gem pickups
     return hasGems;
-  });
+  }), [build, detail]);
 
-  const enabledStopIds = new Set(enabledStops.map((s) => s.stopId));
+  const enabledStopIds = useMemo(() => new Set(enabledStops.map((s) => s.stopId)), [enabledStops]);
   const disabledStopIds = useMemo(
     () => new Set(build.stops.filter((s) => !s.enabled).map((s) => s.stopId)),
     [build.stops],
@@ -169,160 +213,245 @@ export function RunView({ build }: RunViewProps) {
     return result;
   }, [disabledStopIds, coveredStopIds]);
 
+  // Per-act sections: stops, end-of-act link state, costs
+  const actSections = useMemo(() => {
+    // Pre-compute end-of-act link states
+    const endOfActLinksMap = new Map<number, ResolvedLinkGroup[]>();
+    for (const actNum of actNumbers) {
+      const actStops = getStopsForAct(actNum);
+      const lastActStop = actStops[actStops.length - 1];
+      endOfActLinksMap.set(
+        actNum,
+        lastActStop
+          ? resolveLinkGroupsAtStop(build.linkGroups, lastActStop.id)
+              .filter((r) => r.activePhase.gems.some((g) => g.gemName))
+          : [],
+      );
+    }
+
+    return actNumbers.map((actNum) => {
+      const actStops = getStopsForAct(actNum);
+      const actStopPlans = actStops
+        .filter((ts) => enabledStopIds.has(ts.id))
+        .map((ts) => ({
+          townStop: ts,
+          stopPlan: enabledStops.find((s) => s.stopId === ts.id)!,
+        }));
+
+      // Build interleaved list: town stops + custom stops after their anchors
+      const interleavedStops: InterleavedStop[] = [];
+      for (const { townStop, stopPlan } of actStopPlans) {
+        interleavedStops.push({ stopPlan, label: townStop.label, isCustom: false, showQuestRewards: true, effectiveDisabledIds: townStopDisabledIds });
+        // Find custom stops anchored after this town stop
+        const customAfter = enabledStops.filter(
+          (s) => s.isCustom && s.afterStopId === townStop.id,
+        );
+        const anchorDisabled = disabledStopIds.has(townStop.id);
+        let questRewardsClaimed = false;
+        for (const cs of customAfter) {
+          const showRewards = anchorDisabled && !questRewardsClaimed;
+          if (showRewards) questRewardsClaimed = true;
+          interleavedStops.push({ stopPlan: cs, label: cs.customLabel || 'Custom Stop', isCustom: true, showQuestRewards: showRewards, effectiveDisabledIds: disabledStopIds });
+        }
+      }
+
+      const endOfActLinks = endOfActLinksMap.get(actNum) ?? [];
+      const prevActIdx = actNumbers.indexOf(actNum) - 1;
+      const prevEndOfActLinks = prevActIdx >= 0
+        ? endOfActLinksMap.get(actNumbers[prevActIdx]) ?? []
+        : [];
+      const endOfActChanged = prevActIdx < 0 || !areEndOfActLinksEqual(prevEndOfActLinks, endOfActLinks);
+
+      const actVendorPickups = build.className
+        ? interleavedStops.flatMap(({ stopPlan }) =>
+            stopPlan.gemPickups.filter((p) => p.source === 'vendor' && !p.skipped))
+        : [];
+      const actCosts = build.className && actVendorPickups.length > 0
+        ? summarizeVendorCosts(actVendorPickups, build.className)
+            .sort((a, b) => COST_ORDER.indexOf(a.shortName) - COST_ORDER.indexOf(b.shortName))
+        : [];
+
+      return { actNum, interleavedStops, endOfActLinks, endOfActChanged, actCosts };
+    });
+  }, [actNumbers, build, enabledStops, enabledStopIds, disabledStopIds, townStopDisabledIds]);
+
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-poe-gold">{build.name}</h1>
+    <div>
+      {/* Sticky header: build identity + current-act stepper + detail control */}
+      <div className="sticky top-0 z-20 -mt-2 mb-3 rounded-b-lg border-b border-poe-gold/20 bg-poe-card/95 px-4 py-2.5 backdrop-blur">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <h1 className="text-base font-bold text-poe-gold">{build.name}</h1>
           {build.className && (
-            <span className="text-sm text-poe-muted">
+            <span className="text-xs text-poe-muted">
               {build.className}
-              {build.ascendancy ? ` / ${build.ascendancy}` : ''}
+              {build.ascendancy ? ` · ${build.ascendancy}` : ''}
             </span>
           )}
           {build.muleClassName && <Badge variant="green" className="text-[10px]">Mule</Badge>}
           {build.stops.some((s) => s.stopId === 'a3_after_library' && s.enabled) && <Badge variant="blue" className="text-[10px]">Library</Badge>}
           {build.stops.some((s) => s.stopId === 'a3_after_gravicius' && s.enabled) && <Badge variant="red" className="text-[10px]">Gravicius</Badge>}
-          <div className="flex items-center gap-0.5 ml-1">
+          <span className="flex-1" />
+
+          <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">Currently in</span>
+          <div className="flex items-center gap-0.5 rounded-lg border border-poe-gold/40 bg-poe-bg p-0.5">
+            <button
+              type="button"
+              onClick={() => handleActChange(currentAct - 1)}
+              disabled={currentAct <= 0}
+              className="grid h-6 w-7 place-items-center rounded-md text-[15px] font-bold text-poe-gold transition-colors hover:bg-poe-gold/10 disabled:pointer-events-none disabled:opacity-30"
+              aria-label="Previous act"
+            >
+              &minus;
+            </button>
+            <span className="min-w-[52px] text-center text-[13px] font-bold text-poe-bright">
+              {currentAct === 0 ? '—' : `Act ${currentAct}`}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleActChange(currentAct + 1)}
+              disabled={currentAct >= maxAct}
+              className="grid h-6 w-7 place-items-center rounded-md text-[15px] font-bold text-poe-gold transition-colors hover:bg-poe-gold/10 disabled:pointer-events-none disabled:opacity-30"
+              aria-label="Next act"
+            >
+              +
+            </button>
+          </div>
+
+          <span className="ml-1 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">Detail</span>
+          <div className="flex rounded-lg border border-poe-border bg-poe-bg p-0.5 text-[11px] font-semibold">
+            {DETAIL_LEVELS.map((level) => (
+              <button
+                key={level}
+                type="button"
+                onClick={() => handleDetailChange(level)}
+                className={cn(
+                  'rounded-md px-2.5 py-1 capitalize transition-colors',
+                  detail === level
+                    ? 'bg-poe-gold text-poe-gold-ink'
+                    : 'text-poe-muted hover:text-poe-text',
+                )}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setFontScale((s) => Math.max(50, s - 10))}
-              className="text-xs px-1.5"
+              className="px-1.5 text-xs"
+              title="Decrease text size"
             >
               -
             </Button>
-            <span className="text-xs text-poe-muted w-8 text-center">{fontScale}%</span>
+            <span className="w-8 text-center text-xs text-poe-muted">{fontScale}%</span>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setFontScale((s) => Math.min(200, s + 10))}
-              className="text-xs px-1.5"
+              className="px-1.5 text-xs"
+              title="Increase text size"
             >
               +
             </Button>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleShare}
-            title="Copy share link"
-          >
+
+          <Button variant="secondary" size="sm" onClick={handleShare} title="Copy share link">
             <Share2 className="h-3.5 w-3.5" />
           </Button>
           <Link
             href={`/builds/${build.id}`}
-            className="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium text-poe-muted hover:bg-poe-border/50 hover:text-poe-text transition-colors"
+            className="inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-poe-muted transition-colors hover:bg-poe-border/50 hover:text-poe-text"
           >
             &larr; Edit
           </Link>
         </div>
       </div>
 
-      {/* Full-run vendor budget */}
-      {build.className && (() => {
-        const allVendorPickups = build.stops
-          .filter((s) => s.enabled)
-          .flatMap((s) => s.gemPickups.filter((p) => p.source === 'vendor'));
-        if (allVendorPickups.length === 0) return null;
-        const totalCosts = summarizeVendorCosts(allVendorPickups, build.className);
-        if (totalCosts.length === 0) return null;
-        const ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
-        const sorted = totalCosts.sort((a, b) => ORDER.indexOf(a.shortName) - ORDER.indexOf(b.shortName));
-        return (
-          <div className="flex items-center gap-2 rounded-md border border-poe-border bg-poe-card px-3 py-1.5">
-            <span className="text-xs text-poe-muted shrink-0">Budget:</span>
-            <div className="flex flex-wrap gap-1">
-              {sorted.map((c) => (
-                <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
-              ))}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Detail slider + bulk buy toggle + character name */}
-      <div className="flex items-center gap-3">
-        <span className="text-xs text-poe-muted shrink-0">Detail</span>
-        <input
-          type="range"
-          min={0}
-          max={2}
-          step={1}
-          value={detail}
-          onChange={(e) => setDetail(Number(e.target.value) as DetailLevel)}
-          className="w-32 accent-poe-gold"
-        />
-        <span className="text-xs font-medium text-poe-gold w-16">{DETAIL_LABELS[detail]}</span>
-        {hasBulkBuyStops && (
-          <label className="flex items-center gap-1.5 ml-4 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={!!build.bulkBuyRegex}
-              onChange={() => toggleBulkBuyRegex(build.id)}
-              className="accent-poe-gold h-3.5 w-3.5"
-            />
-            <span className="text-xs text-poe-muted">Bulk buy regex</span>
-          </label>
-        )}
-        <div className="flex items-center gap-1.5 rounded-md border border-poe-border bg-poe-card px-2 py-1 ml-auto shrink-0">
+      {/* Regex strip — visible at all detail levels */}
+      <div className="mb-3 flex flex-col gap-1.5 rounded-lg border border-poe-border bg-poe-card px-3.5 py-2.5">
+        <StripRow label="Character">
           <input
             type="text"
             value={charName}
             onChange={(e) => handleCharNameChange(e.target.value)}
             placeholder="Character name"
-            className="bg-transparent text-sm text-poe-text placeholder:text-poe-muted/40 outline-none w-32 font-mono"
+            className="min-w-0 flex-1 rounded-md border border-poe-border bg-poe-input px-2.5 py-1 font-mono text-xs text-poe-text outline-none placeholder:text-poe-muted/40 focus:border-poe-gold/40"
           />
-          {charName && <CopyButton text={charName} className="shrink-0" />}
-        </div>
+          {charName && <SmallCopyButton text={charName} />}
+        </StripRow>
+
+        {totalBudget.length > 0 && (
+          <StripRow label="Budget">
+            <div className="flex flex-wrap gap-1">
+              {totalBudget.map((c) => (
+                <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
+              ))}
+            </div>
+          </StripRow>
+        )}
+
+        {hasBulkBuyStops && (
+          <StripRow label="Bulk buy">
+            <label className="flex cursor-pointer items-center gap-1.5">
+              <input
+                type="checkbox"
+                checked={!!build.bulkBuyRegex}
+                onChange={() => toggleBulkBuyRegex(build.id)}
+                className="h-3.5 w-3.5 accent-poe-gold"
+              />
+              <span className="text-xs text-poe-muted">Separate vendor regexes for Siosa / Lily</span>
+            </label>
+          </StripRow>
+        )}
+
+        {linkedRegex && (
+          <StripRow label="Search">
+            <code className="min-w-0 flex-1 truncate font-mono text-[11px] text-poe-muted" title={linkedRegex}>
+              {linkedRegex}
+            </code>
+            <SmallCopyButton text={linkedRegex} />
+          </StripRow>
+        )}
+
+        {bulkBuyRegexes.size > 0 && [...bulkBuyRegexes.entries()].map(([stopId, regex]) => {
+          const vendor = getBulkBuyVendor(stopId);
+          const label = vendor === 'siosa' ? 'Siosa' : 'Lily Roth';
+          return (
+            <StripRow key={stopId} label={label}>
+              <code className="min-w-0 flex-1 truncate font-mono text-[11px] text-poe-muted" title={regex}>
+                {regex}
+              </code>
+              {regex.length > 200 && (
+                <span className={cn('shrink-0 text-[10px]', regex.length > 250 ? 'text-red-400' : 'text-poe-muted/50')}>
+                  {regex.length}/250
+                </span>
+              )}
+              <SmallCopyButton text={regex} />
+            </StripRow>
+          );
+        })}
       </div>
 
-      {/* Linked Regex */}
-      {linkedRegex && (
-        <div className="flex items-center gap-2 rounded-md border border-poe-border bg-poe-card px-3 py-2">
-          <code className="flex-1 text-sm font-mono text-poe-text select-all break-all">{linkedRegex}</code>
-          <CopyButton text={linkedRegex} className="shrink-0" />
-        </div>
-      )}
-
-      {/* Bulk Buy Regex blocks */}
-      {bulkBuyRegexes.size > 0 && [...bulkBuyRegexes.entries()].map(([stopId, regex]) => {
-        const vendor = getBulkBuyVendor(stopId);
-        const label = vendor === 'siosa' ? 'Siosa (Library)' : 'Lily Roth';
-        return (
-          <div key={stopId} className="flex items-center gap-2 rounded-md border border-poe-border/60 bg-poe-card px-3 py-2">
-            <span className="text-xs text-poe-muted shrink-0">{label}:</span>
-            <code className="flex-1 text-sm font-mono text-poe-text select-all break-all">{regex}</code>
-            <CopyButton text={regex} className="shrink-0" />
-            {regex.length > 200 && (
-              <span className={`text-[10px] shrink-0 ${regex.length > 250 ? 'text-red-400' : 'text-poe-muted/50'}`}>
-                {regex.length}/250
-              </span>
-            )}
-          </div>
-        );
-      })}
-
       {/* Mule */}
-      {build.muleClassName && (build.mulePickups?.length ?? 0) > 0 && detail <= 1 && (
-        <div className="text-sm">
+      {build.muleClassName && (build.mulePickups?.length ?? 0) > 0 && detail !== 'glance' && (
+        <div className="mb-3 text-sm">
           <span className="font-semibold text-poe-gold">Mule</span>
-          <span className="text-poe-muted ml-1.5">({build.muleClassName})</span>
-          <div className="flex flex-wrap gap-1.5 mt-1">
+          <span className="ml-1.5 text-poe-muted">({build.muleClassName})</span>
+          <div className="mt-1 flex flex-wrap gap-1.5">
             {(() => {
               const beach = getBeachGems(build.muleClassName);
               return beach ? (
                 <>
-                  <Badge variant="default" className="text-[11px] px-1.5 py-0">{beach.skillGem}</Badge>
-                  <Badge variant="default" className="text-[11px] px-1.5 py-0">{beach.supportGem}</Badge>
+                  <Badge variant="default" className="px-1.5 py-0 text-[11px]">{beach.skillGem}</Badge>
+                  <Badge variant="default" className="px-1.5 py-0 text-[11px]">{beach.supportGem}</Badge>
                 </>
               ) : null;
             })()}
             {build.mulePickups!.map((p) => (
-              <Badge key={p.id} variant={gemColorToVariant[p.gemColor]} className="text-[11px] px-1.5 py-0">
+              <Badge key={p.id} variant={gemColorToVariant[p.gemColor]} className="px-1.5 py-0 text-[11px]">
                 {p.gemName}
               </Badge>
             ))}
@@ -330,207 +459,325 @@ export function RunView({ build }: RunViewProps) {
         </div>
       )}
 
-      {/* Act timeline */}
-      <div className="space-y-4" style={{ zoom: fontScale / 100 }}>
-        {(() => {
-          // Pre-compute end-of-act link states for conditional rendering
-          const endOfActLinksMap = new Map<number, ResolvedLinkGroup[]>();
-          for (const actNum of actNumbers) {
-            const actStops = getStopsForAct(actNum);
-            const lastActStop = actStops[actStops.length - 1];
-            endOfActLinksMap.set(
-              actNum,
-              lastActStop
-                ? resolveLinkGroupsAtStop(build.linkGroups, lastActStop.id)
-                    .filter((r) => r.activePhase.gems.some((g) => g.gemName))
-                : [],
-            );
-          }
+      {/* Continuous act sheet */}
+      <div className="space-y-2" style={{ zoom: fontScale / 100 }}>
+        {actSections.map(({ actNum, interleavedStops, endOfActLinks, endOfActChanged, actCosts }) => {
+          const isCurrent = currentAct === actNum;
 
-          return actNumbers.map((actNum) => {
-            const actStops = getStopsForAct(actNum);
-            const actStopPlans = actStops
-              .filter((ts) => enabledStopIds.has(ts.id))
-              .map((ts) => ({
-                townStop: ts,
-                stopPlan: enabledStops.find((s) => s.stopId === ts.id)!,
-              }));
+          // What does this act have to show at this detail level?
+          const hasStops = detail !== 'glance' && interleavedStops.length > 0;
+          const hasGlanceContent = detail === 'glance' && endOfActLinks.length > 0;
+          const hasFooter = endOfActLinks.length > 0 && (detail === 'glance' || endOfActChanged);
+          if (!hasStops && !hasGlanceContent && !hasFooter) return null;
 
-            // Build interleaved list: town stops + custom stops after their anchors
-            const interleavedStops: { stopPlan: StopPlan; label: string; isCustom: boolean; showQuestRewards: boolean; effectiveDisabledIds: Set<string> }[] = [];
-            for (const { townStop, stopPlan } of actStopPlans) {
-              interleavedStops.push({ stopPlan, label: townStop.label, isCustom: false, showQuestRewards: true, effectiveDisabledIds: townStopDisabledIds });
-              // Find custom stops anchored after this town stop
-              const customAfter = enabledStops.filter(
-                (s) => s.isCustom && s.afterStopId === townStop.id,
-              );
-              const anchorDisabled = disabledStopIds.has(townStop.id);
-              let questRewardsClaimed = false;
-              for (const cs of customAfter) {
-                const showRewards = anchorDisabled && !questRewardsClaimed;
-                if (showRewards) questRewardsClaimed = true;
-                interleavedStops.push({ stopPlan: cs, label: cs.customLabel || 'Custom Stop', isCustom: true, showQuestRewards: showRewards, effectiveDisabledIds: disabledStopIds });
-              }
-            }
+          const linkedGroups = endOfActLinks.filter((r) => r.activePhase.gems.filter((g) => g.gemName).length > 1);
+          const singleGroups = endOfActLinks.filter((r) => r.activePhase.gems.filter((g) => g.gemName).length === 1);
 
-            const endOfActLinks = endOfActLinksMap.get(actNum) ?? [];
-
-            // Check if end-of-act links changed from previous act
-            const prevActIdx = actNumbers.indexOf(actNum) - 1;
-            const prevEndOfActLinks = prevActIdx >= 0
-              ? endOfActLinksMap.get(actNumbers[prevActIdx]) ?? []
-              : [];
-            const endOfActChanged = prevActIdx < 0 || !areEndOfActLinksEqual(prevEndOfActLinks, endOfActLinks);
-
-            // Skip act if nothing to show
-            const hasStopsToShow = showStops && interleavedStops.length > 0;
-            const hasEndOfAct = endOfActLinks.length > 0 && endOfActChanged;
-            if (!hasStopsToShow && !hasEndOfAct) return null;
-
-            const actVendorPickups = build.className
-              ? interleavedStops.flatMap(({ stopPlan }) =>
-                  stopPlan.gemPickups.filter((p) => p.source === 'vendor'))
-              : [];
-            const actCosts = build.className && actVendorPickups.length > 0
-              ? summarizeVendorCosts(actVendorPickups, build.className)
-              : [];
-            const COST_ORDER = ['Wisdom', 'Trans', 'Alt', 'Chance', 'Alch', 'Regret'];
-            const sortedActCosts = actCosts.sort((a, b) => COST_ORDER.indexOf(a.shortName) - COST_ORDER.indexOf(b.shortName));
-
-            // Compact mode: show end-of-act links as a side column next to stops
-            const compactSideColumn = detail === 1 && endOfActLinks.length > 0 && endOfActChanged;
-
-            return (
-              <div key={actNum}>
-                <h2 className="text-xs font-bold text-poe-gold/70 uppercase tracking-widest mb-1.5 border-b border-poe-border/50 pb-1 flex items-center gap-2">
-                  <span>Act {actNum}</span>
-                  {sortedActCosts.length > 0 && (
-                    <span className="flex items-center gap-1 font-normal normal-case tracking-normal">
-                      {sortedActCosts.map((c) => (
-                        <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
-                      ))}
-                    </span>
-                  )}
-                </h2>
-                {showStops && interleavedStops.length > 0 && (
-                  <div className={compactSideColumn ? 'grid grid-cols-[1fr_auto] gap-x-6 items-start' : ''}>
-                    <div className="divide-y divide-poe-border/20">
-                      {interleavedStops.map(({ stopPlan, label, isCustom, showQuestRewards: showRewards, effectiveDisabledIds }) => (
-                        <StopBlock
-                          key={stopPlan.stopId}
-                          stopPlan={stopPlan}
-                          stopLabel={label}
-                          className={build.className}
-                          buildLinkGroups={build.linkGroups}
-                          disabledStopIds={effectiveDisabledIds}
-                          isCustomStop={isCustom}
-                          showQuestRewards={showRewards}
-                          showGems={showGems}
-                          showNotes={showNotes}
-                          showLinks={showLinks}
-                          showInherited={showInherited}
-                        />
-                      ))}
-                    </div>
-                    {compactSideColumn && (
-                      <div className="border-l border-poe-border/30 pl-4 py-2 space-y-0.5 sticky top-4">
-                        <div className="text-[10px] font-semibold text-poe-muted/50 uppercase tracking-wider mb-1">
-                          End of Act {actNum}
-                        </div>
-                        {endOfActLinks.map((r) => (
-                          <LinkGroupLine key={r.buildLinkGroup.id} resolved={r} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
+          return (
+            <section
+              key={actNum}
+              ref={(el) => {
+                if (el) actRefs.current.set(actNum, el);
+                else actRefs.current.delete(actNum);
+              }}
+              className={cn(
+                'scroll-mt-16 rounded-xl px-3 py-2.5 transition-shadow',
+                isCurrent && 'bg-poe-card ring-2 ring-poe-gold shadow-[0_0_24px_rgba(230,194,106,0.18)]',
+              )}
+            >
+              {/* Act header */}
+              <div className="mb-2.5 flex items-center gap-2.5">
+                <span className="text-[13px] font-extrabold uppercase tracking-wider text-poe-gold">Act {actNum}</span>
+                {isCurrent && (
+                  <span className="rounded bg-poe-gold/15 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-gold">
+                    You are here
+                  </span>
                 )}
-                {/* End-of-act link state summary — only if links changed from previous act (Full / Links modes) */}
-                {!compactSideColumn && endOfActLinks.length > 0 && endOfActChanged && (
-                  <EndOfActSummary
-                    actNum={actNum}
-                    endOfActLinks={endOfActLinks}
-                    expanded={expandEndOfAct}
-                  />
+                {actCosts.map((c) => (
+                  <CurrencyBadge key={c.shortName} shortName={c.shortName} count={c.count} />
+                ))}
+                <span className="h-px flex-1 bg-poe-border/60" />
+                {endOfActLinks.length > 0 && (
+                  <span className="font-mono text-[11px] text-poe-faint">
+                    {formatSocketSummary(endOfActLinks, true)}
+                  </span>
                 )}
               </div>
-            );
-          });
-        })()}
+
+              {/* Glance: end-of-act link-group cards + single-gem chips */}
+              {detail === 'glance' && hasGlanceContent && (
+                <>
+                  {linkedGroups.length > 0 && (
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {linkedGroups.map((r) => (
+                        <GlanceCard key={r.buildLinkGroup.id} resolved={r} />
+                      ))}
+                    </div>
+                  )}
+                  {singleGroups.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {singleGroups.map((r) => {
+                        const gem = r.activePhase.gems.find((g) => g.gemName)!;
+                        return (
+                          <span
+                            key={r.buildLinkGroup.id}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-poe-border/40 bg-poe-row px-2.5 py-1 text-[11px] font-semibold text-poe-text"
+                          >
+                            <SocketColorIndicator color={gem.socketColor} className="h-1.5 w-1.5" />
+                            {gem.gemName}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Standard: per-stop one-liners */}
+              {detail === 'standard' && hasStops && (
+                <div className="flex flex-col">
+                  {interleavedStops.map((item, i) => (
+                    <StandardStopRow
+                      key={item.stopPlan.stopId}
+                      item={item}
+                      className={build.className}
+                      buildLinkGroups={build.linkGroups}
+                      first={i === 0}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Learning: full per-quest breakdown */}
+              {detail === 'learning' && hasStops && (
+                <div className="flex flex-col">
+                  {interleavedStops.map((item, i) => (
+                    <LearningStopBlock
+                      key={item.stopPlan.stopId}
+                      item={item}
+                      className={build.className}
+                      buildLinkGroups={build.linkGroups}
+                      first={i === 0}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* End-of-act footer */}
+              {hasFooter && (
+                <div className="mt-3 flex items-center gap-2.5 border-t border-poe-border/50 pt-2.5">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-poe-gold">
+                    End of Act {actNum}
+                  </span>
+                  <span className="font-mono text-[11px] text-poe-faint">
+                    {formatSocketSummary(endOfActLinks)}
+                  </span>
+                </div>
+              )}
+            </section>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function EndOfActSummary({
-  actNum,
-  endOfActLinks,
-  expanded: defaultExpanded,
-}: {
-  actNum: number;
-  endOfActLinks: ResolvedLinkGroup[];
-  expanded: boolean;
-}) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
+/** Labeled row inside the regex strip. */
+function StripRow({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="w-20 shrink-0 font-mono text-[9px] font-bold uppercase tracking-widest text-poe-faint">
+        {label}
+      </span>
+      {children}
+    </div>
+  );
+}
 
-  // Sync with parent detail level changes
-  useEffect(() => {
-    setExpanded(defaultExpanded);
-  }, [defaultExpanded]);
+/** Small blue copy button used in the regex strip. */
+function SmallCopyButton({ text }: { text: string }) {
+  const { copied, copy } = useCopyToClipboard();
+  return (
+    <button
+      type="button"
+      onClick={() => copy(text)}
+      className="inline-flex shrink-0 items-center gap-1 rounded-md bg-poe-blue/15 px-2 py-1 text-[10px] font-semibold text-poe-blue transition-colors hover:bg-poe-blue/25"
+    >
+      {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+      {copied ? 'Copied' : 'Copy'}
+    </button>
+  );
+}
+
+/** Glance-level card for a multi-gem link group. */
+function GlanceCard({ resolved }: { resolved: ResolvedLinkGroup }) {
+  const gems = resolved.activePhase.gems.filter((g) => g.gemName);
+  if (gems.length === 0) return null;
+  const label = resolved.buildLinkGroup.label?.trim();
+  const [main, ...supports] = gems;
 
   return (
-    <div className="pl-2 border-l-2 border-poe-border/40 py-2 border-t border-t-poe-border/20">
-      <button
-        type="button"
-        onClick={() => setExpanded((e) => !e)}
-        className="flex items-center gap-1 text-xs font-semibold text-poe-muted/60 hover:text-poe-muted transition-colors"
-      >
-        {expanded
-          ? <ChevronDown className="h-3 w-3 shrink-0" />
-          : <ChevronRight className="h-3 w-3 shrink-0" />}
-        End of Act {actNum}
-        <span className="font-normal text-poe-muted/40 ml-1">
-          {formatSocketSummary(endOfActLinks)}
-        </span>
-      </button>
-      {expanded && (
-        <div className="space-y-0.5 mt-0.5">
-          {endOfActLinks.map((r) => (
-            <LinkGroupLine key={r.buildLinkGroup.id} resolved={r} />
+    <div className="rounded-lg border border-poe-border/60 bg-poe-row px-3 py-2">
+      <div className="mb-1.5 flex items-center gap-1.5">
+        <span className="inline-flex gap-1">
+          {gems.map((g, i) => (
+            <SocketColorIndicator key={i} color={g.socketColor} className="h-2 w-2" />
           ))}
-        </div>
+        </span>
+        <span
+          className={cn(
+            'font-mono text-[10px] font-bold uppercase tracking-widest',
+            label ? 'text-poe-gold' : 'text-poe-faint',
+          )}
+        >
+          {gems.length}-Link{label ? ` · ${label}` : ''}
+        </span>
+      </div>
+      <div className="text-sm font-bold text-poe-bright">{main.gemName}</div>
+      {supports.length > 0 && (
+        <div className="text-xs text-poe-muted">{supports.map((g) => g.gemName).join(' · ')}</div>
       )}
     </div>
   );
 }
 
-function StopBlock({
-  stopPlan,
-  stopLabel,
+/** Standard-level per-stop one-liner: gold stop label · sentence · link size. */
+function StandardStopRow({
+  item,
   className,
   buildLinkGroups,
-  disabledStopIds,
-  isCustomStop,
-  showQuestRewards = true,
-  showGems,
-  showNotes,
-  showLinks,
-  showInherited,
+  first,
 }: {
-  stopPlan: StopPlan;
-  stopLabel: string;
+  item: InterleavedStop;
   className: string;
   buildLinkGroups: BuildLinkGroup[];
-  disabledStopIds?: Set<string>;
-  isCustomStop?: boolean;
-  showQuestRewards?: boolean;
-  showGems: boolean;
-  showNotes: boolean;
-  showLinks: boolean;
-  showInherited: boolean;
+  first: boolean;
 }) {
-  // Get reward set labels for this stop
-  const effectiveStopId = isCustomStop ? (stopPlan.afterStopId ?? stopPlan.stopId) : stopPlan.stopId;
-  const rewardPickers = showQuestRewards ? getRewardPickersAtStop(effectiveStopId, className, disabledStopIds) : [];
+  const { stopPlan, label } = item;
+  const questPickups = stopPlan.gemPickups.filter((p) => p.source === 'quest_reward');
+  const vendorPickups = stopPlan.gemPickups.filter((p) => p.source === 'vendor');
+  const beach = stopPlan.stopId === 'a1_after_hillock' ? getBeachGems(className) : null;
+
+  const segments: ReactNode[] = [];
+  if (beach) {
+    segments.push(
+      <span key="beach">
+        Pick <StandardGemNames pickups={[]} plainNames={[beach.skillGem, beach.supportGem]} />
+      </span>,
+    );
+  }
+  if (questPickups.length > 0) {
+    segments.push(
+      <span key="reward">
+        Reward <StandardGemNames pickups={questPickups} />
+      </span>,
+    );
+  }
+  if (vendorPickups.length > 0) {
+    const costs = className
+      ? summarizeVendorCosts(vendorPickups.filter((p) => !p.skipped), className)
+      : [];
+    const costParts = costs.map((c) => (c.count === 1 ? c.shortName : `${c.count}× ${c.shortName}`));
+    segments.push(
+      <span key="buy">
+        buy <StandardGemNames pickups={vendorPickups} />
+        {costParts.length > 0 && <span className="text-poe-faint"> ({costParts.join(', ')})</span>}
+      </span>,
+    );
+  }
+
+  // Link size: largest active link group at this stop
+  const resolved = resolveLinkGroupsAtStop(buildLinkGroups, stopPlan.stopId);
+  const maxLinks = resolved.reduce(
+    (max, r) => Math.max(max, r.activePhase.gems.filter((g) => g.gemName).length),
+    0,
+  );
+
+  return (
+    <div className={cn('flex items-baseline gap-2.5 py-1.5', !first && 'border-t border-poe-border/20')}>
+      <span className="w-[104px] shrink-0 text-[11px] font-bold text-poe-gold/80">{label}</span>
+      <span className="min-w-0 flex-1 text-[13px] text-poe-text">
+        {segments.length > 0
+          ? segments.map((seg, i) => (
+              <span key={i}>
+                {i > 0 && <span className="text-poe-faint"> · </span>}
+                {seg}
+              </span>
+            ))
+          : <span className="text-poe-faint">—</span>}
+      </span>
+      {maxLinks > 1 && (
+        <span className="shrink-0 font-mono text-[11px] text-poe-faint">{maxLinks}L</span>
+      )}
+    </div>
+  );
+}
+
+/** Bold bright gem names for Standard rows; skipped pickups struck and greyed. */
+function StandardGemNames({ pickups, plainNames }: { pickups: GemPickup[]; plainNames?: string[] }) {
+  const parts: ReactNode[] = [];
+  for (const name of plainNames ?? []) {
+    parts.push(<b key={`p-${name}`} className="font-semibold text-poe-bright">{name}</b>);
+  }
+  for (const p of pickups) {
+    parts.push(
+      p.skipped ? (
+        <s key={p.id} className="text-poe-faint" title="Skipped">{p.gemName}</s>
+      ) : (
+        <b key={p.id} className="font-semibold text-poe-bright">{p.gemName}</b>
+      ),
+    );
+  }
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {i > 0 && ', '}
+          {part}
+        </span>
+      ))}
+    </>
+  );
+}
+
+/** Learning-level gem chip, tinted by gem color; skipped chips greyed + struck. */
+function LearningGemChip({ pickup }: { pickup: GemPickup }) {
+  if (pickup.skipped) {
+    return (
+      <span
+        className="inline-flex items-center rounded bg-poe-border/30 px-2 py-0.5 text-xs font-medium text-poe-faint line-through"
+        title="Skipped"
+      >
+        {pickup.gemName}
+      </span>
+    );
+  }
+  return (
+    <Badge variant={gemColorToVariant[pickup.gemColor]} className="px-2 py-0.5 text-xs font-semibold">
+      {pickup.gemName}
+    </Badge>
+  );
+}
+
+/** Learning-level per-stop block: quests, reward sets, buys with costs, links, notes. */
+function LearningStopBlock({
+  item,
+  className,
+  buildLinkGroups,
+  first,
+}: {
+  item: InterleavedStop;
+  className: string;
+  buildLinkGroups: BuildLinkGroup[];
+  first: boolean;
+}) {
+  const { stopPlan, label: stopLabel, isCustom, showQuestRewards, effectiveDisabledIds } = item;
+
+  // Reward set labels for this stop
+  const effectiveStopId = isCustom ? (stopPlan.afterStopId ?? stopPlan.stopId) : stopPlan.stopId;
+  const rewardPickers = showQuestRewards
+    ? getRewardPickersAtStop(effectiveStopId, className, effectiveDisabledIds)
+    : [];
   const rewardSetMap = new Map(rewardPickers.map((rp) => [rp.rewardSetId, rp.label]));
 
   // Group gem pickups
@@ -545,23 +792,20 @@ function StopBlock({
     questGroups.set(key, arr);
   }
 
-  // Resolve link groups (hide 1L groups from per-stop display — they only show in end-of-act summary)
+  // Resolve link groups (hide 1L groups from per-stop display)
   const resolvedLinkGroups = resolveLinkGroupsAtStop(buildLinkGroups, stopPlan.stopId);
   const activeLinkGroups = resolvedLinkGroups.filter((r) => {
     const filledGems = r.activePhase.gems.filter((g) => g.gemName);
     return filledGems.length > 1;
   });
-
-  // Split into changed (phase starts) and inherited
   const changedGroups = activeLinkGroups.filter((r) => r.isPhaseStart);
   const inheritedGroups = activeLinkGroups.filter((r) => !r.isPhaseStart);
-  const hasLinkChanges = changedGroups.length > 0;
 
   // Compute excluded quests from disabled optional stops
-  const excluded = disabledStopIds ? getExcludedQuests(disabledStopIds) : new Set<string>();
+  const excluded = effectiveDisabledIds ? getExcludedQuests(effectiveDisabledIds) : new Set<string>();
 
   // New quest names at this stop (none for custom stops)
-  const stop = isCustomStop ? null : getStopById(stopPlan.stopId);
+  const stop = isCustom ? null : getStopById(stopPlan.stopId);
   const newQuestIds = stop ? (() => {
     const effectiveQuests = excluded.size > 0
       ? stop.questsCompleted.filter((q) => !excluded.has(q))
@@ -571,9 +815,9 @@ function StopBlock({
     if (idx <= 0) return effectiveQuests;
     // Walk backward to find previous enabled stop for comparison
     let prevQuests: Set<string> = new Set();
-    if (disabledStopIds && disabledStopIds.size > 0) {
+    if (effectiveDisabledIds && effectiveDisabledIds.size > 0) {
       for (let i = idx - 1; i >= 0; i--) {
-        if (!disabledStopIds.has(allStops[i].id)) {
+        if (!effectiveDisabledIds.has(allStops[i].id)) {
           prevQuests = new Set(allStops[i].questsCompleted.filter((q) => !excluded.has(q)));
           break;
         }
@@ -589,118 +833,84 @@ function StopBlock({
     .map((qid) => getQuestById(qid)?.name)
     .filter(Boolean) as string[];
 
+  const beach = stopPlan.stopId === 'a1_after_hillock' ? getBeachGems(className) : null;
+
+  const vendorCosts = className
+    ? summarizeVendorCosts(vendorPickups.filter((p) => !p.skipped), className)
+    : [];
+  const vendorCostParts = vendorCosts.map((c) =>
+    c.count === 1 ? c.shortName : `${c.count}× ${c.shortName}`,
+  );
+
   return (
-    <div className="pl-2 border-l-2 border-poe-border/40 py-2">
+    <div className={cn('py-2.5', !first && 'border-t border-poe-border/20')}>
       {/* Stop header */}
-      <div className="flex items-baseline gap-2 mb-0.5">
-        <span className="text-sm font-semibold text-poe-gold">{stopLabel}</span>
+      <div className="mb-1 flex flex-wrap items-baseline gap-2">
+        <span className="text-sm font-bold text-poe-gold/90">{stopLabel}</span>
         {newQuestNames.length > 0 && (
-          <span className="text-xs text-poe-muted">
-            {newQuestNames.join(', ')}
-          </span>
+          <span className="text-xs text-poe-muted">{newQuestNames.join(', ')}</span>
         )}
       </div>
 
-      <div className={showLinks ? 'grid grid-cols-[280px_1fr] gap-x-4' : ''}>
-          {/* Gem pickups + notes */}
-          <div className="space-y-0.5">
-            {/* Beach gems */}
-            {showGems && stopPlan.stopId === 'a1_after_hillock' && (() => {
-              const beach = getBeachGems(className);
-              if (!beach) return null;
-              return (
-                <div className="flex items-center gap-1.5 flex-wrap text-xs">
-                  <span className="text-poe-muted">Beach:</span>
-                  <Badge variant="default" className="text-[11px] px-1.5 py-0">
-                    {beach.skillGem}
-                  </Badge>
-                  <Badge variant="default" className="text-[11px] px-1.5 py-0">
-                    {beach.supportGem}
-                  </Badge>
-                </div>
-              );
-            })()}
-
-            {/* Quest reward pickups */}
-            {showGems && questGroups.size > 0 && (
-              <div className="space-y-0.5">
-                {[...questGroups.entries()].map(([setId, pickups]) => {
-                  const label = rewardSetMap.get(setId) ?? setId;
-                  return (
-                    <div key={setId} className="flex items-center gap-1.5 flex-wrap text-xs">
-                      <span className="text-poe-muted">{label}:</span>
-                      {pickups.map((p) => (
-                        <Badge key={p.id} variant={gemColorToVariant[p.gemColor]} className="text-[11px] px-1.5 py-0">
-                          {p.gemName}
-                        </Badge>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Vendor pickups */}
-            {showGems && vendorPickups.length > 0 && (
-              <div className="flex items-center gap-1.5 flex-wrap text-xs">
-                <span className="text-poe-muted">Buy:</span>
-                {vendorPickups.map((p) => (
-                  <Badge key={p.id} variant={gemColorToVariant[p.gemColor]} className="text-[11px] px-1.5 py-0">
-                    {p.gemName}
-                  </Badge>
-                ))}
-                {className && (() => {
-                  const costs = summarizeVendorCosts(vendorPickups, className);
-                  if (costs.length === 0) return null;
-                  const parts = costs.map((c) =>
-                    c.count === 1 ? c.shortName : `${c.count}x ${c.shortName}`
-                  );
-                  return (
-                    <span className="text-poe-muted/50 ml-0.5">
-                      ({parts.join(', ')})
-                    </span>
-                  );
-                })()}
-              </div>
-            )}
-
-            {/* Notes */}
-            {showNotes && stopPlan.notes.trim() && (
-              <p className="text-xs italic text-poe-muted/70">{stopPlan.notes}</p>
-            )}
-
+      <div className="space-y-1">
+        {/* Beach gems */}
+        {beach && (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-poe-faint">Beach:</span>
+            <Badge variant="default" className="px-2 py-0.5 text-xs font-semibold">{beach.skillGem}</Badge>
+            <Badge variant="default" className="px-2 py-0.5 text-xs font-semibold">{beach.supportGem}</Badge>
           </div>
+        )}
 
-          {/* Link groups (Full detail only) */}
-          {showLinks && (
-            <div className="space-y-0.5">
-              {changedGroups.map((resolved) => (
-                <LinkGroupLine
-                  key={resolved.buildLinkGroup.id}
-                  resolved={resolved}
-                />
+        {/* Quest reward pickups by reward set */}
+        {[...questGroups.entries()].map(([setId, pickups]) => {
+          const label = rewardSetMap.get(setId) ?? setId;
+          return (
+            <div key={setId} className="flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-poe-faint">{label}:</span>
+              {pickups.map((p) => (
+                <LearningGemChip key={p.id} pickup={p} />
               ))}
-              {showInherited && inheritedGroups.length > 0 && !hasLinkChanges && (
-                <div className="text-[10px] text-poe-muted/40">
-                  {inheritedGroups.map((r) => {
-                    const label = r.buildLinkGroup.label?.trim();
-                    const count = r.activePhase.gems.filter((g) => g.gemName).length;
-                    return label ? `${label} ${count}L` : `${count}L`;
-                  }).join(' / ')}
-                </div>
-              )}
-              {showInherited && inheritedGroups.length > 0 && hasLinkChanges && (
-                <div className="text-[10px] text-poe-muted/30">
-                  {inheritedGroups.map((r) => {
-                    const label = r.buildLinkGroup.label?.trim();
-                    const count = r.activePhase.gems.filter((g) => g.gemName).length;
-                    return label ? `${label} ${count}L` : `${count}L`;
-                  }).join(' / ')}
-                </div>
-              )}
             </div>
-          )}
-        </div>
+          );
+        })}
+
+        {/* Vendor pickups */}
+        {vendorPickups.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-poe-faint">Buy:</span>
+            {vendorPickups.map((p) => (
+              <LearningGemChip key={p.id} pickup={p} />
+            ))}
+            {vendorCostParts.length > 0 && (
+              <span className="text-poe-faint">({vendorCostParts.join(', ')})</span>
+            )}
+          </div>
+        )}
+
+        {/* Notes */}
+        {stopPlan.notes.trim() && (
+          <p className="text-xs italic text-poe-muted/70">{stopPlan.notes}</p>
+        )}
+
+        {/* Link groups that change at this stop */}
+        {changedGroups.length > 0 && (
+          <div className="space-y-0.5 pt-0.5">
+            {changedGroups.map((resolved) => (
+              <LinkGroupLine key={resolved.buildLinkGroup.id} resolved={resolved} />
+            ))}
+          </div>
+        )}
+        {inheritedGroups.length > 0 && (
+          <div className="text-[10px] text-poe-muted/40">
+            {inheritedGroups.map((r) => {
+              const label = r.buildLinkGroup.label?.trim();
+              const count = r.activePhase.gems.filter((g) => g.gemName).length;
+              return label ? `${label} ${count}L` : `${count}L`;
+            }).join(' / ')}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -714,7 +924,7 @@ function LinkGroupLine({ resolved }: { resolved: ResolvedLinkGroup }) {
 
   // Track which gem slots changed and which gems were removed
   const changedIndices = new Set<number>();
-  const removedGems: { name: string; socketColor: 'R' | 'G' | 'B' | 'W' }[] = [];
+  const removedGems: { name: string; socketColor: SocketColor }[] = [];
   if (isPhaseStart) {
     const prevPhase = getPreviousPhase(buildLinkGroup, activePhase);
     if (prevPhase) {
@@ -736,16 +946,16 @@ function LinkGroupLine({ resolved }: { resolved: ResolvedLinkGroup }) {
 
   return (
     <div className="text-xs">
-      <div className="flex items-center gap-1 flex-wrap">
-        <span className="text-poe-muted font-medium">
-          {label ? `${label} ${activeGems.length}L:` : `${activeGems.length}L:`}
+      <div className="flex flex-wrap items-center gap-1">
+        <span className="font-mono text-[11px] text-poe-faint">
+          {label ? `${label} ${activeGems.length}L` : `${activeGems.length}L`}
         </span>
         {activeGems.map((gem, i) => {
           const changed = changedIndices.has(i);
           return (
-            <span key={i} className="inline-flex items-center gap-0.5">
+            <span key={i} className="inline-flex items-center gap-1">
               <SocketColorIndicator color={gem.socketColor} className="h-2 w-2" />
-              <span className={`${socketTextColor(gem.socketColor)}${changed ? ' font-bold' : ''}`}>{gem.gemName}</span>
+              <span className={cn(socketTextColor(gem.socketColor), changed && 'font-bold')}>{gem.gemName}</span>
             </span>
           );
         })}
@@ -756,7 +966,7 @@ function LinkGroupLine({ resolved }: { resolved: ResolvedLinkGroup }) {
         ))}
       </div>
       {gemsWithAlts.map((gem, i) => (
-        <div key={i} className="flex items-center gap-1 flex-wrap ml-4 text-poe-muted/60">
+        <div key={i} className="ml-4 flex flex-wrap items-center gap-1 text-poe-muted/60">
           {gem.alternatives!.map((alt, ai) => (
             <span key={ai} className="inline-flex items-center gap-0.5">
               or <SocketColorIndicator color={alt.socketColor} className="h-2 w-2" />
@@ -769,11 +979,14 @@ function LinkGroupLine({ resolved }: { resolved: ResolvedLinkGroup }) {
   );
 }
 
-/** Summarize socket requirements: linked groups in brackets, singles pooled by color. */
-function formatSocketSummary(resolved: ResolvedLinkGroup[]): string {
-  const COLOR_ORDER = ['R', 'G', 'B', 'W'] as const;
-  const parts: string[] = [];
-  const looseCounts: Record<string, number> = {};
+/**
+ * Summarize socket requirements: linked groups in brackets, singles pooled by color.
+ * e.g. "[1R2G] [2R1G] · 3R 1G 1B" — pass groupsOnly to omit the singles.
+ */
+function formatSocketSummary(resolved: ResolvedLinkGroup[], groupsOnly = false): string {
+  const COLOR_ORDER: SocketColor[] = ['R', 'G', 'B', 'W'];
+  const groups: string[] = [];
+  const looseCounts: Partial<Record<SocketColor, number>> = {};
 
   for (const r of resolved) {
     const filled = r.activePhase.gems.filter((g) => g.gemName);
@@ -783,7 +996,7 @@ function formatSocketSummary(resolved: ResolvedLinkGroup[]): string {
       const c = filled[0].socketColor;
       looseCounts[c] = (looseCounts[c] ?? 0) + 1;
     } else {
-      const counts: Record<string, number> = {};
+      const counts: Partial<Record<SocketColor, number>> = {};
       for (const g of filled) {
         counts[g.socketColor] = (counts[g.socketColor] ?? 0) + 1;
       }
@@ -791,18 +1004,22 @@ function formatSocketSummary(resolved: ResolvedLinkGroup[]): string {
       for (const c of COLOR_ORDER) {
         if (counts[c]) part += `${counts[c]}${c}`;
       }
-      parts.push(`[${part}]`);
+      groups.push(`[${part}]`);
     }
   }
 
-  for (const c of COLOR_ORDER) {
-    if (looseCounts[c]) parts.push(`${looseCounts[c]}${c}`);
-  }
+  const groupsPart = groups.join(' ');
+  if (groupsOnly) return groupsPart;
 
-  return parts.length > 0 ? `(${parts.join(', ')})` : '';
+  const loosePart = COLOR_ORDER.filter((c) => looseCounts[c])
+    .map((c) => `${looseCounts[c]}${c}`)
+    .join(' ');
+
+  if (groupsPart && loosePart) return `${groupsPart} · ${loosePart}`;
+  return groupsPart || loosePart;
 }
 
-function socketTextColor(color: 'R' | 'G' | 'B' | 'W'): string {
+function socketTextColor(color: SocketColor): string {
   switch (color) {
     case 'R': return 'text-poe-red';
     case 'G': return 'text-poe-green';

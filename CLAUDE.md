@@ -45,10 +45,11 @@ src/
 │   ├── layout/             # AppShell, Sidebar
 │   ├── regex/              # RegexBuilder, CategoryPanel, ExclusionPanel, GemSearchPicker,
 │   │                         ItemSearchPicker, RegexEntryRow, RegexPreview
-│   ├── builds/             # BuildEditor, BuildHeader, BuildCard, StopSection, StopHeader,
-│   │                         PhaseEditor, GemPickerDialog, GemPickupList, GearGoalsPanel,
+│   ├── builds/             # BuildEditor (one-canvas route editor), BuildHeader, BuildCard,
+│   │                         StopSection (collapsible stop row), PhaseEditor, GemPickerDialog,
+│   │                         GemPickupList (Pick up/Buy/Skip control), GearGoalsPanel,
 │   │                         GemSlotCombobox, MuleSection, InheritedLinkGroupCard, RunView,
-│   │                         PobImportDialog, InventoryPanel
+│   │                         PobImportDialog (import + review), InventoryPanel
 │   └── history/            # RunForm, RunCard, ActSplitTimesEditor
 ├── stores/                 # Zustand stores (useRegexStore, useBuildStore, useRunHistoryStore)
 ├── db/database.ts          # Dexie DB definition
@@ -141,7 +142,7 @@ Store mutations: `dropGem(buildId, stopId, gemName)` and `undropGem(buildId, sto
 
 ### Cross-Link-Group Filtering
 
-When multiple link groups exist at a stop, `StopSection` and the wizard's `StopStep` compute which gems are used in each link group. Each `PhaseEditor`'s inventory dropdown excludes gems already slotted in *other* link groups at that stop, preventing the same physical gem from being assigned to two setups.
+When multiple link groups exist at a stop, `StopSection` computes which gems are used in each link group. Each `PhaseEditor`'s inventory dropdown excludes gems already slotted in *other* link groups at that stop, preventing the same physical gem from being assigned to two setups.
 
 ### Inventory Panel (`src/components/builds/InventoryPanel.tsx`)
 

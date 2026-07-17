@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import * as Collapsible from '@radix-ui/react-collapsible';
+import clsx from 'clsx';
+import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/Textarea';
-import { StopHeader } from '@/components/builds/StopHeader';
-import { GemPickupList } from '@/components/builds/GemPickupList';
+import { GemPickupList, type PickupMode } from '@/components/builds/GemPickupList';
 import { PhaseEditor } from '@/components/builds/PhaseEditor';
 import { InheritedLinkGroupCard } from '@/components/builds/InheritedLinkGroupCard';
 import type { StopPlan, GemPickup, LinkGroupPhase } from '@/types/build';
 import type { ResolvedLinkGroup } from '@/lib/link-group-resolver';
 import { getPreviousPhase } from '@/lib/link-group-resolver';
-import { TOWN_STOPS, type TownStop } from '@/data/town-stops';
+import { TOWN_STOPS, GEM_QUESTS, type TownStop, type GemQuest } from '@/data/town-stops';
 import { getExcludedQuests } from '@/lib/gem-availability';
 import { summarizeVendorCosts } from '@/lib/gem-costs';
 import { CurrencyBadge } from '@/components/ui/CurrencyBadge';
@@ -31,6 +31,7 @@ interface StopSectionProps {
   onToggleEnabled: () => void;
   onAddGemPickup: (pickup: GemPickup) => void;
   onRemoveGemPickup: (pickupId: string) => void;
+  onSetPickupMode?: (pickupId: string, mode: PickupMode) => void;
   onAddLinkGroup: (fromStopId: string) => void;
   onAddPhase: (lgId: string, fromStopId: string) => void;
   onRetireLinkGroup: (lgId: string, fromStopId: string) => void;
@@ -42,6 +43,60 @@ interface StopSectionProps {
   onUndropGem?: (gemName: string) => void;
   onDeleteCustomStop?: () => void;
   onUpdateCustomLabel?: (label: string) => void;
+}
+
+const DOT_BG: Record<string, string> = {
+  red: 'bg-poe-red',
+  green: 'bg-poe-green',
+  blue: 'bg-poe-blue',
+};
+
+function getNewQuestNames(current: string[], previous: string[]): string[] {
+  const prevSet = new Set(previous);
+  const questMap = new Map<string, GemQuest>();
+  for (const q of GEM_QUESTS) questMap.set(q.id, q);
+  return current
+    .filter((id) => !prevSet.has(id) && questMap.has(id))
+    .map((id) => questMap.get(id)!.name);
+}
+
+/** Cap a name list at `max` entries, appending "+ N more". */
+function nameList(names: string[], max = 2): string {
+  if (names.length <= max) return names.join(' + ');
+  return `${names.slice(0, max).join(' + ')} +${names.length - max} more`;
+}
+
+/** One-line "what happens here" summary for the collapsed row. */
+function deriveSummary(
+  pickups: GemPickup[],
+  resolvedLinkGroups: ResolvedLinkGroup[],
+): { text: string; faint: boolean } {
+  const active = pickups.filter((p) => !p.skipped);
+  const phaseStarts = resolvedLinkGroups.filter((r) => r.isPhaseStart);
+
+  const verb =
+    active.length === 0
+      ? ''
+      : active.every((p) => p.source === 'quest_reward')
+        ? 'Pick up'
+        : active.every((p) => p.source === 'vendor')
+          ? 'Buy'
+          : 'Get';
+
+  if (active.length > 0 && phaseStarts.length > 0) {
+    return { text: `${verb} gems + set links`, faint: false };
+  }
+  if (active.length > 0) {
+    return { text: `${verb} ${nameList(active.map((p) => p.gemName))}`, faint: false };
+  }
+  if (phaseStarts.length > 0) {
+    const gems = phaseStarts[0].activePhase.gems.map((g) => g.gemName).filter(Boolean);
+    return {
+      text: gems.length > 0 ? `Link ${nameList(gems)}` : 'Set links',
+      faint: false,
+    };
+  }
+  return { text: '', faint: true };
 }
 
 export function StopSection({
@@ -57,6 +112,7 @@ export function StopSection({
   onToggleEnabled,
   onAddGemPickup,
   onRemoveGemPickup,
+  onSetPickupMode,
   onAddLinkGroup,
   onAddPhase,
   onRetireLinkGroup,
@@ -70,45 +126,54 @@ export function StopSection({
   onUpdateCustomLabel,
 }: StopSectionProps) {
   const [open, setOpen] = useState(false);
+  const [editingLabel, setEditingLabel] = useState(false);
+  const [labelDraft, setLabelDraft] = useState(stopPlan.customLabel ?? '');
 
-  const excludedQuests = useMemo(() => {
-    if (!disabledStopIds || disabledStopIds.size === 0) return new Set<string>();
-    return getExcludedQuests(disabledStopIds);
-  }, [disabledStopIds]);
-
-  const previousQuestsCompleted = useMemo(() => {
+  // Quest names newly completed at this stop, respecting exclusions from
+  // disabled optional stops (single memo — collapsed from the old three-step
+  // excluded/previous/effective chain, of which only the names are consumed).
+  const newQuestNames = useMemo(() => {
     if (isCustomStop) return [];
+    const excluded =
+      disabledStopIds && disabledStopIds.size > 0
+        ? getExcludedQuests(disabledStopIds)
+        : new Set<string>();
+    const effective =
+      excluded.size === 0
+        ? townStop.questsCompleted
+        : townStop.questsCompleted.filter((q) => !excluded.has(q));
     const idx = TOWN_STOPS.findIndex((s) => s.id === townStop.id);
-    if (idx <= 0) return [];
-    if (disabledStopIds && disabledStopIds.size > 0) {
-      for (let i = idx - 1; i >= 0; i--) {
-        if (!disabledStopIds.has(TOWN_STOPS[i].id)) {
-          return TOWN_STOPS[i].questsCompleted.filter((q) => !excludedQuests.has(q));
+    let previous: string[] = [];
+    if (idx > 0) {
+      if (disabledStopIds && disabledStopIds.size > 0) {
+        for (let i = idx - 1; i >= 0; i--) {
+          if (!disabledStopIds.has(TOWN_STOPS[i].id)) {
+            previous = TOWN_STOPS[i].questsCompleted.filter((q) => !excluded.has(q));
+            break;
+          }
         }
+      } else {
+        previous = TOWN_STOPS[idx - 1].questsCompleted;
       }
-      return [];
     }
-    return TOWN_STOPS[idx - 1].questsCompleted;
-  }, [townStop.id, disabledStopIds, isCustomStop, excludedQuests]);
+    return getNewQuestNames(effective, previous);
+  }, [isCustomStop, disabledStopIds, townStop]);
 
-  // Effective quests at this stop (filtered by exclusions from disabled optional stops)
-  const effectiveQuestsCompleted = useMemo(() => {
-    if (isCustomStop) return [];
-    if (excludedQuests.size === 0) return townStop.questsCompleted;
-    return townStop.questsCompleted.filter((q) => !excludedQuests.has(q));
-  }, [townStop.questsCompleted, excludedQuests, isCustomStop]);
-
-  const pickupCount = stopPlan.gemPickups.length;
   const linkCount = resolvedLinkGroups.length;
-  const phaseStartCount = resolvedLinkGroups.filter((r) => r.isPhaseStart).length;
-  const summaryParts: string[] = [];
-  if (pickupCount > 0) summaryParts.push(`${pickupCount} gem${pickupCount !== 1 ? 's' : ''}`);
-  if (linkCount > 0) {
-    const parts = [`${linkCount} link${linkCount !== 1 ? 's' : ''}`];
-    if (phaseStartCount > 0) parts.push(`${phaseStartCount} new`);
-    summaryParts.push(parts.join(', '));
-  }
-  const summary = summaryParts.length > 0 ? summaryParts.join(', ') : '';
+
+  const summary = useMemo(
+    () => deriveSummary(stopPlan.gemPickups, resolvedLinkGroups),
+    [stopPlan.gemPickups, resolvedLinkGroups],
+  );
+
+  const summaryText = summary.text || (newQuestNames.length > 0 ? newQuestNames.join(', ') : '—');
+  const summaryFaint = summary.faint;
+
+  // Gem colour mini-dots for the collapsed row (non-skipped pickups, capped)
+  const dotColors = useMemo(() => {
+    const colors = stopPlan.gemPickups.filter((p) => !p.skipped).map((p) => p.gemColor);
+    return colors.slice(0, 5);
+  }, [stopPlan.gemPickups]);
 
   // For custom stops, use the anchor town stop's stopId for link group actions
   const effectiveStopId = stopPlan.stopId;
@@ -156,29 +221,162 @@ export function StopSection({
     return [...remaining.keys()];
   };
 
-  return (
-    <div>
-      <StopHeader
-        townStop={townStop}
-        previousQuestsCompleted={previousQuestsCompleted}
-        effectiveQuestsCompleted={effectiveQuestsCompleted}
-        enabled={stopPlan.enabled}
-        isOpen={open}
-        onToggleOpen={() => setOpen(!open)}
-        onToggleEnabled={onToggleEnabled}
-        summary={summary}
-        isCustomStop={isCustomStop}
-        customLabel={stopPlan.customLabel}
-        onUpdateCustomLabel={onUpdateCustomLabel}
-        onDeleteCustomStop={onDeleteCustomStop}
-      />
+  const enabled = stopPlan.enabled;
+  const isOpen = open && enabled;
+  const displayLabel = isCustomStop ? (stopPlan.customLabel || 'Custom Stop') : townStop.label;
 
-      <Collapsible.Root open={open && stopPlan.enabled} onOpenChange={setOpen}>
-        <Collapsible.Content className="mt-1 ml-6 rounded-md border border-poe-border bg-poe-card p-4 space-y-4">
+  function commitLabel() {
+    setEditingLabel(false);
+    if (onUpdateCustomLabel && labelDraft.trim()) {
+      onUpdateCustomLabel(labelDraft.trim());
+    }
+  }
+
+  return (
+    <div
+      data-tour="stop-row"
+      className={clsx(
+        'rounded-lg border bg-poe-row mb-[7px] transition-colors',
+        isOpen ? 'border-poe-gold/25' : 'border-white/[.06]',
+        !enabled && 'opacity-50',
+        isCustomStop && 'border-dashed',
+      )}
+    >
+      {/* Collapsed row */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => enabled && setOpen(!open)}
+        onKeyDown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && enabled && e.target === e.currentTarget) {
+            e.preventDefault();
+            setOpen(!open);
+          }
+        }}
+        className={clsx(
+          'flex items-center gap-2.5 px-3 py-[9px]',
+          enabled ? 'cursor-pointer' : 'cursor-default',
+        )}
+      >
+        {/* Enable toggle */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleEnabled();
+          }}
+          className={clsx(
+            'h-4 w-4 shrink-0 rounded border flex items-center justify-center text-[10px] transition-colors cursor-pointer',
+            enabled
+              ? 'border-poe-gold bg-poe-gold/20 text-poe-gold'
+              : 'border-poe-border bg-poe-bg/50 text-poe-muted',
+          )}
+          title={enabled ? 'Disable this stop' : 'Enable this stop'}
+        >
+          {enabled ? '✓' : ''}
+        </button>
+
+        {/* Mono stop label */}
+        {isCustomStop && editingLabel ? (
+          <input
+            type="text"
+            value={labelDraft}
+            onChange={(e) => setLabelDraft(e.target.value)}
+            onBlur={commitLabel}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitLabel();
+              if (e.key === 'Escape') {
+                setEditingLabel(false);
+                setLabelDraft(stopPlan.customLabel ?? '');
+              }
+            }}
+            onClick={(e) => e.stopPropagation()}
+            autoFocus
+            className="w-[110px] shrink-0 bg-transparent border-b border-poe-gold font-mono text-[10px] font-bold text-poe-gold focus:outline-none"
+          />
+        ) : (
+          <span
+            className={clsx(
+              'w-[110px] shrink-0 truncate font-mono text-[10px] font-bold',
+              isOpen ? 'text-poe-gold' : 'text-poe-faint',
+            )}
+            title={newQuestNames.length > 0 ? newQuestNames.join(', ') : displayLabel}
+          >
+            {displayLabel}
+          </span>
+        )}
+        {isCustomStop && !editingLabel && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLabelDraft(stopPlan.customLabel ?? '');
+              setEditingLabel(true);
+            }}
+            className="shrink-0 text-poe-faint hover:text-poe-gold transition-colors cursor-pointer"
+            title="Rename"
+          >
+            <Pencil className="h-3 w-3" />
+          </button>
+        )}
+
+        {/* Summary */}
+        <span
+          className={clsx(
+            'flex-1 min-w-0 truncate text-[13px]',
+            !enabled || summaryFaint ? 'text-poe-faint' : isOpen ? 'text-poe-bright' : 'text-poe-text',
+          )}
+        >
+          {enabled ? summaryText : 'Disabled'}
+        </span>
+
+        {/* Gem colour mini-dots */}
+        {dotColors.length > 0 && (
+          <span className="inline-flex gap-[3px] shrink-0">
+            {dotColors.map((c, i) => (
+              <i key={i} className={clsx('block h-[7px] w-[7px] rounded-full', DOT_BG[c] ?? 'bg-poe-red')} />
+            ))}
+          </span>
+        )}
+
+        {/* Custom stop delete */}
+        {isCustomStop && onDeleteCustomStop && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteCustomStop();
+            }}
+            className="shrink-0 text-poe-faint hover:text-poe-red transition-colors cursor-pointer"
+            title="Delete custom stop"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
+
+        {/* Chevron */}
+        {enabled && (
+          <span className={clsx('shrink-0 text-base leading-none', isOpen ? 'text-poe-gold' : 'text-poe-border')}>
+            {isOpen ? '▴' : '▾'}
+          </span>
+        )}
+      </div>
+
+      {/* Expanded in-place editor */}
+      {isOpen && (
+        <div className="border-t border-white/[.06] px-3 pb-3 pt-3 space-y-4">
+          {newQuestNames.length > 0 && (
+            <p className="font-mono text-[9px] uppercase tracking-widest text-poe-faint">
+              Quests: {newQuestNames.join(' · ')}
+            </p>
+          )}
+
           {/* Gems + Inventory row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h4 className="text-sm font-medium text-poe-text mb-2">Gems</h4>
+            <div data-tour="gem-pickups">
+              <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-poe-faint mb-2">
+                Gems
+              </h4>
               <GemPickupList
                 pickups={stopPlan.gemPickups}
                 stopId={isCustomStop ? (stopPlan.afterStopId ?? townStop.id) : stopPlan.stopId}
@@ -188,9 +386,10 @@ export function StopSection({
                 showQuestRewards={isCustomStop ? showQuestRewards : true}
                 onAdd={onAddGemPickup}
                 onRemove={onRemoveGemPickup}
+                onSetMode={onSetPickupMode}
               />
               {className && (() => {
-                const vendorPickups = stopPlan.gemPickups.filter((p) => p.source === 'vendor');
+                const vendorPickups = stopPlan.gemPickups.filter((p) => p.source === 'vendor' && !p.skipped);
                 if (vendorPickups.length === 0) return null;
                 const costs = summarizeVendorCosts(vendorPickups, className);
                 if (costs.length === 0) return null;
@@ -206,19 +405,21 @@ export function StopSection({
                 );
               })()}
             </div>
-            <InventoryPanel
-              inventoryGemNames={inventoryGemNames}
-              droppedGems={stopPlan.droppedGems ?? []}
-              gemsInLinkGroups={gemsInLinkGroups}
-              onDrop={onDropGem ?? (() => {})}
-              onUndrop={onUndropGem ?? (() => {})}
-            />
+            <div data-tour="inventory-panel">
+              <InventoryPanel
+                inventoryGemNames={inventoryGemNames}
+                droppedGems={stopPlan.droppedGems ?? []}
+                gemsInLinkGroups={gemsInLinkGroups}
+                onDrop={onDropGem ?? (() => {})}
+                onUndrop={onUndropGem ?? (() => {})}
+              />
+            </div>
           </div>
 
           {/* Link Groups */}
-          <div>
+          <div data-tour="link-groups">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-medium text-poe-text">
+              <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-poe-faint">
                 Link Groups ({linkCount})
               </h4>
             </div>
@@ -260,7 +461,9 @@ export function StopSection({
 
           {/* Notes */}
           <div>
-            <h4 className="text-sm font-medium text-poe-text mb-2">Notes</h4>
+            <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-poe-faint mb-2">
+              Notes
+            </h4>
             <Textarea
               value={stopPlan.notes}
               onChange={(e) => onUpdateNotes(e.target.value)}
@@ -268,8 +471,8 @@ export function StopSection({
               rows={2}
             />
           </div>
-        </Collapsible.Content>
-      </Collapsible.Root>
+        </div>
+      )}
     </div>
   );
 }
