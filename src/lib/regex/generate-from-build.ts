@@ -26,68 +26,22 @@ export interface LinkPattern {
 }
 
 /**
- * Generate all unique permutations of an array (handles duplicate elements).
- * For [b,b,g] returns [[b,b,g],[b,g,b],[g,b,b]].
+ * Universal 3-link+ pattern. Sockets display as e.g. "W-W-W" in item text,
+ * with "-" only between LINKED sockets (unlinked groups are space-separated),
+ * so `.-.-.` matches any three-or-more linked sockets regardless of colour.
+ *
+ * As of 3.29, gems socket into any colour and sockets default to White, so
+ * per-build colour-permutation patterns (e.g. "b-b-g|b-g-b|g-b-b") are
+ * obsolete — link COUNT is all that matters for leveling gear.
  */
-function uniquePermutations(arr: string[]): string[][] {
-  if (arr.length <= 1) return [[...arr]];
-  const result: string[][] = [];
-  const seen = new Set<string>();
-  for (let i = 0; i < arr.length; i++) {
-    if (seen.has(arr[i])) continue;
-    seen.add(arr[i]);
-    const rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
-    for (const perm of uniquePermutations(rest)) {
-      result.push([arr[i], ...perm]);
-    }
-  }
-  return result;
-}
+export const THREE_LINK_PATTERN = '.-.-.';
 
 /**
- * Generate exact socket color search patterns from build link groups.
- * Handles 2-links and 3-links. Uses the last phase of each link group.
- *
- * Generates all unique permutations of each link group's socket colors,
- * joined with `|` into a single pattern per link group.
- *
- * Examples:
- * - BBG (3L) → "b-b-g|b-g-b|g-b-b" (3 permutations)
- * - BBB (3L) → "b-b-b" (1 permutation)
- * - BG  (2L) → "b-g|g-b" (2 permutations)
- * - BB  (2L) → "b-b" (1 permutation)
- *
- * All patterns are lowercase. 1-link groups are skipped.
+ * Generate link search patterns for a build: a single colour-agnostic
+ * 3-link+ entry, always included.
  */
-export function generateLinkPatterns(linkGroups: BuildLinkGroup[]): LinkPattern[] {
-  const seen = new Set<string>(); // dedup by pattern
-  const results: LinkPattern[] = [];
-
-  for (const lg of linkGroups) {
-    if (lg.phases.length === 0) continue;
-
-    // Check all phases so earlier link sizes (e.g. 3L before a group grows to 4L)
-    // still produce patterns.
-    for (const phase of lg.phases) {
-      const gemCount = phase.gems.length;
-
-      // Skip 1-links and 4+ links
-      if (gemCount < 2 || gemCount > 3) continue;
-
-      const colors = phase.gems.map((g) => g.socketColor.toLowerCase()).sort();
-      const sourceName = lg.label || `${gemCount}L`;
-
-      const perms = uniquePermutations(colors);
-      const pattern = perms.map((p) => p.join('-')).join('|');
-
-      if (seen.has(pattern)) continue;
-      seen.add(pattern);
-
-      results.push({ pattern, sourceName, linkSize: gemCount });
-    }
-  }
-
-  return results;
+export function generateLinkPatterns(): LinkPattern[] {
+  return [{ pattern: THREE_LINK_PATTERN, sourceName: '3-Link+', linkSize: 3 }];
 }
 
 // === Gambas auto-generation ===
@@ -404,8 +358,8 @@ export async function generateBuildRegex(
     ),
   ].filter((name) => !bulkBuyExclusive.has(name));
 
-  // Compute link patterns
-  const linkPatterns = generateLinkPatterns(build.linkGroups);
+  // Universal colour-agnostic 3-link+ pattern
+  const linkPatterns = generateLinkPatterns();
 
   // Compute gambas entries
   const gambasEntries = generateGambasEntries(build);
@@ -507,9 +461,7 @@ export function hasBuildRegexContent(build: BuildPlan): boolean {
     .flatMap((s) => s.gemPickups)
     .some((p) => p.source === 'vendor');
 
-  const hasLinkGroups = build.linkGroups.some((lg) =>
-    lg.phases.some((phase) => phase.gems.length >= 2 && phase.gems.length <= 3),
-  );
+  const hasLinkGroups = build.linkGroups.length > 0;
 
   const hasClassName = !!build.className;
 
